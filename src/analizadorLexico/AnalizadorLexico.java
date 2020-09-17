@@ -135,7 +135,7 @@ public class AnalizadorLexico {
         columnas.put('!', 19);
         columnas.put('\n', 20);
         columnas.put('\t', 21);
-        columnas.put('\s', 21);
+        columnas.put(' ', 21);
         columnas.put('$', 22);
     }
 
@@ -179,9 +179,54 @@ public class AnalizadorLexico {
         tokens.put("{", 123);
         tokens.put("}", 125);
     }
+    
+    public void charAnterior() {
+    	//Devolver el ultimo caracter leido.
+    }
+    
+    public void nuevaLinea() {
+    	//Siguiente linea de codigo.
+    }
+    
+    public void inicializarBuffer() {
+    	//Inicializar el lexema.
+    }
+    
+    public void appendChar() {
+    	//Agregar char al lexema.
+    }
+    
+    public void appendLexema() {
+    	//Agregar lexema a la tabla de simbolos.
+    }
+    
+    public void putError(String error) {
+    	//Agregar error.
+    }
+    
+    public StringBuilder getLexema() {
+		return lexema;
+	}
+    
+    public ArrayList<String> getErrores(){
+    	return this.errores;
+    }
+ 
+    public int getFilaActual() {
+    	return this.fila_leida;
+    }
+    
+	public HashMap<String, HashMap<String, Object>> getTabla_simbolos() {
+		//Retornar tabla de simbolos. (VER OTRA FUNCION PARA DEVOLVER EN UN STRING EL CONTENIDO)
+		return this.tabla_simbolos;
+	}
+	
+	public int yylex() {
+		//Retorna codigo de token para el parser yacc.
+	    return 0;
+	}
 
-
-    public static void main(String[] args) {
+	public static void main(String[] args) {
     	AnalizadorLexico an = new AnalizadorLexico();
 	}
 
