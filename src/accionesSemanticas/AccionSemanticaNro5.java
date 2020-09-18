@@ -16,7 +16,7 @@ public class AccionSemanticaNro5 extends AccionSemantica{
 		int i1 = lexBig.compareTo(BigDecimal.valueOf(0));
 		if (i0 < 0 && i1 >= 0) {
 			al.appendLexema();
-			al.agregarTipo("Tipo","LONG INT");
+			al.addTipo("Tipo","LONG INT");
 			return "CTE";
 		}
 		al.putError("Long Int fuera de rango.");
