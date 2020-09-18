@@ -14,7 +14,7 @@ public class AccionSemanticaNro5 extends AccionSemantica{
 		Double db = Math.pow(2, 32) - 1;
 		int i0 = lexBig.compareTo(BigDecimal.valueOf(db));
 		int i1 = lexBig.compareTo(BigDecimal.valueOf(0));
-		if (i0 < 0 && i1 >= 0) {
+		if (i0 <= 0 && i1 >= 0) {
 			al.appendLexema();
 			al.addTipo("Tipo","LONG INT");
 			return "CTE";

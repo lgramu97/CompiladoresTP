@@ -3,6 +3,7 @@ package helper;
 import java.util.HashMap;
 
 import accionesSemanticas.AccionSemantica;
+import accionesSemanticas.AccionSemanticaNro4;
 import accionesSemanticas.AccionSemanticaNro5;
 import accionesSemanticas.AccionSemanticaNro6;
 import analizadorLexico.AnalizadorLexico;
@@ -31,16 +32,31 @@ public class Helper {
 	}
 	
 	public void check_as5() {
-		StringBuilder lexema = new StringBuilder("125_");
+		Double db = Math.pow(2, 32) -1 ;
+		StringBuilder lexema = new StringBuilder("0_");
 		al.setLexema(lexema);
 		AccionSemantica as5 = new AccionSemanticaNro5();
 		as5.ejecutar('l', al);
 		System.out.println(al.getLexema() + "  Size " + al.getLexema().length());
+		System.out.println(al.getDatosTabla_simbolos());
+		System.out.println("ERRORES: " + al.getErrores().size());
+	}
+	
+	public void check_as4() {
+		StringBuilder lexema = new StringBuilder("0.84");
+		al.setLexema(lexema);
+		AccionSemantica as4 = new AccionSemanticaNro4();
+		as4.ejecutar('j', al);
+		System.out.println(al.getLexema());
+		System.out.println(al.getDatosTabla_simbolos());
+		System.out.println("ERRORES: " + al.getErrores().size());
+
 	}
 	
 	public static void main(String[] args) {
 		Helper h = new Helper();
-		h.imprimir_tabla_simbolos();
-		h.check_as5();
+		//h.imprimir_tabla_simbolos();
+		//h.check_as5();
+		h.check_as4();
 	}
 }

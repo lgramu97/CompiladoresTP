@@ -17,7 +17,7 @@ import accionesSemanticas.AccionSemantica;
 public class AnalizadorLexico {
 
     private ArrayList<String> lineas;
-    private ArrayList<String> errores;
+    private ArrayList<String> errores = new ArrayList<>();
     private StringBuilder lexema;
     
     private int columna; //Ultimo caracter leido.
