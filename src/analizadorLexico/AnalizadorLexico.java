@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import javax.swing.JFileChooser;
@@ -212,7 +213,17 @@ public class AnalizadorLexico {
     		//nada
     	}
     }
-    
+
+    public void addTipo(String tipo, Object obj) {
+        tabla_simbolos.get(lexema.toString()).put(tipo, obj);
+    }
+
+    public boolean isPalabraReservada(String lexema) {
+        return Arrays.asList(palabras_reservadas).contains(lexema);
+    }
+
+
+
     public void putError(String error) {
     	//Agregar error.
     	errores.add("Linea numero " + (fila_leida+1) + " :	"+ error);
@@ -238,9 +249,9 @@ public class AnalizadorLexico {
 	public String getDatosTabla_simbolos() {
 		StringBuilder datos = new StringBuilder();
 		for (String key: tabla_simbolos.keySet()) {
-			datos.append("Lexema: " + key + "\n");
+			datos.append("Lexema: ").append(key).append("\n");
 			for(String att: tabla_simbolos.get(key).keySet()) {
-				datos.append("Atributo: " + att + "   "+ "Valor: " + tabla_simbolos.get(key).get(att) + "\n");
+				datos.append("Atributo: ").append(att).append("   ").append("Valor: ").append(tabla_simbolos.get(key).get(att)).append("\n");
 			}
 		}
 		return datos.toString();	
