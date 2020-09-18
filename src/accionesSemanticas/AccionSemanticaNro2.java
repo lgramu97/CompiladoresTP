@@ -6,7 +6,8 @@ public class AccionSemanticaNro2 extends AccionSemantica{
 
 	@Override
 	public String ejecutar(char c, AnalizadorLexico al) {
-		// TODO Auto-generated method stub
+		al.inicializarBuffer();
+		al.appendChar(c);
 		return null;
 	}
 
