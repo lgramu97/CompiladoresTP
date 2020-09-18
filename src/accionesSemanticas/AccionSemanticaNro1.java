@@ -4,6 +4,10 @@ import analizadorLexico.AnalizadorLexico;
 
 public class AccionSemanticaNro1 extends AccionSemantica{
 
+	public AccionSemanticaNro1() {
+		
+	}
+	
 	@Override
 	public String ejecutar(char c, AnalizadorLexico al) {
 		al.charAnterior();
@@ -13,9 +17,9 @@ public class AccionSemanticaNro1 extends AccionSemantica{
 			al.putError("Warning: Identificador reducido a 20 caracteres.");
 		}
 		if (!al.getTabla_simbolos().containsKey(lexema)) {
-			
+			al.appendLexema();
 		}
-		return null;
+		return "ID";
 	}
 
 }

@@ -2,6 +2,9 @@ package helper;
 
 import java.util.HashMap;
 
+import accionesSemanticas.AccionSemantica;
+import accionesSemanticas.AccionSemanticaNro5;
+import accionesSemanticas.AccionSemanticaNro6;
 import analizadorLexico.AnalizadorLexico;
 
 public class Helper {
@@ -27,8 +30,17 @@ public class Helper {
 		 System.out.println(this.al.getDatosTabla_simbolos());
 	}
 	
+	public void check_as5() {
+		StringBuilder lexema = new StringBuilder("125_");
+		al.setLexema(lexema);
+		AccionSemantica as5 = new AccionSemanticaNro5();
+		as5.ejecutar('l', al);
+		System.out.println(al.getLexema() + "  Size " + al.getLexema().length());
+	}
+	
 	public static void main(String[] args) {
 		Helper h = new Helper();
 		h.imprimir_tabla_simbolos();
+		h.check_as5();
 	}
 }

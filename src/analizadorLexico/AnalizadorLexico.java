@@ -48,7 +48,6 @@ public class AnalizadorLexico {
         File open = jchooser.getSelectedFile();
         if (open != null){
             readFile(open);
-            System.out.print(this.lineas.size());
             initializeTokens();
             mapColumnToChar();
             tabla_simbolos = new HashMap<>();
@@ -244,13 +243,17 @@ public class AnalizadorLexico {
 				datos.append("Atributo: " + att + "   "+ "Valor: " + tabla_simbolos.get(key).get(att) + "\n");
 			}
 		}
-		return datos.toString();
-		
+		return datos.toString();	
 	}
 	
 	public void setTablaSimbolos(HashMap<String, HashMap<String, Object>> ts) {
 		//Usado para test.
 		this.tabla_simbolos = ts;
+	}
+	
+	public void setLexema(StringBuilder l) {
+		//Usado para test.
+		this.lexema = l;
 	}
 	
 	public int yylex() {
