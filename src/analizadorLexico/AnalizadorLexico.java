@@ -19,8 +19,8 @@ public class AnalizadorLexico {
     private ArrayList<String> errores;
     private StringBuilder lexema;
     
-    private int columna;
-    private int fila_leida;
+    private int columna; //Ultimo caracter leido.
+    private int fila_leida; // Linea de codigo actual.
     private int ultimo_estado;
 
 
@@ -182,26 +182,41 @@ public class AnalizadorLexico {
     
     public void charAnterior() {
     	//Devolver el ultimo caracter leido.
+		if(columna==0) {
+			fila_leida--;
+			columna=lineas.get(fila_leida).length();
+		}else
+			columna--;	
     }
     
     public void nuevaLinea() {
     	//Siguiente linea de codigo.
+    	fila_leida++;
+    	columna = 0;
     }
     
     public void inicializarBuffer() {
     	//Inicializar el lexema.
+    	lexema = new StringBuilder();
     }
     
-    public void appendChar() {
+    public void appendChar(char c) {
     	//Agregar char al lexema.
+    	lexema.append(c);
     }
     
     public void appendLexema() {
     	//Agregar lexema a la tabla de simbolos.
+    	if(!tabla_simbolos.containsKey(lexema.toString())){
+    		tabla_simbolos.put(lexema.toString(), new HashMap<String, Object>());
+    	}else {
+    		//nada
+    	}
     }
     
     public void putError(String error) {
     	//Agregar error.
+    	errores.add("Linea numero " + (fila_leida+1) + " :	"+ error);
     }
     
     public StringBuilder getLexema() {
@@ -217,8 +232,25 @@ public class AnalizadorLexico {
     }
     
 	public HashMap<String, HashMap<String, Object>> getTabla_simbolos() {
-		//Retornar tabla de simbolos. (VER OTRA FUNCION PARA DEVOLVER EN UN STRING EL CONTENIDO)
+		//Retornar tabla de simbolos.
 		return this.tabla_simbolos;
+	}
+	
+	public String getDatosTabla_simbolos() {
+		StringBuilder datos = new StringBuilder();
+		for (String key: tabla_simbolos.keySet()) {
+			datos.append("Lexema: " + key + "\n");
+			for(String att: tabla_simbolos.get(key).keySet()) {
+				datos.append("Atributo: " + att + "   "+ "Valor: " + tabla_simbolos.get(key).get(att) + "\n");
+			}
+		}
+		return datos.toString();
+		
+	}
+	
+	public void setTablaSimbolos(HashMap<String, HashMap<String, Object>> ts) {
+		//Usado para test.
+		this.tabla_simbolos = ts;
 	}
 	
 	public int yylex() {
@@ -229,6 +261,7 @@ public class AnalizadorLexico {
 	public static void main(String[] args) {
     	AnalizadorLexico an = new AnalizadorLexico();
 	}
+
 
 }
 
