@@ -222,6 +222,9 @@ public class AnalizadorLexico {
         return Arrays.asList(palabras_reservadas).contains(lexema);
     }
 
+    public void deleteLastChar() {
+    	this.lexema.deleteCharAt(lexema.length()-1);
+    }
 
 
     public void putError(String error) {
