@@ -8,7 +8,7 @@ public class AccionSemanticaNro4 extends AccionSemantica{
 
 	@Override
 	public String ejecutar(char c, AnalizadorLexico al) {
-		//al.charAnterior();
+		al.charAnterior();
 		String lexema = al.getLexema().toString();
 		float f ;
 		if ( lexema.contains("f")) {
