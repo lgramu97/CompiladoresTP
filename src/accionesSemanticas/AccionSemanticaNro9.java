@@ -6,8 +6,9 @@ public class AccionSemanticaNro9 extends AccionSemantica{
 
 	@Override
 	public String ejecutar(char c, AnalizadorLexico al) {
-		// TODO Auto-generated method stub
-		return null;
+		al.charAnterior();
+		al.putError("Error: token invalido!");
+		return "ERROR";
 	}
 
 }

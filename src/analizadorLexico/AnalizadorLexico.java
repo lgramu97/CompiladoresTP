@@ -13,6 +13,19 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 import accionesSemanticas.AccionSemantica;
+import accionesSemanticas.AccionSemanticaNro1;
+import accionesSemanticas.AccionSemanticaNro10;
+import accionesSemanticas.AccionSemanticaNro11;
+import accionesSemanticas.AccionSemanticaNro12;
+import accionesSemanticas.AccionSemanticaNro13;
+import accionesSemanticas.AccionSemanticaNro2;
+import accionesSemanticas.AccionSemanticaNro3;
+import accionesSemanticas.AccionSemanticaNro4;
+import accionesSemanticas.AccionSemanticaNro5;
+import accionesSemanticas.AccionSemanticaNro6;
+import accionesSemanticas.AccionSemanticaNro7;
+import accionesSemanticas.AccionSemanticaNro8;
+import accionesSemanticas.AccionSemanticaNro9;
 
 public class AnalizadorLexico {
 
@@ -23,6 +36,8 @@ public class AnalizadorLexico {
     private int columna; //Ultimo caracter leido.
     private int fila_leida; // Linea de codigo actual.
     private int ultimo_estado;
+
+    private final static String ERROR = "ERROR";
 
 
     //Estructuras
@@ -61,24 +76,64 @@ public class AnalizadorLexico {
 
     private void initializeMatrizTransicionEstados() {
         transicion_estados = new int[][] {
-                { 17, 1, 1, 1, 2, F, F, F, F, F, F, 3, F, 11, 15, 14, 5, 7, -1, 12, 0, 0, F, -1},
-                { -1, 1, 1, 1, 1, F, F, F, F, F, F, F, F, F, F, F, F, F, F, 1, F, F, F, -1, -1},
-                { -1, -1, -1, -1, 2, -1, -1, -1, -1, -1, -1, 3, -1, -1, -1, -1, -1, -1, 13, -1, -1, -1, -1, -1},
-                { -1, F, 16, F, 3, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1 },
-                { -1, F, F, F, 4, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
-                { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6, -1, -1, -1, -1, -1, -1, -1},
-                { -1, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 0, 6, -1, -1},
-                { -1, 8, 8, 8, 8, 9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, F, 8, 8, -1, 8, -1, -1},
-                { -1, 8, 8, 8, 8, 9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, F, 8, 8, -1, 8, -1, -1},
-                { -1, 8, 8, 8, 8, -1, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 10, 8, -1, -1},
-                { -1, 8, 8, 8, 8, 9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, F, 8, 8, -1, 8, -1, -1},
-                { -1, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
-                { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, F, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                { -1, -1, -1, F, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                { -1, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
-                { -1, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
-                { -1, -1, -1, -1, -1, 4, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-                { 17, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, 17, F, F, F, -1, -1}
+                {17, 1, 1, 1, 2, F, F, F, F, F, F, F, F, 20, F, F, 11, 15, 14, 5, 8, -1, 12, 0, 0, F, -1},
+                {F, 1, 1, 1, 1, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, 1, F, F, F, -1, -1},
+                {-1, -1, -1, -1, 2, -1, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1, -1, -1, -1, -1, -1, 13, -1, -1, -1, -1, -1},
+                {F, F, 16, F, 3, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
+                {F, F, F, F, 4, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
+                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6, -1, -1, -1, -1, -1, -1, -1},
+                {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 0, 6, -1, -1},
+                {8, 8, 8, 8, 8, 9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, F, 8, 8, -1, 8, -1, -1},
+                {8, 8, 8, 8, 8, 9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 10, 8, -1, -1},
+                {8, 8, 8, 8, 8, 9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, F, 8, 8, -1, 8, -1, -1},
+                {F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
+                {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, F, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {-1, -1, -1, F, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
+                {F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
+                {-1, -1, -1, -1, -1, 18, 18, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {17, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, 17, F, F, F, -1, -1},
+                {-1, -1, -1, -1, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+                {F, F, 16, F, 19, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
+                {-1, -1, -1, -1, 19, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
+        };
+    }
+
+    private void initializeMatrizAccionesSemanticas() {
+        AccionSemantica as1 = new AccionSemanticaNro1();
+        AccionSemantica as2 = new AccionSemanticaNro2();
+        AccionSemantica as3 = new AccionSemanticaNro3();
+        AccionSemantica as4 = new AccionSemanticaNro4();
+        AccionSemantica as5 = new AccionSemanticaNro5();
+        AccionSemantica as6 = new AccionSemanticaNro6();
+        AccionSemantica as7 = new AccionSemanticaNro7();
+        AccionSemantica as8 = new AccionSemanticaNro8();
+        AccionSemantica as9 = new AccionSemanticaNro9();
+        AccionSemantica as10 = new AccionSemanticaNro10();
+        AccionSemantica as11 = new AccionSemanticaNro11();
+        AccionSemantica as12 = new AccionSemanticaNro12();
+        AccionSemantica as13 = new AccionSemanticaNro13();
+        acciones_semanticas = new AccionSemantica[][] {
+                {as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, null, as2, as12, as2, as6, null, as2, as13},
+                {as1, as3, as3, as3, as3, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1},
+                {as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as3, as9, as9, as9, as9, as9},
+                {as4, as4, as3, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
+                {as4, as4, as4, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
+                {as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, null, as9, as9, as9, as9, as9, as9, as9},
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, as6, null, null/*Vacio*/, as13},
+                {as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as10, as3, as3, as9, as3, null/*Vacio*/, as3},
+                {as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as12, as3, as3, as11, as3, null/*Vacio*/, as3},
+                {as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as10, as3, as3, as9, as3, null/*Vacio*/, as3},
+                {as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as3, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8},
+                {as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
+                {as9, as9, as9, as5, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
+                {as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as3, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8},
+                {as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as3, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8},
+                {as9, as9, as9, as9, as9, as3, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
+                {as3, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as3, as7, as7, as7, as7, as7},
+                {as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
+                {as4, as4, as3, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
+                {as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9}
         };
     }
 
@@ -269,6 +324,28 @@ public class AnalizadorLexico {
 	
 	public int yylex() {
 		//Retorna codigo de token para el parser yacc.
+        ultimo_estado = 0;
+        String tipo = null;
+        while (ultimo_estado != F && ultimo_estado != -1) {
+            char proximo_char = 'z';
+            if (columna == lineas.get(fila_leida).length()) {
+                proximo_char = '\n';
+            } else {
+                proximo_char = lineas.get(fila_leida).charAt(columna);
+            }
+            columna++;
+            int columna_caracter = 0;
+            // otro
+            columna_caracter = columnas.getOrDefault(proximo_char, 23);
+            if (acciones_semanticas[ultimo_estado][columna_caracter] != null) {
+                tipo = acciones_semanticas[ultimo_estado][columna_caracter].ejecutar(proximo_char, this);
+            }
+            ultimo_estado = transicion_estados[ultimo_estado][columna_caracter];
+            if (tipo == null) {
+                return tokens.get(lexema.toString());
+            }
+            return tokens.get(tipo);
+        }
 	    return 0;
 	}
 
