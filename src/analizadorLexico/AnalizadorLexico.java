@@ -115,26 +115,26 @@ public class AnalizadorLexico {
         AccionSemantica as12 = new AccionSemanticaNro12();
         AccionSemantica as13 = new AccionSemanticaNro13();
         acciones_semanticas = new AccionSemantica[][] {
-                {as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, null, as2, as12, as2, as6, null, as2, as13},
-                {as1, as3, as3, as3, as3, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1},
-                {as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as3, as9, as9, as9, as9, as9},
-                {as4, as4, as3, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
-                {as4, as4, as4, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
-                {as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, null, as9, as9, as9, as9, as9, as9, as9},
-                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, as6, null, null/*Vacio*/, as13},
-                {as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as10, as3, as3, as9, as3, null/*Vacio*/, as3},
-                {as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as12, as3, as3, as11, as3, null/*Vacio*/, as3},
-                {as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as10, as3, as3, as9, as3, null/*Vacio*/, as3},
-                {as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as3, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8},
-                {as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
-                {as9, as9, as9, as5, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
-                {as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as3, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8},
-                {as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as3, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8},
-                {as9, as9, as9, as9, as9, as3, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
-                {as3, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as3, as7, as7, as7, as7, as7},
-                {as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
-                {as4, as4, as3, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
-                {as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9}
+        	{as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, null, as2, as12, as2, as6, null, as2, as13},
+			{as1, as3, as3, as3, as3, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1}, 
+			{as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as3, as9, as9, as9, as9, as9},
+			{as4, as4, as3, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
+			{as4, as4, as4, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
+			{as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, null, as9, as9, as9, as9, as9, as9, as9},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, as6, null,null/*Vacio*/ , as13},
+			{as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as10, as3, as3, as9, as3, null/*Vacio*/, as3},
+			{as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as12, as3, as3, as11, as3,null/*Vacio*/ , as3},
+			{as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as10, as3, as3, as9, as3,null/*Vacio*/ , as3},
+			{as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as3, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8},
+			{as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
+			{as9, as9, as9, as5, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
+			{as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as3, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8},
+			{as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as3, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8},
+			{as9, as9, as9, as9, as9, as3, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
+			{as3, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as3, as7, as7, as7, as7, as7},
+			{as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
+			{as4, as4, as3, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
+			{as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9}  
         };
     }
 
