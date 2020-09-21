@@ -66,6 +66,7 @@ public class AnalizadorLexico {
             readFile(open);
             initializeTokens();
             mapColumnToChar();
+            fila_leida = 0;
             tabla_simbolos = new HashMap<>();
             initializeMatrizTransicionEstados();
             initializeMatrizAccionesSemanticas();
@@ -77,26 +78,26 @@ public class AnalizadorLexico {
 
     private void initializeMatrizTransicionEstados() {
         transicion_estados = new int[][] {
-                {17, 1, 1, 1, 2, F, F, F, F, F, F, 20, F, 11, 15, 14, 5, 8, -F, 12, 0, 0, F, -F},
-                {F, 1, 1, 1, 1, F, F, F, F, F, F, F, F, F, F, F, F, F, 1, F, F, F, -F, -F},
-                {-F, -F, -F, -F, 2, -F, -F, -F, -F, -F, -F, 3, -F, -F, -F, -F, -F, -F, 13, -F, -F, -F, -F, -F},
-                {F, F, 16, F, 3, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -F, -F},
-                {F, F, F, F, 4, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -F, -F},
-                {-F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, 6, -F, -F, -F, -F, -F, -F, -F},
-                {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 0, 6, -F, -F},
-                {8, 8, 8, 8, 8, 9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, F, 8, 8, -F, 8, -F, -F},
-                {8, 8, 8, 8, 8, 9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 10, 8, -F, -F},
-                {8, 8, 8, 8, 8, 9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, F, 8, 8, -F, 8, -F, -F},
-                {F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -F, -F},
-                {-F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F},
-                {-F, -F, -F, F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F},
-                {F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -F, -F},
-                {F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -F, -F},
-                {-F, -F, -F, -F, -F, 18, 18, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F},
-                {17, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, 17, F, F, F, -F, -F},
-                {-F, -F, -F, -F, 4, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F},
-                {F, F, 16, F, 19, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -F, -F},
-                {-F, -F, -F, -F, 19, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F},
+		{16, 1, 1, 1, 2, F, F, F, F, F, F, 19, F, 10, 14, 13, 5, 7, -1, 11, 0, 0, F, -1},
+		{F, 1, 1, 1, 1, F, F, F, F, F, F, F, F, F, F, F, F, F, 1, F, F, F, -1, -1},
+		{-1, -1, -1, -1, 2, -1, -1, -1, -1, -1, -1, 3, -1, -1, -1, -1, -1, -1, 12, -1, -1, -1, -1, -1},
+		{F, F, 15, F, 3, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
+		{F, F, F, F, 4, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
+		{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6, -1, -1, -1, -1, -1, -1, -1},
+		{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 0, 6, -1, -1},
+		{7, 7, 7, 7, 7, 8, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, F, 7, 7, -1, 7, -1, -1},
+		{7, 7, 7, 7, 7, 8, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 9, 7, -1, -1},
+		{7, 7, 7, 7, 7, 8, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, F, 7, 7, -1, 7, -1, -1},
+		{F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
+		{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, F, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+		{-1, -1, -1, F, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+		{F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
+		{F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
+		{-1, -1, -1, -1, -1, 17, 17, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+		{16, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, 16, F, F, F, -1, -1},
+		{-1, -1, -1, -1, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
+		{F, F, 15, F, 18, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
+		{-1, -1, -1, -1, 18, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
         };
     }
 
@@ -232,6 +233,7 @@ public class AnalizadorLexico {
         tokens.put("FLOAT", 116);
         tokens.put("WHILE", 117);
         tokens.put("LOOP", 118);
+        tokens.put("ERROR",119);
         tokens.put("{", 123);
         tokens.put("}", 125);
     }
@@ -325,13 +327,24 @@ public class AnalizadorLexico {
 		//Usado para test.
 		this.lexema = l;
 	}
+		
 	
+	public HashMap<String, Integer> getTokens() {
+		//Usado para test.
+		return tokens;
+	}
+	
+	public int getLineasTotales() {
+		return this.lineas.size();
+	}
+
 	public int yylex() {
 		//Retorna codigo de token para el parser yacc.
         ultimo_estado = 0;
         String tipo = null;
         while (ultimo_estado != F && ultimo_estado != -1) {
             char proximo_char = 'z';
+            System.out.println("Linnea : " + fila_leida + " de " + lineas.size());
             if (columna == lineas.get(fila_leida).length()) {
                 proximo_char = '\n';
             } else {
@@ -346,7 +359,6 @@ public class AnalizadorLexico {
                 tipo = acciones_semanticas[ultimo_estado][columna_caracter].ejecutar(proximo_char,this);
             }
             ultimo_estado = transicion_estados[ultimo_estado][columna_caracter];
-            System.out.println(ultimo_estado);
         }
         if (tipo == null) {
             return tokens.get(lexema.toString());

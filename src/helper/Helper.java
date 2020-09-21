@@ -1,5 +1,6 @@
 package helper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import accionesSemanticas.AccionSemantica;
@@ -54,8 +55,18 @@ public class Helper {
 	}
 	
 	public void prueba_al() {
-		System.out.println(al.yylex());
+		ArrayList<Integer> tokens = new ArrayList<>();
+		while(al.getFilaActual() < al.getLineasTotales()-1) {
+			int token = al.yylex();
+			tokens.add(token);
+			System.out.println("Token nro:   " +  token);			
+		}
 		System.out.println(al.getDatosTabla_simbolos());
+		System.out.println();
+		System.out.println();
+		for(int i = 0; i< tokens.size();i++) {
+			System.out.print(tokens.get(i) + "  ");
+		}
 		
 	}
 	
