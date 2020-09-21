@@ -53,10 +53,17 @@ public class Helper {
 
 	}
 	
+	public void prueba_al() {
+		System.out.println(al.yylex());
+		System.out.println(al.getDatosTabla_simbolos());
+		
+	}
+	
 	public static void main(String[] args) {
 		Helper h = new Helper();
 		//h.imprimir_tabla_simbolos();
 		//h.check_as5();
-		h.check_as4();
+		//h.check_as4();
+		h.prueba_al();
 	}
 }

@@ -68,6 +68,7 @@ public class AnalizadorLexico {
             mapColumnToChar();
             tabla_simbolos = new HashMap<>();
             initializeMatrizTransicionEstados();
+            initializeMatrizAccionesSemanticas();
         }else{
         	JOptionPane.showMessageDialog(null,"No selecciono ningun archivo");
         	System.exit(100);
@@ -338,18 +339,19 @@ public class AnalizadorLexico {
             }
             columna++;
             int columna_caracter = 0;
-            // otro
             columna_caracter = columnas.getOrDefault(proximo_char, 23);
+            System.out.println("Proximo char: " + proximo_char + "  " + "Columna Caracter: " + columna_caracter +
+            		"   " + "Accion semantica: " + ultimo_estado + " , " + columna_caracter);
             if (acciones_semanticas[ultimo_estado][columna_caracter] != null) {
-                tipo = acciones_semanticas[ultimo_estado][columna_caracter].ejecutar(proximo_char, this);
+                tipo = acciones_semanticas[ultimo_estado][columna_caracter].ejecutar(proximo_char,this);
             }
             ultimo_estado = transicion_estados[ultimo_estado][columna_caracter];
-            if (tipo == null) {
-                return tokens.get(lexema.toString());
-            }
-            return tokens.get(tipo);
+            System.out.println(ultimo_estado);
         }
-	    return 0;
+        if (tipo == null) {
+            return tokens.get(lexema.toString());
+        }
+        return tokens.get(tipo);
 	}
 
 	public static void main(String[] args) {
