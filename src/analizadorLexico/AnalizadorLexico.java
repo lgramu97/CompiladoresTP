@@ -3,6 +3,7 @@ package analizadorLexico;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,7 +48,7 @@ public class AnalizadorLexico {
     private AccionSemantica[][] acciones_semanticas;
     private HashMap<String , HashMap< String, Object > > tabla_simbolos;
     private final String[] palabras_reservadas = {"IF", "THEN", "END_IF", "OUT",
-            "FUNC", "RETURN", "ELSE", "LONGINT", "FLOAT", "WHILE", "LOOP"};
+            "FUNC", "RETURN", "ELSE", "LONGINT", "FLOAT", "WHILE", "LOOP", "PROC", "NI", "REF"};
     private final static int F = Integer.MAX_VALUE;
 
     public AnalizadorLexico(){
@@ -183,6 +184,7 @@ public class AnalizadorLexico {
         columnas.put('.', 11);
         columnas.put(',', 12);
         columnas.put(';', 12);
+        columnas.put(':',12);
         columnas.put('=', 13);
         columnas.put('<', 14);
         columnas.put('>', 15);
@@ -210,6 +212,7 @@ public class AnalizadorLexico {
         tokens.put("-", 45);
         tokens.put(".", 46);
         tokens.put("/", 47);
+        tokens.put(":", 58);
         tokens.put(";", 59);
         tokens.put("<", 60);
         tokens.put("=", 61);
@@ -234,6 +237,9 @@ public class AnalizadorLexico {
         tokens.put("WHILE", 117);
         tokens.put("LOOP", 118);
         tokens.put("ERROR",119);
+        tokens.put("PROC",120);
+        tokens.put("NI",121);
+        tokens.put("REF",122);
         tokens.put("{", 123);
         tokens.put("}", 125);
     }
@@ -365,7 +371,31 @@ public class AnalizadorLexico {
         }
         return tokens.get(tipo);
 	}
+	
+	public boolean check_rango(String lexema) {
+			float f ;
+			if ( lexema.contains("f")) {
+				String[] values = lexema.split("f");
+				String value = values[0];
+				String exponente = values[1];
+				f = Float.parseFloat(value+"f");
 
+			}else {
+				f = Float.parseFloat(lexema);
+			}		
+			BigDecimal lexBig = new BigDecimal(f);
+			float valorfinal = 3.40282347f;
+			float valorbase = 1.17549435f;
+			int exp = 38;
+			int i0 = lexBig.compareTo(BigDecimal.valueOf(Math.pow(-valorfinal,+exp)));
+			int i1 = lexBig.compareTo(BigDecimal.valueOf(Math.pow(-valorbase,-exp)));
+			int i2 = lexBig.compareTo(BigDecimal.valueOf(0.0f));
+			int i3 = lexBig.compareTo(BigDecimal.valueOf(Math.pow(valorbase,-exp)));
+			int i4 = lexBig.compareTo(BigDecimal.valueOf(Math.pow(valorfinal,+exp)));
+			return ((i3 > 0 && i4<0) || (i0> 0 && i1 < 0) || i2==0);
+		}
+
+	
 	public static void main(String[] args) {
     	AnalizadorLexico an = new AnalizadorLexico();
 	}
