@@ -49,7 +49,7 @@ sentencia_declaracion_datos : tipo lista_variables ';'
 invocacion_procedimiento : ID '(' lista_parametros_invocacion ')' ';'
                          ;
 
-declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion ')' NI '=' cte {' cuerpo_procedimiento '}' ';'
+declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion ')' NI '=' cte '{' cuerpo_procedimiento '}' ';'
                           ;
 
 cuerpo_procedimiento : sentencias_declarativas
@@ -97,7 +97,6 @@ asignacion : ID '=' expresion ';'
 
 expresion : expresion '+' termino ';'
           | expresion '-' termino ';'
-          | '(' expresion ')' // mal, no permite 1 + (2+3) x ejemplo
           | termino
           ;
 
