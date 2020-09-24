@@ -54,6 +54,10 @@ public class Helper {
 
 	}
 	
+	public void check_as15() {
+		StringBuilder lexema = new StringBuilder();
+	}
+	
 	public void prueba_al() {
 		ArrayList<Integer> tokens = new ArrayList<>();
 		while(al.getFilaActual() < al.getLineasTotales()-1) {

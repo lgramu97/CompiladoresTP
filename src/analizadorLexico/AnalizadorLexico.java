@@ -19,6 +19,8 @@ import accionesSemanticas.AccionSemanticaNro10;
 import accionesSemanticas.AccionSemanticaNro11;
 import accionesSemanticas.AccionSemanticaNro12;
 import accionesSemanticas.AccionSemanticaNro13;
+import accionesSemanticas.AccionSemanticaNro14;
+import accionesSemanticas.AccionSemanticaNro15;
 import accionesSemanticas.AccionSemanticaNro2;
 import accionesSemanticas.AccionSemanticaNro3;
 import accionesSemanticas.AccionSemanticaNro4;
@@ -68,6 +70,7 @@ public class AnalizadorLexico {
             initializeTokens();
             mapColumnToChar();
             fila_leida = 0;
+            columna = 0;
             tabla_simbolos = new HashMap<>();
             initializeMatrizTransicionEstados();
             initializeMatrizAccionesSemanticas();
@@ -116,6 +119,9 @@ public class AnalizadorLexico {
         AccionSemantica as11 = new AccionSemanticaNro11();
         AccionSemantica as12 = new AccionSemanticaNro12();
         AccionSemantica as13 = new AccionSemanticaNro13();
+        AccionSemantica as14 = new AccionSemanticaNro14();
+        AccionSemantica as15 = new AccionSemanticaNro15();
+
         acciones_semanticas = new AccionSemantica[][] {
         	{as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, null, as2, as12, as2, as6, null, as2, as13},
 			{as1, as3, as3, as3, as3, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1}, 
@@ -123,10 +129,10 @@ public class AnalizadorLexico {
 			{as4, as4, as3, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
 			{as4, as4, as4, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
 			{as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, null, as9, as9, as9, as9, as9, as9, as9},
-			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, as6, null,null/*Vacio*/ , as13},
-			{as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as10, as3, as3, as9, as3, null/*Vacio*/, as3},
-			{as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as12, as3, as3, as11, as3,null/*Vacio*/ , as3},
-			{as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as10, as3, as3, as9, as3,null/*Vacio*/ , as3},
+			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, as6, null,as14, as13},
+			{as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as10, as3, as3, as9, as3, as15, as3},
+			{as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as12, as3, as3, as11, as3,as15, as3},
+			{as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as10, as3, as3, as9, as3,as15, as3},
 			{as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as3, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8},
 			{as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
 			{as9, as9, as9, as5, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
@@ -323,6 +329,9 @@ public class AnalizadorLexico {
 		}
 		return datos.toString();	
 	}
+	public boolean fin_archivo() {
+		return (this.lineas.size() == (this.fila_leida+1) && this.lineas.get(fila_leida).length() == this.columna+1);
+	}
 	
 	public void setTablaSimbolos(HashMap<String, HashMap<String, Object>> ts) {
 		//Usado para test.
@@ -352,8 +361,10 @@ public class AnalizadorLexico {
             char proximo_char = 'z';
             System.out.println("Linnea : " + fila_leida + " de " + lineas.size());
             if (columna == lineas.get(fila_leida).length()) {
+            	System.out.println("Col " + columna + " de " + lineas.get(fila_leida).length());
                 proximo_char = '\n';
             } else {
+            	System.out.println("Col " + columna + " de " + lineas.get(fila_leida).length());
                 proximo_char = lineas.get(fila_leida).charAt(columna);
             }
             columna++;
