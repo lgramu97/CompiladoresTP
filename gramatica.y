@@ -1,8 +1,8 @@
 // {%
-
+//
 // %}
 
-%token IF THEN END_IF OUT FUNC RETURN ELSE LONGINT FLOAT WHILE LOOP PROC NI ID REF DISTINTO IGUAL MAYOR_IGUAL MENOR_IGUAL CTE CADENA error
+%token IF THEN END_IF OUT FUNC RETURN ELSE LONGINT FLOAT WHILE LOOP PROC NI ID REF DISTINTO IGUAL MAYOR_IGUAL MENOR_IGUAL CTE CADENA ERROR
 
 %%
 
@@ -63,9 +63,11 @@ sentencia_declaracion_datos : tipo lista_variables ';'
                             ;
 
 invocacion_procedimiento : ID '(' lista_parametros_invocacion ')' ';'
+			 | ID '(' ')' ';'
                          ;
 
 sentencia_declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion ')' NI '=' cte '{' cuerpo_procedimiento '}' ';'
+				    | PROC ID '(' ')' NI '=' cte '{' cuerpo_procedimiento '}' ';'
                           ;
 
 cuerpo_procedimiento : sentencias_declarativas
@@ -74,14 +76,12 @@ cuerpo_procedimiento : sentencias_declarativas
                      | sentencias_ejecutables cuerpo_procedimiento
                      ;
 
-lista_parametros_invocacion: /* Esta vacio o lambda */
-			   | parametro_invocacion
+lista_parametros_invocacion: parametro_invocacion
                            | parametro_invocacion ',' parametro_invocacion
                            | parametro_invocacion ',' parametro_invocacion ',' parametro_invocacion
                            ;
 
-lista_parametros_declaracion : /* Esta vacio o lambda*/
-			 | parametro_declaracion
+lista_parametros_declaracion : parametro_declaracion
 			 | parametro_declaracion ',' parametro_declaracion
 			 | parametro_declaracion ',' parametro_declaracion ',' parametro_declaracion
 			 ;
@@ -114,7 +114,7 @@ factor : ID
 
 cte : CTE 
     | '-' CTE /* TODO: accion chequear rango. */
-
+    ;
 %%
 
 // codigo
