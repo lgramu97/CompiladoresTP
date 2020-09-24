@@ -82,26 +82,26 @@ public class AnalizadorLexico {
 
     private void initializeMatrizTransicionEstados() {
         transicion_estados = new int[][] {
-		{16, 1, 1, 1, 2, F, F, F, F, F, F, 19, F, 10, 14, 13, 5, 7, -1, 11, 0, 0, F, -1},
-		{F, 1, 1, 1, 1, F, F, F, F, F, F, F, F, F, F, F, F, F, 1, F, F, F, -1, -1},
-		{-1, -1, -1, -1, 2, -1, -1, -1, -1, -1, -1, 3, -1, -1, -1, -1, -1, -1, 12, -1, -1, -1, -1, -1},
-		{F, F, 15, F, 3, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
-		{F, F, F, F, 4, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
-		{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6, -1, -1, -1, -1, -1, -1, -1},
-		{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 0, 6, -1, -1},
-		{7, 7, 7, 7, 7, 8, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, F, 7, 7, -1, 7, -1, -1},
-		{7, 7, 7, 7, 7, 8, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 9, 7, -1, -1},
-		{7, 7, 7, 7, 7, 8, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, F, 7, 7, -1, 7, -1, -1},
-		{F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
-		{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, F, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-		{-1, -1, -1, F, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-		{F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
-		{F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
-		{-1, -1, -1, -1, -1, 17, 17, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-		{16, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, 16, F, F, F, -1, -1},
-		{-1, -1, -1, -1, 4, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
-		{F, F, 15, F, 18, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -1, -1},
-		{-1, -1, -1, -1, 18, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}
+            {16, 1, 1, 1, 2, F, F, F, F, F, 19, F, 10, 14, 13, 5, 7, -F, 11, 0, 0, F, -F},
+            {F, 1, 1, 1, 1, F, F, F, F, F, F, F, F, F, F, F, F, 1, F, F, F, -F, -F},
+            {-F, -F, -F, -F, 2, -F, -F, -F, -F, -F, 3, -F, -F, -F, -F, -F, -F, 12, -F, -F, -F, -F, -F},
+            {F, F, 15, F, 3, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -F, -F},
+            {F, F, F, F, 4, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -F, -F},
+            {-F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, 6, -F, -F, -F, -F, -F, -F, -F},
+            {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 0, 6, -F, -F},
+            {7, 7, 7, 7, 7, 8, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, F, 7, 7, -F, 7, -F, -F},
+            {7, 7, 7, 7, 7, 8, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 9, 7, -F, -F},
+            {7, 7, 7, 7, 7, 8, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, F, 7, 7, -F, 7, -F, -F},
+            {F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -F, -F},
+            {-F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F},
+            {-F, -F, -F, F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F},
+            {F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -F, -F},
+            {F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -F, -F},
+            {-F, -F, -F, -F, -F, 17, 17, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F},
+            {16, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, 16, F, F, F, -F, -F},
+            {-F, -F, -F, -F, 4, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F},
+            {F, F, 15, F, 18, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, F, -F, -F},
+            {-F, -F, -F, -F, 18, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F, -F}
         };
     }
 
@@ -123,26 +123,26 @@ public class AnalizadorLexico {
         AccionSemantica as15 = new AccionSemanticaNro15();
 
         acciones_semanticas = new AccionSemantica[][] {
-        	{as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, null, as2, as12, as2, as6, null, as2, as13},
-			{as1, as3, as3, as3, as3, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1}, 
-			{as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as3, as9, as9, as9, as9, as9},
-			{as4, as4, as3, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
-			{as4, as4, as4, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
-			{as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, null, as9, as9, as9, as9, as9, as9, as9},
-			{null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, as6, null,as14, as13},
-			{as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as10, as3, as3, as9, as3, as15, as3},
-			{as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as12, as3, as3, as11, as3,as15, as3},
-			{as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as10, as3, as3, as9, as3,as15, as3},
-			{as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as3, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8},
-			{as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
-			{as9, as9, as9, as5, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
-			{as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as3, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8},
-			{as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as3, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8},
-			{as9, as9, as9, as9, as9, as3, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
-			{as3, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as3, as7, as7, as7, as7, as7},
-			{as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
-			{as4, as4, as3, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
-			{as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9}  
+                {as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, as2, null, as2, as12, as2, as6, null, as2, as13},
+                {as1, as3, as3, as3, as3, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1, as1 },
+                {as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as3, as9, as9, as9, as9, as9},
+                {as4, as4, as3, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
+                {as4, as4, as4, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
+                {as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, null, as9, as9, as9, as9, as9, as9, as9},
+                {null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, as6, null, as14, as13},
+                {as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as10, as3, as3, as9, as3, as15, as3},
+                {as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as12, as3, as3, as11, as3, as15, as3},
+                {as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as3, as10, as3, as3, as9, as3, as15, as3},
+                {as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as3, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8},
+                {as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
+                {as9, as9, as9, as5, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
+                {as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as3, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8},
+                {as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8, as3, as8, as8, as8, as8, as8, as8, as8, as8, as8, as8},
+                {as9, as9, as9, as9, as9, as3, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
+                {as3, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as7, as3, as7, as7, as7, as7, as7},
+                {as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9},
+                {as4, as4, as3, as4, as3, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4, as4},
+                {as9, as9, as9, as9, as3, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9, as9}
         };
     }
 
@@ -182,26 +182,26 @@ public class AnalizadorLexico {
         columnas.put('-', 5);
         columnas.put('+', 6);
         columnas.put('*', 7);
-        columnas.put('/', 8);
-        columnas.put('(', 9);
-        columnas.put(')', 9);
-        columnas.put('{', 10);
-        columnas.put('}', 10);
-        columnas.put('.', 11);
-        columnas.put(',', 12);
-        columnas.put(';', 12);
-        columnas.put(':',12);
-        columnas.put('=', 13);
-        columnas.put('<', 14);
-        columnas.put('>', 15);
-        columnas.put('%', 16);
-        columnas.put('"', 17);
-        columnas.put('_', 18);
-        columnas.put('!', 19);
-        columnas.put('\n', 20);
-        columnas.put('\t', 21);
-        columnas.put(' ', 21);
-        columnas.put('$', 22);
+        columnas.put('/', 7);
+        columnas.put('(', 8);
+        columnas.put(')', 8);
+        columnas.put('{', 9);
+        columnas.put('}', 9);
+        columnas.put('.', 10);
+        columnas.put(',', 11);
+        columnas.put(';', 11);
+        columnas.put(':',11);
+        columnas.put('=', 12);
+        columnas.put('<', 13);
+        columnas.put('>', 14);
+        columnas.put('%', 15);
+        columnas.put('"', 16);
+        columnas.put('_', 17);
+        columnas.put('!', 18);
+        columnas.put('\n', 19);
+        columnas.put('\t', 20);
+        columnas.put(' ', 20);
+        columnas.put('$', 21);
     }
 
     private void initializeTokens() {
@@ -359,18 +359,17 @@ public class AnalizadorLexico {
         String tipo = null;
         while (ultimo_estado != F && ultimo_estado != -1) {
             char proximo_char = 'z';
-            System.out.println("Linnea : " + fila_leida + " de " + lineas.size());
+//            System.out.println("Linnea : " + fila_leida + " de " + lineas.size());
+            System.out.println("Col " + columna + " de " + lineas.get(fila_leida).length());
             if (columna == lineas.get(fila_leida).length()) {
-            	System.out.println("Col " + columna + " de " + lineas.get(fila_leida).length());
                 proximo_char = '\n';
             } else {
-            	System.out.println("Col " + columna + " de " + lineas.get(fila_leida).length());
                 proximo_char = lineas.get(fila_leida).charAt(columna);
             }
             columna++;
             int columna_caracter = 0;
             columna_caracter = columnas.getOrDefault(proximo_char, 23);
-            System.out.println("Proximo char: " + proximo_char + "  " + "Columna Caracter: " + columna_caracter +
+            System.out.println("Proximo char: " + (proximo_char == '\n' ? "SALTO_LINEA" : proximo_char == ' ' ? "BLANCO" : proximo_char) + "  " + "Columna Caracter: " + columna_caracter +
             		"   " + "Accion semantica: " + ultimo_estado + " , " + columna_caracter);
             if (acciones_semanticas[ultimo_estado][columna_caracter] != null) {
                 tipo = acciones_semanticas[ultimo_estado][columna_caracter].ejecutar(proximo_char,this);
