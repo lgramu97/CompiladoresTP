@@ -16,8 +16,16 @@ conjunto_sentencias : sentencias_declarativas
                     | conjunto_sentencias sentencias_declarativas
                     | conjunto_sentencias sentencias_ejecutables
                     ;
-                
-clausula_while : WHILE '(' condidion ')' LOOP bloque_sentencias_control
+
+condicion : expresion IGUAL expresion
+          | expresion MAYOR_IGUAL expresion
+          | expresion MENOR_IGUAL expresion
+          | expresion DISTINTO expresion
+          | expresion '>' expresion
+          | expresion '<' expresion
+          ;
+
+clausula_while : WHILE '(' condicion ')' LOOP bloque_sentencias_control
                ;
 
 clausula_seleccion : IF '(' condicion ')' bloque_sentencias_control END_IF ';'
@@ -25,11 +33,11 @@ clausula_seleccion : IF '(' condicion ')' bloque_sentencias_control END_IF ';'
                    ;
 
 bloque_sentencias_control : '{' sentencias_ejecutables '}' ';'
-                          | bloque_sentencias_control  '{' sentencias_ejecutables '}' ';'
+                          | '{' bloque_sentencias_control sentencias_ejecutables '}' ';'
                           ;
 
 sentencias_declarativas : sentencia_declaracion_datos
-                        | declaracion_procedimiento
+                        | sentencia_declaracion_procedimiento
                         ;
 
 sentencias_ejecutables : asignacion
@@ -43,13 +51,21 @@ sentencias_ejecutables : asignacion
 sentencia_salida : OUT '(' CADENA ')' ';'
                  ;
 
+lista_variables: ID
+               | ID ',' lista_variables
+               ;
+
+tipo : LONGINT
+     | FLOAT
+     ;
+
 sentencia_declaracion_datos : tipo lista_variables ';'
                             ;
 
 invocacion_procedimiento : ID '(' lista_parametros_invocacion ')' ';'
                          ;
 
-declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion ')' NI '=' cte '{' cuerpo_procedimiento '}' ';'
+sentencia_declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion ')' NI '=' cte '{' cuerpo_procedimiento '}' ';'
                           ;
 
 cuerpo_procedimiento : sentencias_declarativas
@@ -58,19 +74,17 @@ cuerpo_procedimiento : sentencias_declarativas
                      | sentencias_ejecutables cuerpo_procedimiento
                      ;
 
-tipo : LONGINT
-     | FLOAT
-     ;
-
-lista_parametros_invocacion: parametro_invocacion
-                           | parametro_invocacion ',' lista_parametros_invocacion
+lista_parametros_invocacion: /* Esta vacio o lambda */
+			   | parametro_invocacion
+                           | parametro_invocacion ',' parametro_invocacion
+                           | parametro_invocacion ',' parametro_invocacion ',' parametro_invocacion
                            ;
 
-lista_parametros_declaracion : /* Esta vacio */
-                 | parametro_declaracion
-                 | parametro_declaracion ',' parametro_declaracion
-                 | parametro_declaracion ',' parametro_declaracion ',' parametro_declaracion
-                 ;
+lista_parametros_declaracion : /* Esta vacio o lambda*/
+			 | parametro_declaracion
+			 | parametro_declaracion ',' parametro_declaracion
+			 | parametro_declaracion ',' parametro_declaracion ',' parametro_declaracion
+			 ;
 
 parametro_declaracion: tipo ID
          | REF tipo ID
@@ -78,18 +92,6 @@ parametro_declaracion: tipo ID
 
 parametro_invocacion : ID ':' ID
                      ;
-
-lista_variables: ID
-               | ID ',' lista_variables
-               ;
-
-condicion : expresion IGUAL expresion
-          | expresion MAYOR_IGUAL expresion
-          | expresion MENOR_IGUAL expresion
-          | expresion DISTINTO expresion
-          | expresion '>' expresion
-          | expresion '<' expresion
-          ;
 
 asignacion : ID '=' expresion ';'
            | error ';' {print("Error de asignación!");}
