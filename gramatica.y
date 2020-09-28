@@ -13,8 +13,8 @@ programa : conjunto_sentencias
 
 conjunto_sentencias : sentencias_declarativas
                     | sentencias_ejecutables
-                    | conjunto_sentencias sentencias_declarativas
-                    | conjunto_sentencias sentencias_ejecutables
+                    | sentencias_declarativas conjunto_sentencias 
+                    | sentencias_ejecutables conjunto_sentencias 
                     ;
 
 condicion : expresion IGUAL expresion
@@ -94,7 +94,8 @@ parametro_invocacion : ID ':' ID
                      ;
 
 asignacion : ID '=' expresion ';'
-           | error ';' {print("Error de asignación!");}
+           | ID '=' error ';' {print("Error de asignación a la derecha!");}
+           | error '=' expresion ';' {print("Error de asignación a la izquierda!");}
            ;
 
 expresion : expresion '+' termino ';'

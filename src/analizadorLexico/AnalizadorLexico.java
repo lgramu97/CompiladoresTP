@@ -207,23 +207,22 @@ public class AnalizadorLexico {
     private void initializeTokens() {
         // Inicializar tokens
         tokens = new HashMap<>();
-        tokens.put("\"", 34);
         tokens.put("$", 36);
-        tokens.put("%", 37);
+        tokens.put("%", 37); // creo que no va como token, se usan en los comentarios o cadenas pero no es necesario informarlo.
         tokens.put("(", 40);
         tokens.put(")", 41);
         tokens.put("*", 42);
         tokens.put("+", 43);
         tokens.put(",", 44);
         tokens.put("-", 45);
-        tokens.put(".", 46);
+        tokens.put(".", 46);//creo q no va como token, se usa en float pero el token en si es la CTE.
         tokens.put("/", 47);
         tokens.put(":", 58);
         tokens.put(";", 59);
         tokens.put("<", 60);
         tokens.put("=", 61);
         tokens.put(">", 62);
-        tokens.put("_", 95);
+        tokens.put("_", 95);//creo q no va como token, se usa en longint pero el token en si es la CTE.
         tokens.put("!=", 101);
         tokens.put(">=", 102);
         tokens.put("<=", 103);
@@ -279,11 +278,32 @@ public class AnalizadorLexico {
     	//Agregar lexema a la tabla de simbolos.
     	if(!tabla_simbolos.containsKey(lexema.toString())){
     		tabla_simbolos.put(lexema.toString(), new HashMap<String, Object>());
+    		tabla_simbolos.get(lexema.toString()).put("Cantidad", 1);
     	}else {
-    		//nada
+    		//aumento en 1 la cantidad de veces que aparecio el lexema (para el caso de negativos).
+    		tabla_simbolos.get(lexema.toString()).put("Cantidad",((Integer)tabla_simbolos.get(lexema.toString()).get("Cantidad"))+1);
     	}
     }
-
+    
+    public void updateTablaSimbolos(String lexema) {
+    	//Utilizado en el Parser, cuando se lea una constante negativa.
+    	String lexema_negativo = "-"+lexema;
+    	if (!tabla_simbolos.containsKey(lexema_negativo)) {
+    		//Si no esta el lexema negativo en la tabla de simbolos, agregarlo.
+    		tabla_simbolos.put(lexema_negativo, new HashMap<String, Object>());
+    		tabla_simbolos.get(lexema_negativo).put("Cantidad", 1);
+    		tabla_simbolos.get(lexema_negativo).put("Tipo",tabla_simbolos.get(lexema).get("Tipo"));
+    	}else {
+    		//Si esta en la tabla de simbolos, agregar +1;
+    		tabla_simbolos.get(lexema_negativo).put("Cantidad",(Integer)tabla_simbolos.get(lexema_negativo).get("Cantidad")+1);
+    	}
+    	// Por cualquiera de los 2 casos, debo restar en 1 la cantidad a +lexema;
+    	// Si la cantidad al restarle 1 es 0, eliminarlo, nunca debio existir en la TS.
+    	tabla_simbolos.get(lexema).put("Cantidad", (Integer) tabla_simbolos.get(lexema).get("Cantidad")-1); 
+    	if ((Integer) tabla_simbolos.get(lexema).get("Cantidad") == 0)
+    		tabla_simbolos.remove(lexema);
+    }
+	
     public void addTipo(String tipo, Object obj) {
         tabla_simbolos.get(lexema.toString()).put(tipo, obj);
     }
@@ -357,10 +377,12 @@ public class AnalizadorLexico {
 		//Retorna codigo de token para el parser yacc.
         ultimo_estado = 0;
         String tipo = null;
-        while (ultimo_estado != F && ultimo_estado != -1) {
+        while (ultimo_estado != F && ultimo_estado != -F) {
             char proximo_char = 'z';
-//            System.out.println("Linnea : " + fila_leida + " de " + lineas.size());
-            System.out.println("Col " + columna + " de " + lineas.get(fila_leida).length());
+            //System.out.println("Linnea : " + fila_leida + " de " + lineas.size());
+            //System.out.println("Col " + columna + " de " + lineas.get(fila_leida).length());
+            if (fila_leida == this.getLineasTotales()) // usado para test.
+            	return -1;
             if (columna == lineas.get(fila_leida).length()) {
                 proximo_char = '\n';
             } else {
@@ -368,7 +390,7 @@ public class AnalizadorLexico {
             }
             columna++;
             int columna_caracter = 0;
-            columna_caracter = columnas.getOrDefault(proximo_char, 23);
+            columna_caracter = columnas.getOrDefault(proximo_char, 22);
             System.out.println("Proximo char: " + (proximo_char == '\n' ? "SALTO_LINEA" : proximo_char == ' ' ? "BLANCO" : proximo_char) + "  " + "Columna Caracter: " + columna_caracter +
             		"   " + "Accion semantica: " + ultimo_estado + " , " + columna_caracter);
             if (acciones_semanticas[ultimo_estado][columna_caracter] != null) {
@@ -382,28 +404,18 @@ public class AnalizadorLexico {
         return tokens.get(tipo);
 	}
 	
-	public boolean check_rango(String lexema) {
-			float f ;
-			if ( lexema.contains("f")) {
-				String[] values = lexema.split("f");
-				String value = values[0];
-				String exponente = values[1];
-				f = Float.parseFloat(value+"f");
-
-			}else {
-				f = Float.parseFloat(lexema);
-			}		
-			BigDecimal lexBig = new BigDecimal(f);
-			float valorfinal = 3.40282347f;
-			float valorbase = 1.17549435f;
-			int exp = 38;
-			int i0 = lexBig.compareTo(BigDecimal.valueOf(Math.pow(-valorfinal,+exp)));
-			int i1 = lexBig.compareTo(BigDecimal.valueOf(Math.pow(-valorbase,-exp)));
-			int i2 = lexBig.compareTo(BigDecimal.valueOf(0.0f));
-			int i3 = lexBig.compareTo(BigDecimal.valueOf(Math.pow(valorbase,-exp)));
-			int i4 = lexBig.compareTo(BigDecimal.valueOf(Math.pow(valorfinal,+exp)));
-			return ((i3 > 0 && i4<0) || (i0> 0 && i1 < 0) || i2==0);
+	public boolean check_rango_longint(String lexema) {
+		// Chequeo rango longint positivo < 2147483647.
+		if(tabla_simbolos.get(lexema).get("Tipo") == "LONGINT") {
+			BigDecimal lexBig = new BigDecimal(lexema.toString());
+			Double db = Math.pow(2, 31)-1;
+			int i0 = lexBig.compareTo(BigDecimal.valueOf(db));
+			if (i0 <= 0) {
+				return true;
+			}
 		}
+		return false;
+	}
 
 	
 	public static void main(String[] args) {

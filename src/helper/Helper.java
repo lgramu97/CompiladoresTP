@@ -17,19 +17,23 @@ public class Helper {
 		al = new AnalizadorLexico();
 	}
 	
-	public void imprimir_tabla_simbolos() {
+	public void set_tabla_simbolos() {
 		 HashMap<String, HashMap<String, Object>> ts = new  HashMap<String, HashMap<String, Object>>();
 		 HashMap<String,Object> att = new HashMap<String, Object>();
-		 att.put("Tipo","Integer");
-		 att.put("Contador",2);
+		 att.put("Tipo","LONGINT");
+		 att.put("Cantidad",2);
 		 att.put("Algo mas?",false);
-		 ts.put("123",new HashMap<String,Object>(att));
-		 ts.put("-123",new HashMap<String,Object>(att));
+		 ts.put("2147483647",new HashMap<String,Object>(att));
+		 ts.put("2147483648",new HashMap<String,Object>(att));
 		 att.remove("Tipo");
 		 att.put("Tipo","Float");
 		 ts.put("12.f+5", new HashMap<String,Object>(att));
 		 this.al.setTablaSimbolos(ts);
-		 System.out.println(this.al.getDatosTabla_simbolos());
+	}
+	
+	public void imprimir_tabla_simbolos() {
+		this.set_tabla_simbolos();
+		System.out.println(this.al.getDatosTabla_simbolos());
 	}
 	
 	public void check_as5() {
@@ -60,17 +64,25 @@ public class Helper {
 	
 	public void prueba_al() {
 		ArrayList<Integer> tokens = new ArrayList<>();
-		while(al.getFilaActual() < al.getLineasTotales()-1) {
+		while(al.getFilaActual() < al.getLineasTotales()) {
 			int token = al.yylex();
 			tokens.add(token);
 			System.out.println("Token nro:   " +  token);			
 		}
-		System.out.println(al.getDatosTabla_simbolos());
-		System.out.println();
-		System.out.println();
+
 		for(int i = 0; i< tokens.size();i++) {
 			System.out.print(tokens.get(i) + "  ");
 		}
+		System.out.println(al.getErrores());
+	}
+	
+	public void check_longint_rango(String lexema) {
+		this.set_tabla_simbolos();
+		if (al.check_rango_longint(lexema)) {
+			System.out.println("LONGINT dentro de rango");
+		}else
+			System.out.println("LONGINT fuera de rango");
+
 	}
 	
 	public static void main(String[] args) {
@@ -79,5 +91,8 @@ public class Helper {
 		//h.check_as5();
 		//h.check_as4();
 		h.prueba_al();
+		//h.check_longint_rango("2147483647");
+		//h.check_longint_rango("2147483648");
+
 	}
 }

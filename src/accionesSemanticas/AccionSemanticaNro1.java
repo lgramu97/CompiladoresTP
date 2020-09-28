@@ -18,6 +18,7 @@ public class AccionSemanticaNro1 extends AccionSemantica{
 		}
 		if (!al.getTabla_simbolos().containsKey(lexema)) {
 			al.appendLexema();
+			al.addTipo("Tipo","ID");
 		}
 		return "ID";
 	}
