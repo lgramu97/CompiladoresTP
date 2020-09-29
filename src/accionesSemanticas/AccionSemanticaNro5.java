@@ -18,6 +18,7 @@ public class AccionSemanticaNro5 extends AccionSemantica{
 			return "CTE";
 		}
 		al.putError("Long Int fuera de rango.");
+		al.inicializarBuffer();
 		return "ERROR";
 	}
 

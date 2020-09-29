@@ -1,0 +1,11 @@
+%% Cadenas mal definidas. Resultado: primer cometario (2 errores linea 2 por faltar el -, linea 3 por token invalido ")
+"esto esta mal
+"
+%% Resultado: linea 5 mal definido comentario (falta -). linea 6 identifica 2 token id, 1 token "-". linea 7 token id, token error "
+"siempre tiene que
+estar el-
+guion"
+%% Resultado: linea 10 token error. El lexico espera un caracter distinto de - antes del "
+"-aca-
+tambien mal-"
+

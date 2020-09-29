@@ -20,6 +20,7 @@ public class AccionSemanticaNro1 extends AccionSemantica{
 			al.appendLexema();
 			al.addTipo("Tipo","ID");
 		}
+		al.inicializarBuffer();
 		return "ID";
 	}
 

@@ -74,6 +74,7 @@ public class Helper {
 			System.out.print(tokens.get(i) + "  ");
 		}
 		System.out.println(al.getErrores());
+		System.out.println(al.getDatosTabla_simbolos());
 	}
 	
 	public void check_longint_rango(String lexema) {
