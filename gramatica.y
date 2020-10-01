@@ -20,7 +20,7 @@ conjunto_sentencias : sentencias_declarativas
                     | sentencias_ejecutables conjunto_sentencias 
                     ;
 
-condicion : expresion IGUAL expresion
+condicion : expresion IGUAL expresion {System.out.println("SI ES ACA");}
           | expresion MAYOR_IGUAL expresion
           | expresion MENOR_IGUAL expresion
           | expresion DISTINTO expresion
@@ -40,18 +40,17 @@ clausula_while : WHILE '(' condicion ')' LOOP '{' bloque_sentencias_control '}''
 clausula_seleccion : IF '(' condicion ')' '{' bloque_sentencias_control '}' END_IF ';' {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF sin ELSE");}
                    | IF '(' condicion ')''{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF con bloque ELSE.");}
                    | IF '(' error ')' '{' bloque_sentencias_control '}' END_IF ';'{addErrorSintactico("Error en la condicion del IF.");}
-                   | IF '(' error '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: falta el )");}
-                   | IF error ')' '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: falta el (");}
+                   | IF '(' condicion error  '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: falta el )");}
+                   | IF  error condicion ')' '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: falta el (");}
                    | IF '(' condicion ')' '{' bloque_sentencias_control '}' error  ';' {addErrorSintactico("Error en la definicion del IF: falta el END_IF");}
                    | IF '(' '(' condicion ')' '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: hay un ( de mas del lado izquierdo");}
                    | IF '(' condicion ')' ')' '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: hay un ) de mas del lado derecho");}
-                   | IF '(' error ')'  '{' bloque_sentencias_control ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la condicion del IF ELSE.");}
-                   | IF '(' error '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el )");}
-                   | IF error ')' '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el (");}
+                   | IF '(' error ')'  '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la condicion del IF ELSE.");}
+                   | IF '(' condicion error '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el )");}
+                   | IF error condicion ')' '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el (");}
                    | IF '(' condicion ')' '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' error ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el END_IF");}
                    | IF '(' '(' condicion ')''{'  bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: hay un ( de mas del lado izquierdo");}
                    | IF '(' condicion ')' ')' '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: hay un ) de mas del lado derecho");}
-                   | IF '(' condicion ')' '{' error '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la declaracion del bloque de sentencias.");}                   
                    ;
 
 bloque_sentencias_control :  sentencias_ejecutables 

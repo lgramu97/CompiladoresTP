@@ -418,7 +418,7 @@ public class AnalizadorLexico {
 				return true;
 			}
 		}
-		return false;
+		return true;
 	}
 	
 	public ParserVal yylval() {

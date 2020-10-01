@@ -12,4 +12,91 @@ WHILE (a<b) LOOP{
 	};
 };
 
-%%
+%% IF con ELSE y otro if dentro del ELSE, con llamada a procedimiento en cada una.
+
+IF (a==b) {
+	print(x:f);
+} ELSE {
+	print(x:s);
+	IF (a>b){
+		print(as:fas);
+	} END_IF;
+} END_IF;
+
+
+
+%%Prueba estructura WHILE con asginacion.
+WHILE (a>b) LOOP {
+	x = 3_l;
+};
+%%Salida: Linea numero: 2 --Sentencia asignacion variable., Linea numero: 3 --Sentencia WHILE LOOP., Linea numero: 5 --Fin de programa.
+
+
+%%Prueba estructura WHILE con IF.
+WHILE (a>b) LOOP {
+	IF (a==b){
+		print(s:f);
+	} END_IF;
+};
+%%Salida: Linea numero: 4 --Invocacion a procedimiento con parametros., Linea numero: 5 --Sentencia IF sin ELSE, Linea numero: 6 --Sentencia WHILE LOOP., Linea numero: 7 --Fin de programa.]
+
+
+%%Prueba estructura WHILE con IF ELSE.
+WHILE (a>b) LOOP {
+	IF (a==b){
+		print(s:f);
+	} ELSE {
+		hola = 3.;
+	} END_IF;
+};
+%%Salida: Linea numero: 4 --Invocacion a procedimiento con parametros., Linea numero: 6 --Sentencia asignacion variable., Linea numero: 7 --Sentencia IF con bloque ELSE., Linea numero: 8 --Sentencia WHILE LOOP., Linea numero: 9 --Fin de programa.
+
+
+
+%% Prueba estructura IF con invocacion a procedimiento.
+IF (a==b){
+	print(s:f);
+} END_IF;
+%%Salida: Linea numero: 2 --Invocacion a procedimiento con parametros., Linea numero: 3 --Sentencia IF sin ELSE, Linea numero: 4 --Fin de programa.
+
+
+%% Prueba estructura IF con ELSE con invocacion a procedimiento.
+IF (a==b){
+	print(s:f);
+} ELSE {
+	print(s:g);
+} END_IF;
+%%Salida: Linea numero: 2 --Invocacion a procedimiento con parametros., Linea numero: 4 --Invocacion a procedimiento con parametros., Linea numero: 5 --Sentencia IF con bloque ELSE., Linea numero: 6 --Fin de programa.
+
+
+%% Prueba estructura IF con error en la condicion y invocacion a procedimiento
+IF (a=b) {
+	print(f:s);
+}END_IF;
+%%Salida: Linea numero: 2 --Invocacion a procedimiento con parametros., Linea numero: 4 --Fin de programa.
+%%Errores: Numero de linea: 3  Error en la condicion del IF.
+
+%% Prueba estructura IF con error en la condicion y invocacion a procedimiento
+IF () {
+	print(f:s);
+}END_IF;
+%%Salida: Linea numero: 2 --Invocacion a procedimiento con parametros., Linea numero: 4 --Fin de programa.
+%%Errores: Numero de linea: 3  Error en la condicion del IF.
+
+%% Prueba estructura IF en la definicion del IF, falta cerrar el parentesis
+IF (a==b {
+	print(s:f);
+} END_IF;
+
+
+%% 4 y 5 
+
+
+%% Prueba estructura IF falta el END_IF, con invocacion a procedimiento
+IF (a==b){
+	print(s:g);
+};
+%%Salida: Linea numero: 2 --Invocacion a procedimiento con parametros., Linea numero: 4 --Fin de programa.
+%%Errores: Numero de linea: 3  Error en la definicion del IF: falta el END_IF
+
+%% Prueba 

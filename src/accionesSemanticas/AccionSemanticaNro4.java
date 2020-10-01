@@ -79,7 +79,7 @@ public class AccionSemanticaNro4 extends AccionSemantica{
 			System.out.println("CONDICION: i3 " + (i3>0));			
 			System.out.println("CONDICION: i4 " + (i4<0));
 			al.appendLexema();
-			al.addTipo("Tipo", "Float");
+			al.addTipo("Tipo", "FLOAT");
 			return "CTE";
 		}else {
 			al.putError("Float fuera de rango!.");
