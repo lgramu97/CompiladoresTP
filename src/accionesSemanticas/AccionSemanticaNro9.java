@@ -1,6 +1,6 @@
 package accionesSemanticas;
 
-import analizadorLexico.AnalizadorLexico;
+import componentes.AnalizadorLexico;
 
 public class AccionSemanticaNro9 extends AccionSemantica{
 
@@ -8,6 +8,7 @@ public class AccionSemanticaNro9 extends AccionSemantica{
 	public String ejecutar(char c, AnalizadorLexico al) {
 		al.charAnterior();
 		al.putError("Error: token invalido!");
+		al.inicializarBuffer();
 		return "ERROR";
 	}
 

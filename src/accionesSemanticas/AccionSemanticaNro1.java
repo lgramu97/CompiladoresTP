@@ -1,6 +1,6 @@
 package accionesSemanticas;
 
-import analizadorLexico.AnalizadorLexico;
+import componentes.AnalizadorLexico;
 
 public class AccionSemanticaNro1 extends AccionSemantica{
 
@@ -18,7 +18,9 @@ public class AccionSemanticaNro1 extends AccionSemantica{
 		}
 		if (!al.getTabla_simbolos().containsKey(lexema)) {
 			al.appendLexema();
+			al.addTipo("Tipo","ID");
 		}
+		al.inicializarBuffer();
 		return "ID";
 	}
 

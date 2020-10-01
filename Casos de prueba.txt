@@ -1,0 +1,89 @@
+%% Constantes con el primer y ultimo valor dentro de rango Longint. Resultado: 2tokens CTE, 1 token "-".
+-2147483648_l 2147483647_l 
+
+%% Constantes con el primer y ultimo valor fuera de rango Longint. Acepta el mayor porque no sabe el lexico si es positivo o negativo.
+%% Resultado: 1 token ERROR, 1 token "-", 1 token CTE.
+-2147483649_l 2147483648_l
+
+%% Limites de constantes Float dentro de rango. Resultado: 5 tokens CTE, 2 tokens "-"
+1.17549436f-38 3.40282346f+38 %%Siguiente dentro de los limites
+-3.40282346f+38 -1.17549436f-38 %%Siguiente dentro de los limites
+0.0
+
+%% Limites de constantes Float fuera de rango. Resultado: 8 tokens ERROR, 4 tokens "-"
+1.17549435f-38 3.40282347f+38
+1.17549434f-38 3.40282348f+38 %%Uno mas y uno menos a los limites
+-3.40282347f+38 -1.17549435f-38
+-3.40282348f+38 -1.17549434f-38 %%Uno mas y uno menos a los limites
+
+%% Numeros con y sin parte decimal. Casos de prueba para float. Resultado: 8 tokens cte, 1 token "-"
+1. .6 -1.2 3.f-5 2.f+34 2.f-1 15. 0. 
+
+%% Identificador con menos de 20 caracteres, 20 caracteres y mas de 20 caracteres.
+%% Resultado: 3 tokens ID. Se agrega un warning sobre el identificador 3.
+menosdeveinte
+identificadortieneve
+identificadortieneveinte
+
+%% Identificador con letras, digitos y "_". Resultado: 6 tokens ID.
+id123_123_
+i_w12_as
+b3_3
+b3
+b_
+b
+
+%% Identificador que empiece con "_". Resultado: leo el "_" e informo token error (x8).
+%% Se elimina el "_" y se continua leyendo. Resultado: 7 token ID. 2 token error (_3). 2 token error(_34). 1 token ID (d).
+_id123_123_
+_i_w12_as
+_b3_3
+_b3
+_b_
+_b
+_3
+_34d
+
+%% Palabras reservadas escritas en minuscula y MAYUSCULA. Resultado: 4 tokens ID. 1 token por cada palabra reservada(x4).
+END_IF end_if
+FUNC func
+NI ni
+ref REF
+
+%% Comentario bien definido. Resultado: no arroja tokens.
+%% Esto es un comentario bien definido, hay varios en este txt.
+
+%% Comentario mal definido. Resultado: genera token ERROR en el primer comentario por caracter invalido "pesos" y deja de leer esa linea.
+%% Genera error en el segundo comentario por signo "porcentaje" y por identificador "Esto", quedando como id "sto". Resultado: 2 token ERROR, 6 token ID.
+%% Esto no lo acepto ya  $ que hay caracteres invalidos. $ $ $ $
+%Esto es un comentario mal definido
+
+%% Cadenas bien definidas. Resultado: 5 tokens CADENA.
+"esto es una cadena bien definida"
+"esto tambien-
+es una cadena bien definida"
+"-
+"
+"-
+-
+-
+"
+"se-
+define-
+con un--
+"
+
+%% Cadenas mal definidas. Resultado: primer cometario (2 errores linea 2 por faltar el -, linea 3 por token invalido ")
+"esto esta mal
+"
+%% Resultado: linea 5 mal definido comentario (falta -). linea 6 identifica 2 token id, 1 token "-". linea 7 token id, token error "
+"siempre tiene que
+estar el-
+guion"
+%% Resultado: linea 10 token error. El lexico espera un caracter distinto de - antes del "
+"-aca-
+tambien mal-"
+
+
+$
+
