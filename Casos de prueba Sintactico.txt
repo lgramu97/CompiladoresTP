@@ -76,6 +76,7 @@ IF (a=b) {
 %%Salida: Linea numero: 2 --Invocacion a procedimiento con parametros., Linea numero: 4 --Fin de programa.
 %%Errores: Numero de linea: 3  Error en la condicion del IF.
 
+
 %% Prueba estructura IF con error en la condicion y invocacion a procedimiento
 IF () {
 	print(f:s);
@@ -83,13 +84,20 @@ IF () {
 %%Salida: Linea numero: 2 --Invocacion a procedimiento con parametros., Linea numero: 4 --Fin de programa.
 %%Errores: Numero de linea: 3  Error en la condicion del IF.
 
+
 %% Prueba estructura IF en la definicion del IF, falta cerrar el parentesis
 IF (a==b {
 	print(s:f);
 } END_IF;
+%%Salida: [Linea numero: 3 --Invocacion a procedimiento con parametros., Linea numero: 5 --Fin de programa.]
+%%Errores: Numero de linea: 4  Error en la definicion del IF: falta el )
 
-
-%% 4 y 5 
+%% Prueba estructura IF en la definicion del IF, falta cerrar el parentesis
+IF a==b) {
+	print(a:b);
+} END_IF;
+%%Salida: Linea numero: 3 --Invocacion a procedimiento con parametros., Linea numero: 5 --Fin de programa.
+%%Errores: Numero de linea: 4  Error en la definicion del IF: falta el (
 
 
 %% Prueba estructura IF falta el END_IF, con invocacion a procedimiento
@@ -99,4 +107,20 @@ IF (a==b){
 %%Salida: Linea numero: 2 --Invocacion a procedimiento con parametros., Linea numero: 4 --Fin de programa.
 %%Errores: Numero de linea: 3  Error en la definicion del IF: falta el END_IF
 
-%% Prueba 
+%% Prueba estructura IF error en la condicion con ELSE e invocacion a procedimiento
+IF (a=b){
+	print(s:f);
+} ELSE {
+	print(s:g);
+} END_IF;
+%%Salida: Linea numero: 2 --Invocacion a procedimiento con parametros., Linea numero: 4 --Invocacion a procedimiento con parametros., Linea numero: 6 --Fin de programa.
+%%Errores: Numero de linea: 5  Error en la condicion del IF ELSE.
+
+%% Prueba estructura IF con ELSE y falta END_IF e invocacion a procedimiento
+IF (a==b){
+	print(s:f);
+} ELSE {
+	print(s:g);
+};
+%%Salida: Linea numero: 2 --Invocacion a procedimiento con parametros., Linea numero: 4 --Invocacion a procedimiento con parametros., Linea numero: 6 --Fin de programa.
+%%Errores: Numero de linea: 5  Error en la definicion del IF ELSE: falta el END_IF
