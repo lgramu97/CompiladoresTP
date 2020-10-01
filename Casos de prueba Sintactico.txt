@@ -1,9 +1,10 @@
+%%Anidamiento de estructuras. While con IF ELSE
 WHILE (a<b) LOOP{
 	hola = 3_l;
 	WHILE (b>a) LOOP{
-		eso = 4_l
+		eso = 4_l;
 		IF ( pepe >= juanita ){
-			jeje = -54_l;
+			jeje = 1_l;
 		} ELSE {
 			identificador = 0_l;			
 		} 
@@ -11,3 +12,4 @@ WHILE (a<b) LOOP{
 	};
 };
 
+%%

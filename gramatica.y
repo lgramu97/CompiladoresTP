@@ -14,8 +14,8 @@
 programa : conjunto_sentencias {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Fin de programa.");} 
          ;
 
-conjunto_sentencias : sentencias_declarativas {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencias declarativas");}
-                    | sentencias_ejecutables {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencias ejecutables.");}
+conjunto_sentencias : sentencias_declarativas 
+                    | sentencias_ejecutables
                     | sentencias_declarativas conjunto_sentencias 
                     | sentencias_ejecutables conjunto_sentencias 
                     ;
@@ -28,33 +28,34 @@ condicion : expresion IGUAL expresion
           | expresion '<' expresion
           ;
 
-clausula_while : WHILE '(' condicion ')' LOOP bloque_sentencias_control{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia WHILE LOOP.");}
-               | WHILE '(' error ')' LOOP bloque_sentencias_control{addErrorSintactico("Error en la condicion del WHILE.");}
-               | WHILE '(' error LOOP bloque_sentencias_control{addErrorSintactico("Error en la definicion del WHILE: falta el )");}
-               | WHILE error condicion ')' LOOP bloque_sentencias_control {addErrorSintactico("Error en la condicion del WHILE: falta el (.");}
-               | WHILE '(' condicion ')' error bloque_sentencias_control {addErrorSintactico("Error en la condicion del WHILE: falta LOOP luego del ).");} 
-               | WHILE '(' '(' condicion ')' LOOP bloque_sentencias_control{addErrorSintactico("Error en la condicion del WHILE: hay un ( de mas del lado izquierdo.");}
-               | WHILE '(' condicion ')' ')' LOOP bloque_sentencias_control{addErrorSintactico("Error en la condicion del WHILE: hay un ) de mas del lado derecho.");}
+clausula_while : WHILE '(' condicion ')' LOOP '{' bloque_sentencias_control '}'';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia WHILE LOOP.");}
+               | WHILE '(' error ')' LOOP '{' bloque_sentencias_control '}'';'{addErrorSintactico("Error en la condicion del WHILE.");}
+               | WHILE '(' error LOOP '{' bloque_sentencias_control '}'';'{addErrorSintactico("Error en la definicion del WHILE: falta el )");}
+               | WHILE error condicion ')' LOOP '{' bloque_sentencias_control '}'';' {addErrorSintactico("Error en la condicion del WHILE: falta el (.");}
+               | WHILE '(' condicion ')' error '{' bloque_sentencias_control'}' ';'{addErrorSintactico("Error en la condicion del WHILE: falta LOOP luego del ).");} 
+               | WHILE '(' '(' condicion ')' LOOP '{' bloque_sentencias_control'}'';'{addErrorSintactico("Error en la condicion del WHILE: hay un ( de mas del lado izquierdo.");}
+               | WHILE '(' condicion ')' ')' LOOP '{' bloque_sentencias_control'}'';'{addErrorSintactico("Error en la condicion del WHILE: hay un ) de mas del lado derecho.");}
                ;
 
-clausula_seleccion : IF '(' condicion ')' bloque_sentencias_control END_IF ';' {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF sin ELSE");}
-                   | IF '(' condicion ')' bloque_sentencias_control ELSE bloque_sentencias_control END_IF ';' {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF con bloque ELSE.");}
-                   | IF '(' error ')' bloque_sentencias_control END_IF ';'{addErrorSintactico("Error en la condicion del IF.");}
-                   | IF '(' error bloque_sentencias_control END_IF ';' {addErrorSintactico("Error en la definicion del IF: falta el )");}
-                   | IF error ')' bloque_sentencias_control END_IF ';' {addErrorSintactico("Error en la definicion del IF: falta el (");}
-                   | IF '(' condicion ')' bloque_sentencias_control error ';' {addErrorSintactico("Error en la definicion del IF: falta el END_IF");}
-                   | IF '(' '(' condicion ')' bloque_sentencias_control END_IF ';' {addErrorSintactico("Error en la definicion del IF: hay un ( de mas del lado izquierdo");}
-                   | IF '(' condicion ')' ')' bloque_sentencias_control END_IF ';' {addErrorSintactico("Error en la definicion del IF: hay un ) de mas del lado derecho");}
-                   | IF '(' error ')' bloque_sentencias_control ELSE bloque_sentencias_control END_IF ';' {addErrorSintactico("Error en la condicion del IF ELSE.");}
-                   | IF '(' error bloque_sentencias_control ELSE bloque_sentencias_control END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el )");}
-                   | IF error ')' bloque_sentencias_control ELSE bloque_sentencias_control END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el (");}
-                   | IF '(' condicion ')' bloque_sentencias_control ELSE bloque_sentencias_control error ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el END_IF");}
-                   | IF '(' '(' condicion ')' bloque_sentencias_control ELSE bloque_sentencias_control END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: hay un ( de mas del lado izquierdo");}
-                   | IF '(' condicion ')' ')' bloque_sentencias_control ELSE bloque_sentencias_control END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: hay un ) de mas del lado derecho");}
+clausula_seleccion : IF '(' condicion ')' '{' bloque_sentencias_control '}' END_IF ';' {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF sin ELSE");}
+                   | IF '(' condicion ')''{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF con bloque ELSE.");}
+                   | IF '(' error ')' '{' bloque_sentencias_control '}' END_IF ';'{addErrorSintactico("Error en la condicion del IF.");}
+                   | IF '(' error '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: falta el )");}
+                   | IF error ')' '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: falta el (");}
+                   | IF '(' condicion ')' '{' bloque_sentencias_control '}' error  ';' {addErrorSintactico("Error en la definicion del IF: falta el END_IF");}
+                   | IF '(' '(' condicion ')' '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: hay un ( de mas del lado izquierdo");}
+                   | IF '(' condicion ')' ')' '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: hay un ) de mas del lado derecho");}
+                   | IF '(' error ')'  '{' bloque_sentencias_control ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la condicion del IF ELSE.");}
+                   | IF '(' error '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el )");}
+                   | IF error ')' '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el (");}
+                   | IF '(' condicion ')' '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' error ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el END_IF");}
+                   | IF '(' '(' condicion ')''{'  bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: hay un ( de mas del lado izquierdo");}
+                   | IF '(' condicion ')' ')' '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: hay un ) de mas del lado derecho");}
+                   | IF '(' condicion ')' '{' error '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la declaracion del bloque de sentencias.");}                   
                    ;
 
-bloque_sentencias_control : '{' sentencias_ejecutables '}' ';'
-                          | '{' bloque_sentencias_control sentencias_ejecutables '}' ';'
+bloque_sentencias_control :  sentencias_ejecutables 
+                          |  sentencias_ejecutables bloque_sentencias_control
                           ;
 
 sentencias_declarativas : sentencia_declaracion_datos
@@ -107,6 +108,13 @@ sentencia_declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion '
                     | PROC ID '(' ')' error '=' cte '{' cuerpo_procedimiento '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta NI");} 
                     | PROC ID '(' ')' NI error cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta =");} 
                     | PROC ID '(' ')' NI '=' error '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta cte");}
+                    | PROC ID '(' error ')' NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: error en la lista de parametros");}
+                    | PROC error '(' lista_parametros_declaracion ')' NI '=' cte '{' cuerpo_procedimiento '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta ID");} 
+                    | PROC ID '(' lista_parametros_declaracion error NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta )");} 
+                    | PROC ID error lista_parametros_declaracion ')' NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta (");} 
+                    | PROC ID '(' lista_parametros_declaracion ')' error '=' cte '{' cuerpo_procedimiento '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta NI");} 
+                    | PROC ID '(' lista_parametros_declaracion ')' NI error cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta =");} 
+                    | PROC ID '(' lista_parametros_declaracion ')' NI '=' error '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta cte");}
                     ;
 
 cuerpo_procedimiento : sentencias_declarativas
@@ -137,7 +145,6 @@ parametro_invocacion : ID ':' ID
 asignacion : ID '=' expresion ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia asignacion variable.");}
            | ID '=' error ';' {addErrorSintactico("Error de asignación a la derecha.");}
            | error '=' expresion ';' {addErrorSintactico("Error de asignación a la izquierda.");}
-           //| ID '=' expresion error {addErrorSintactico("Error de asignación: falta ;");}
            ;
 
 expresion : expresion '+' termino ';'
@@ -178,6 +185,10 @@ public int yylex(){
             yylval = analizadorLexico.yylval();
 		tokens.add(token+"");
 		return token;
+}
+
+public AnalizadorLexico getAnalizadorLexico() {
+	return this.analizadorLexico;
 }
 
 public ArrayList<String> getTokens(){
@@ -223,4 +234,5 @@ public static void main(String args[]){
 	System.out.println(parser.getErrores());
 	System.out.println(parser.getTokens());
 	System.out.println(parser.getEstructuras());
+	System.out.println(parser.getAnalizadorLexico().getDatosTabla_simbolos());
 }

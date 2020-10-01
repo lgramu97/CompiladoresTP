@@ -211,21 +211,21 @@ public class AnalizadorLexico {
         // Inicializar tokens
         tokens = new HashMap<>();
         tokens.put("$", 36);
-        tokens.put("%", 37); // creo que no va como token, se usan en los comentarios o cadenas pero no es necesario informarlo.
+        //tokens.put("%", 37); // creo que no va como token, se usan en los comentarios o cadenas pero no es necesario informarlo.
         tokens.put("(", 40);
         tokens.put(")", 41);
         tokens.put("*", 42);
         tokens.put("+", 43);
         tokens.put(",", 44);
         tokens.put("-", 45);
-        tokens.put(".", 46);//creo q no va como token, se usa en float pero el token en si es la CTE.
+        //tokens.put(".", 46);//creo q no va como token, se usa en float pero el token en si es la CTE.
         tokens.put("/", 47);
         tokens.put(":", 58);
         tokens.put(";", 59);
         tokens.put("<", 60);
         tokens.put("=", 61);
         tokens.put(">", 62);
-        tokens.put("_", 95);//creo q no va como token, se usa en longint pero el token en si es la CTE.
+        //tokens.put("_", 95);//creo q no va como token, se usa en longint pero el token en si es la CTE.
         tokens.put("!=", (int) Parser.DISTINTO);
         tokens.put(">=", (int) Parser.MAYOR_IGUAL);
         tokens.put("<=", (int) Parser.MENOR_IGUAL);
@@ -352,8 +352,9 @@ public class AnalizadorLexico {
 		}
 		return datos.toString();	
 	}
+	
 	public boolean fin_archivo() {
-		return (this.lineas.size() == (this.fila_leida+1) && this.lineas.get(fila_leida).length() == this.columna+1);
+		return (this.lineas.size() == (this.fila_leida+1) && this.lineas.get(fila_leida).length() == this.columna);
 	}
 	
 	public void setTablaSimbolos(HashMap<String, HashMap<String, Object>> ts) {
