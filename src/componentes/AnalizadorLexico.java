@@ -1,6 +1,7 @@
-package analizadorLexico;
+package componentes;
 
 import java.io.BufferedReader;
+
 import java.io.File;
 import java.io.FileReader;
 import java.math.BigDecimal;
@@ -29,6 +30,8 @@ import accionesSemanticas.AccionSemanticaNro6;
 import accionesSemanticas.AccionSemanticaNro7;
 import accionesSemanticas.AccionSemanticaNro8;
 import accionesSemanticas.AccionSemanticaNro9;
+
+import componentes.Parser;
 
 public class AnalizadorLexico {
 
@@ -223,28 +226,28 @@ public class AnalizadorLexico {
         tokens.put("=", 61);
         tokens.put(">", 62);
         tokens.put("_", 95);//creo q no va como token, se usa en longint pero el token en si es la CTE.
-        tokens.put("!=", 101);
-        tokens.put(">=", 102);
-        tokens.put("<=", 103);
-        tokens.put("==", 104);
-        tokens.put("ID", 105);
-        tokens.put("CTE", 106);
-        tokens.put("CADENA", 107);
-        tokens.put("IF", 108);
-        tokens.put("THEN", 109);
-        tokens.put("END_IF", 110);
-        tokens.put("OUT", 111);
-        tokens.put("FUNC", 112);
-        tokens.put("RETURN", 113);
-        tokens.put("ELSE", 114);
-        tokens.put("LONGINT", 115);
-        tokens.put("FLOAT", 116);
-        tokens.put("WHILE", 117);
-        tokens.put("LOOP", 118);
-        tokens.put("ERROR",119);
-        tokens.put("PROC",120);
-        tokens.put("NI",121);
-        tokens.put("REF",122);
+        tokens.put("!=", (int) Parser.DISTINTO);
+        tokens.put(">=", (int) Parser.MAYOR_IGUAL);
+        tokens.put("<=", (int) Parser.MENOR_IGUAL);
+        tokens.put("==", (int) Parser.IGUAL);
+        tokens.put("ID", (int) Parser.ID);
+        tokens.put("CTE", (int) Parser.CTE);
+        tokens.put("CADENA", (int) Parser.CADENA);
+        tokens.put("IF",(int) Parser.IF);
+        tokens.put("THEN", (int) Parser.THEN);
+        tokens.put("END_IF", (int) Parser.END_IF);
+        tokens.put("OUT", (int) Parser.OUT);
+        tokens.put("FUNC", (int) Parser.FUNC);
+        tokens.put("RETURN", (int) Parser.RETURN);
+        tokens.put("ELSE", (int) Parser.ELSE);
+        tokens.put("LONGINT", (int) Parser.LONGINT);
+        tokens.put("FLOAT", (int) Parser.FLOAT);
+        tokens.put("WHILE", (int) Parser.WHILE);
+        tokens.put("LOOP", (int) Parser.LOOP);
+        tokens.put("ERROR",(int) Parser.ERROR);
+        tokens.put("PROC",(int) Parser.PROC);
+        tokens.put("NI",(int) Parser.NI);
+        tokens.put("REF",(int) Parser.REF);
         tokens.put("{", 123);
         tokens.put("}", 125);
     }
@@ -382,7 +385,7 @@ public class AnalizadorLexico {
             //System.out.println("Linnea : " + fila_leida + " de " + lineas.size());
             //System.out.println("Col " + columna + " de " + lineas.get(fila_leida).length());
             if (fila_leida == this.getLineasTotales()) // usado para test.
-            	return -1;
+            	return 0;
             if (columna == lineas.get(fila_leida).length()) {
                 proximo_char = '\n';
             } else {
@@ -416,12 +419,11 @@ public class AnalizadorLexico {
 		}
 		return false;
 	}
-
 	
-	public static void main(String[] args) {
-    	AnalizadorLexico an = new AnalizadorLexico();
+	public ParserVal yylval() {
+		// Devuelvo el lexema por medio de ParserVal.
+		return new ParserVal(lexema.toString());
 	}
-
 
 }
 

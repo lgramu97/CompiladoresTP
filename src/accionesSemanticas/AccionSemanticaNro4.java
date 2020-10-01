@@ -1,8 +1,8 @@
 package accionesSemanticas;
 
-import analizadorLexico.AnalizadorLexico;
-
 import java.math.BigDecimal;
+
+import componentes.AnalizadorLexico;
 
 public class AccionSemanticaNro4 extends AccionSemantica{
 

@@ -7,7 +7,7 @@ import accionesSemanticas.AccionSemantica;
 import accionesSemanticas.AccionSemanticaNro4;
 import accionesSemanticas.AccionSemanticaNro5;
 import accionesSemanticas.AccionSemanticaNro6;
-import analizadorLexico.AnalizadorLexico;
+import componentes.AnalizadorLexico;
 
 public class Helper {
 
