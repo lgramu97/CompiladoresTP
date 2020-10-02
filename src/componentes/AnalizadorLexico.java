@@ -347,7 +347,7 @@ public class AnalizadorLexico {
 		for (String key: tabla_simbolos.keySet()) {
 			datos.append("Lexema: ").append(key).append("\n");
 			for(String att: tabla_simbolos.get(key).keySet()) {
-				datos.append("Atributo: ").append(att).append("   ").append("Valor: ").append(tabla_simbolos.get(key).get(att)).append("\n");
+				datos.append("\t" + "Atributo: ").append(att).append("   ").append("Valor: ").append(tabla_simbolos.get(key).get(att)).append("\n");
 			}
 		}
 		return datos.toString();	
@@ -424,6 +424,86 @@ public class AnalizadorLexico {
 	public ParserVal yylval() {
 		// Devuelvo el lexema por medio de ParserVal.
 		return new ParserVal(lexema.toString());
+	}
+	
+	public String tokenToString(int nroToken) {
+		switch (nroToken) {
+		case 36:
+			return "$";
+		case 40:
+			return "(";
+		case 41:
+			return ")";
+		case 42:
+			return "*";
+		case 43:
+			return "+";
+		case 44:
+			return ",";
+		case 45:
+			return "-";
+		case 47:
+			return "/";
+		case 58:
+			return ":";
+		case 59:
+			return ";";
+		case 60:
+			return "<";
+		case 61:
+			return "=";
+		case 62:
+			return ">";
+		case Parser.CADENA:
+			return "CADENA";
+		case Parser.CTE:
+			return "CTE";
+		case Parser.DISTINTO:
+			return "!=";
+		case Parser.ELSE:
+			return "ELSE";
+		case Parser.END_IF:
+			return "END_IF";
+		case Parser.ERROR:
+			return "ERROR";
+		case Parser.FLOAT:
+			return "FLOAT";
+		case Parser.ID:
+			return "ID";
+		case Parser.FUNC:
+			return "FUNC";
+		case Parser.IF:
+			return "IF";
+		case Parser.IGUAL:
+			return "==";
+		case Parser.LONGINT:
+			return "LONGINT";
+		case Parser.LOOP:
+			return "LOOP";
+		case Parser.MAYOR_IGUAL:
+			return ">=";
+		case Parser.MENOR_IGUAL:
+			return "<=";
+		case Parser.NI:
+			return "NI";
+		case Parser.OUT:
+			return "OUT";
+		case Parser.PROC:
+			return "PROC";
+		case Parser.REF:
+			return "REF";
+		case Parser.RETURN:
+			return "RETURN";
+		case Parser.THEN:
+			return "THEN";
+		case Parser.WHILE:
+			return "WHILE";
+		case 0:
+			return "FIN DE ARCHIVO";
+		default:
+			return "";
+			
+		}
 	}
 
 }

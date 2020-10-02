@@ -20,12 +20,13 @@ conjunto_sentencias : sentencias_declarativas
                     | sentencias_ejecutables conjunto_sentencias 
                     ;
 
-condicion : expresion IGUAL expresion {estructuras.add("ERRROOOR");}
+condicion : expresion IGUAL expresion
           | expresion MAYOR_IGUAL expresion
           | expresion MENOR_IGUAL expresion
           | expresion DISTINTO expresion
           | expresion '>' expresion
           | expresion '<' expresion
+          | expresion error {addErrorSintactico("Error en la condicion");}
           ;
 
 clausula_while : WHILE '(' condicion ')' LOOP '{' bloque_sentencias_control '}'';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia WHILE LOOP.");}
@@ -33,8 +34,8 @@ clausula_while : WHILE '(' condicion ')' LOOP '{' bloque_sentencias_control '}''
                | WHILE '(' error LOOP '{' bloque_sentencias_control '}'';'{addErrorSintactico("Error en la definicion del WHILE: falta el )");}
                | WHILE error condicion ')' LOOP '{' bloque_sentencias_control '}'';' {addErrorSintactico("Error en la condicion del WHILE: falta el (.");}
                | WHILE '(' condicion ')' error '{' bloque_sentencias_control'}' ';'{addErrorSintactico("Error en la condicion del WHILE: falta LOOP luego del ).");} 
-               | WHILE '(' '(' condicion ')' LOOP '{' bloque_sentencias_control'}'';'{addErrorSintactico("Error en la condicion del WHILE: hay un ( de mas del lado izquierdo.");}
-               | WHILE '(' condicion ')' ')' LOOP '{' bloque_sentencias_control'}'';'{addErrorSintactico("Error en la condicion del WHILE: hay un ) de mas del lado derecho.");}
+               | WHILE '(' '(' error condicion  ')' LOOP '{' bloque_sentencias_control'}'';'{addErrorSintactico("Error en la condicion del WHILE: hay uno o mas ( de mas del lado izquierdo.");}
+               | WHILE '(' condicion ')' ')' error LOOP '{' bloque_sentencias_control'}'';'{addErrorSintactico("Error en la condicion del WHILE: hay uno o mas ) de mas del lado derecho.");}
                ;
 
 clausula_seleccion : IF '(' condicion ')' '{' bloque_sentencias_control '}' END_IF ';' {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF sin ELSE");}
@@ -43,14 +44,14 @@ clausula_seleccion : IF '(' condicion ')' '{' bloque_sentencias_control '}' END_
                    | IF '('  error '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: falta el )");}
                    | IF  error condicion ')' '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: falta el (");}
                    | IF '(' condicion ')' '{' bloque_sentencias_control '}' error  ';' {addErrorSintactico("Error en la definicion del IF: falta el END_IF");}
-                   | IF '(' '(' condicion ')' '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: hay un ( de mas del lado izquierdo");}
-                   | IF '(' condicion ')' ')' '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: hay un ) de mas del lado derecho");}
+                   | IF '(' '(' error condicion ')' '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: hay uno o mas ( de mas del lado izquierdo");}
+                   | IF '(' condicion ')' ')' error '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: hay uno o mas ) de mas del lado derecho");}
                    | IF '(' error ')'  '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la condicion del IF ELSE.");}
                    | IF '('  error '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el )");}
                    | IF error condicion ')' '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el (");}
                    | IF '(' condicion ')' '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' error ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el END_IF");}
-                   | IF '(' '(' condicion ')''{'  bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: hay un ( de mas del lado izquierdo");}
-                   | IF '(' condicion ')' ')' '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: hay un ) de mas del lado derecho");}
+                   | IF '(' '(' error condicion ')''{'  bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: hay uno o mas ( de mas del lado izquierdo");}
+                   | IF '(' condicion ')' ')' error '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: hay uno o mas ) de mas del lado derecho");}
                    ;
 
 bloque_sentencias_control :  sentencias_ejecutables 
@@ -90,13 +91,14 @@ invocacion_procedimiento : ID '(' lista_parametros_invocacion ')' ';'{estructura
 			 | ID '(' ')' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento sin parametros.");}
              | ID '(' error ';' {addErrorSintactico("Error al invocar procedimiento: falta )");}
              | ID error ')' ';' {addErrorSintactico("Error al invocar procedimiento: falta (");}
-             | ID '(' '(' ')' ';' {addErrorSintactico("Error al invocar procedimiento: hay un ( de mas del lado izquierdo");}
-             | ID '('  ')' ')' ';' {addErrorSintactico("Error al invocar procedimiento:hay un ) de mas del lado derecho");}
+             | ID '(' '(' error ';' {addErrorSintactico("Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo");}
+             | ID '('  ')' ')' error ';' {addErrorSintactico("Error al invocar procedimiento:hay uno o mas ) de mas del lado derecho");}
              | ID '(' lista_parametros_invocacion error ';' {addErrorSintactico("Error al invocar procedimiento: falta )");}
              | ID '(' error ')' ';' {addErrorSintactico("Error al invocar procedimiento: error en la lista de parametros ");}
              | ID error lista_parametros_invocacion ')' ';' {addErrorSintactico("Error al invocar procedimiento: falta (");}
-			 | ID '(' '(' lista_parametros_invocacion ')' ';' {addErrorSintactico("Error al invocar procedimiento: hay un ( de mas del lado izquierdo");}
-             | ID '(' lista_parametros_invocacion ')' ')' ';' {addErrorSintactico("Error al invocar procedimiento:hay un ) de mas del lado derecho");}
+			 | ID '(' '(' error lista_parametros_invocacion ')' ';' {addErrorSintactico("Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo");}
+             | ID '(' lista_parametros_invocacion ')' ')' error ';' {addErrorSintactico("Error al invocar procedimiento:hay uno o mas ) de mas del lado derecho");}
+             | ID error ';' {addErrorSintactico("Error al invocar procedimiento.");}
              ;
 
 sentencia_declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion ')' NI '=' cte '{' cuerpo_procedimiento '}' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento con parametros.");}
@@ -104,6 +106,8 @@ sentencia_declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion '
                     | PROC error '(' ')' NI '=' cte '{' cuerpo_procedimiento '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta ID");} 
                     | PROC ID '(' error NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta )");} 
                     | PROC ID error ')' NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta (");} 
+                    | PROC ID '(' '(' error ')' NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");} 
+                    | PROC ID  '('  ')' ')' error NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}       
                     | PROC ID '(' ')' error '=' cte '{' cuerpo_procedimiento '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta NI");} 
                     | PROC ID '(' ')' NI error cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta =");} 
                     | PROC ID '(' ')' NI '=' error '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta cte");}
@@ -114,6 +118,8 @@ sentencia_declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion '
                     | PROC ID '(' lista_parametros_declaracion ')' error '=' cte '{' cuerpo_procedimiento '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta NI");} 
                     | PROC ID '(' lista_parametros_declaracion ')' NI error cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta =");} 
                     | PROC ID '(' lista_parametros_declaracion ')' NI '=' error '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta cte");}
+                    | PROC ID '(' '(' error lista_parametros_declaracion ')' NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");} 
+                    | PROC ID  '(' lista_parametros_declaracion ')' ')' error NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}       
                     ;
 
 cuerpo_procedimiento : sentencias_declarativas
@@ -125,11 +131,14 @@ cuerpo_procedimiento : sentencias_declarativas
 lista_parametros_invocacion: parametro_invocacion
                            | parametro_invocacion ',' parametro_invocacion
                            | parametro_invocacion ',' parametro_invocacion ',' parametro_invocacion
+                           | parametro_invocacion ',' parametro_invocacion ',' parametro_invocacion ',' error {addErrorSintactico("Error. El numero maximo de parametros permitido es 3.");}
+                           
                            ;
 
 lista_parametros_declaracion : parametro_declaracion
 			 | parametro_declaracion ',' parametro_declaracion
 			 | parametro_declaracion ',' parametro_declaracion ',' parametro_declaracion
+			 | parametro_declaracion ',' parametro_declaracion ',' parametro_declaracion ',' error {addErrorSintactico("Error. El numero maximo de parametros permitido es 3.");}
 			 ;
 
 parametro_declaracion: tipo ID
@@ -146,8 +155,8 @@ asignacion : ID '=' expresion ';'{estructuras.add("Linea numero: "+(analizadorLe
            | error '=' expresion ';' {addErrorSintactico("Error de asignación a la izquierda.");}
            ;
 
-expresion : expresion '+' termino ';'
-          | expresion '-' termino ';'
+expresion : expresion '+' termino 
+          | expresion '-' termino 
           | termino
           ;
 
