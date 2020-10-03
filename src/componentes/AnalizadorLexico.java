@@ -43,9 +43,6 @@ public class AnalizadorLexico {
     private int fila_leida; // Linea de codigo actual.
     private int ultimo_estado;
 
-    private final static String ERROR = "ERROR";
-
-
     //Estructuras
     private HashMap<Character,Integer> columnas;
     private HashMap<String,Integer> tokens;
@@ -395,8 +392,8 @@ public class AnalizadorLexico {
             columna++;
             int columna_caracter = 0;
             columna_caracter = columnas.getOrDefault(proximo_char, 22);
-            System.out.println("Proximo char: " + (proximo_char == '\n' ? "SALTO_LINEA" : proximo_char == ' ' ? "BLANCO" : proximo_char) + "  " + "Columna Caracter: " + columna_caracter +
-            		"   " + "Accion semantica: " + ultimo_estado + " , " + columna_caracter);
+            //System.out.println("Proximo char: " + (proximo_char == '\n' ? "SALTO_LINEA" : proximo_char == ' ' ? "BLANCO" : proximo_char) + "  " + "Columna Caracter: " + columna_caracter +
+            //		"   " + "Accion semantica: " + ultimo_estado + " , " + columna_caracter);
             if (acciones_semanticas[ultimo_estado][columna_caracter] != null) {
                 tipo = acciones_semanticas[ultimo_estado][columna_caracter].ejecutar(proximo_char,this);
             }

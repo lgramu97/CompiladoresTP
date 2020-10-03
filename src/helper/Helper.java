@@ -6,7 +6,6 @@ import java.util.HashMap;
 import accionesSemanticas.AccionSemantica;
 import accionesSemanticas.AccionSemanticaNro4;
 import accionesSemanticas.AccionSemanticaNro5;
-import accionesSemanticas.AccionSemanticaNro6;
 import componentes.AnalizadorLexico;
 
 public class Helper {
@@ -37,7 +36,6 @@ public class Helper {
 	}
 	
 	public void check_as5() {
-		Double db = Math.pow(2, 32) -1 ;
 		StringBuilder lexema = new StringBuilder("0_");
 		al.setLexema(lexema);
 		AccionSemantica as5 = new AccionSemanticaNro5();
@@ -56,10 +54,6 @@ public class Helper {
 		System.out.println(al.getDatosTabla_simbolos());
 		System.out.println("ERRORES: " + al.getErrores().size());
 
-	}
-	
-	public void check_as15() {
-		StringBuilder lexema = new StringBuilder();
 	}
 	
 	public void prueba_al() {

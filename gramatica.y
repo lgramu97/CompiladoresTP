@@ -1,6 +1,11 @@
 %{
 	package componentes;
+    import java.io.File;
+    import java.io.FileWriter;
+    import java.io.IOException;
     import java.util.ArrayList;
+	import java.util.Scanner;
+	import javax.swing.JFileChooser;
 
 	
 %}
@@ -191,7 +196,7 @@ public int yylex(){
         //Si el token es un ID, CTE, CADENA necesito el valor del lexema.
 		if(token == 270 || token == 276 || token  == 277)
             yylval = analizadorLexico.yylval();
-		tokens.add(token+"");
+		tokens.add("Linea numero: "+ (analizadorLexico.getFilaActual()+1) +" token " + token+" --" + analizadorLexico.tokenToString(token));
 		return token;
 }
 
@@ -235,12 +240,73 @@ public String getErrores(){
     return errores.toString();
 }
 
+public void saveFile() {
+	 JFileChooser jchooser=new JFileChooser();
+	 File workingDirectory = new File(System.getProperty("user.dir"));
+	 jchooser.setCurrentDirectory(workingDirectory);
+	 jchooser.setDialogTitle("Guardar archivo de salida.");
+	 jchooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+	 
+	 if (jchooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+		File out = jchooser.getSelectedFile(); 
+
+	    try {
+			FileWriter salida = new FileWriter(out+"/out.txt");
+			
+			salida.write(this.getErrores() + "\n");
+			
+			salida.write("Tokens detectados en el codigo fuente: " + "\n");
+			for (int i = 0; i<tokens.size();i++) {
+				salida.write("\t" + tokens.get(i) + "\n");
+			}
+			
+			salida.write("\n" + "Estructuras detectadas en el codigo fuente: " + "\n");
+			for (int i = 0; i<estructuras.size();i++) {
+				salida.write("\t" + estructuras.get(i) + "\n");
+			}
+			
+			salida.write("\n"+"Contenido de la tabla de simbolos: " + "\n");
+			salida.write(this.getAnalizadorLexico().getDatosTabla_simbolos());
+			
+			salida.close();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	 }
+}
+
 
 public static void main(String args[]){
 	Parser parser = new Parser();
-	System.out.println(parser.yyparse());
+	parser.yyparse();
 	System.out.println(parser.getErrores());
-	System.out.println(parser.getTokens());
-	System.out.println(parser.getEstructuras());
+	
+	ArrayList<String> tokens = parser.getTokens();
+	System.out.println();
+	System.out.println("Tokens detectados en el codigo fuente: ");
+	for (int i = 0; i<tokens.size();i++) {
+		System.out.println(tokens.get(i));
+	}
+	
+	ArrayList<String> estructuras = parser.getEstructuras();
+	System.out.println();
+	System.out.println("Estructuras detectadas en el codigo fuente: ");
+	for (int i = 0; i<estructuras.size();i++) {
+		System.out.println(estructuras.get(i));
+	}
+	
+	System.out.println();
+	System.out.println("Contenido de la tabla de simbolos: ");
 	System.out.println(parser.getAnalizadorLexico().getDatosTabla_simbolos());
+	
+	System.out.println();
+	Scanner in = new Scanner(System.in);
+	System.out.println("Desea guardar la salida en un documento de texto? Y/N");
+	String rta = in.nextLine();
+	if (rta.equals("Y") || rta.equals("y"))
+		parser.saveFile();
+	
 }

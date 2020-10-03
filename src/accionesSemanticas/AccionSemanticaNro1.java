@@ -16,7 +16,7 @@ public class AccionSemanticaNro1 extends AccionSemantica{
 			lexema.delete(20, lexema.length());
 			al.putError("Warning: Identificador reducido a 20 caracteres.");
 		}
-		if (!al.getTabla_simbolos().containsKey(lexema)) {
+		if (!al.getTabla_simbolos().containsKey(lexema.toString())) {
 			al.appendLexema();
 			al.addTipo("Tipo","ID");
 		}
