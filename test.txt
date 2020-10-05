@@ -1,13 +1,27 @@
-WHILE (a<b) LOOP{
-	hola = 3_l;
-	WHILE (b>a) LOOP{
-		eso = 4_l
-		IF ( pepe >= juanita ){
-			jeje = -54_l;
-		} ELSE {
-			identificador = 0_l;			
-		} 
-		END_IF;	
-	};
+LONGINT c;
+
+PROC suma(FLOAT a, FLOAT b, REF FLOAT res) NI = 4_l{
+	res = a + b;
 };
 
+PROC producto(FLOAT a, FLOAT b, REF FLOAT res) NI = 4.{
+	b=0.-b; %%el negativo de un numero.
+	res = a * b;
+};
+
+PROC save() NI = 1.{
+	OUT("GUARDANDO resultado-
+	del archivo.");
+};
+
+a=12.;
+b=-13.;
+WHILE (res>c) LOOP {
+	IF (a<=b){
+		suma(a:a,b:b,res:res);
+	}ELSE{
+		resta(a:a,b:b,res:res);
+	}END_IF;
+	OUT("resultado");
+};
+save();
