@@ -303,5 +303,6 @@ public static void main(String args[]){
 	String rta = in.nextLine();
 	if (rta.equals("Y") || rta.equals("y"))
 		parser.saveFile();
+	in.close();
 	
 }
