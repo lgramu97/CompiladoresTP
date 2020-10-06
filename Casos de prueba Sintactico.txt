@@ -1,4 +1,4 @@
-%%Anidamiento de estructuras. While con IF ELSE
+%%Prueba Anidamiento de estructuras. While con IF ELSE
 WHILE (a<b) LOOP{
 	hola = 3_l;
 	WHILE (b>a) LOOP{
@@ -12,7 +12,7 @@ WHILE (a<b) LOOP{
 	};
 };
 
-%% IF con ELSE y otro if dentro del ELSE, con llamada a procedimiento en cada una.
+%%Prueba IF con ELSE y otro if dentro del ELSE, con llamada a procedimiento en cada una.
 IF (a==b) {
 	print(x:f);
 } ELSE {
@@ -73,7 +73,7 @@ WHILE (a=b) LOOP{
 %%Error: Numero de linea: 3  Error en la condicion del WHILE.
 
 
-%Prueba error falta ) en WHILE.
+%%Prueba error falta ) en WHILE.
 WHILE (a=b LOOP{
 	print(a:b);
 };
@@ -81,7 +81,7 @@ WHILE (a=b LOOP{
 %%Error: Numero de linea: 3  Error en la definicion del WHILE: falta el ) 
 
 
-%Prueba error falta ( en WHILE.
+%%Prueba error falta ( en WHILE.
 WHILE a==b) LOOP{
 	print(a:b);
 };
@@ -89,7 +89,7 @@ WHILE a==b) LOOP{
 %%Error: Numero de linea: 3  Error en la condicion del WHILE: falta el (.
 
 
-%Prueba error (( en WHILE; y error en condicion.
+%%Prueba error (( en WHILE; y error en condicion.
 WHILE (((a=b) LOOP{
 	print(a:b);
 };
@@ -106,7 +106,7 @@ WHILE (a==b))) LOOP{
 %%Error: Numero de linea: 3  Error en la condicion del WHILE: hay uno o mas ) de mas del lado derecho.
 
 
-%% Prueba estructura IF con invocacion a procedimiento.
+%%Prueba estructura IF con invocacion a procedimiento.
 IF (a==b){
 	print(s:f);
 } END_IF;
@@ -114,7 +114,7 @@ IF (a==b){
 %%Salida: Linea numero: 2 --Invocacion a procedimiento con parametros., Linea numero: 3 --Sentencia IF sin ELSE, Linea numero: 4 --Fin de programa.
 
 
-%% Prueba estructura IF con ELSE con invocacion a procedimiento.
+%%Prueba estructura IF con ELSE con invocacion a procedimiento.
 IF (a==b){
 	print(s:f);
 } ELSE {
@@ -124,7 +124,7 @@ IF (a==b){
 %%Salida: Linea numero: 2 --Invocacion a procedimiento con parametros., Linea numero: 4 --Invocacion a procedimiento con parametros., Linea numero: 5 --Sentencia IF con bloque ELSE., Linea numero: 6 --Fin de programa.
 
 
-%% Prueba estructura IF con error en la condicion y invocacion a procedimiento
+%%Prueba estructura IF con error en la condicion y invocacion a procedimiento
 IF (a=b) {
 	print(f:s);
 }END_IF;
@@ -133,7 +133,7 @@ IF (a=b) {
 %%Errores: Numero de linea: 3  Error en la condicion del IF.
 
 
-%% Prueba estructura IF con error en la condicion y invocacion a procedimiento
+%%Prueba estructura IF con error en la condicion y invocacion a procedimiento
 IF () {
 	print(f:s);
 }END_IF;
@@ -142,7 +142,7 @@ IF () {
 %%Errores: Numero de linea: 3  Error en la condicion del IF.
 
 
-%% Prueba estructura IF en la definicion del IF, falta cerrar el parentesis
+%%Prueba estructura IF en la definicion del IF, falta cerrar el parentesis
 IF (a==b {
 	print(s:f);
 } END_IF;
@@ -150,7 +150,7 @@ IF (a==b {
 %%Salida: [Linea numero: 3 --Invocacion a procedimiento con parametros., Linea numero: 5 --Fin de programa.]
 %%Errores: Numero de linea: 4  Error en la definicion del IF: falta el )
 
-%% Prueba estructura IF en la definicion del IF, falta cerrar el parentesis
+%%Prueba estructura IF en la definicion del IF, falta cerrar el parentesis
 IF a==b) {
 	print(a:b);
 } END_IF;
@@ -158,14 +158,14 @@ IF a==b) {
 %%Errores: Numero de linea: 4  Error en la definicion del IF: falta el (
 
 
-%% Prueba estructura IF falta el END_IF, con invocacion a procedimiento
+%%Prueba estructura IF falta el END_IF, con invocacion a procedimiento
 IF (a==b){
 	print(s:g);
 };
 %%Salida: Linea numero: 2 --Invocacion a procedimiento con parametros., Linea numero: 4 --Fin de programa.
 %%Errores: Numero de linea: 3  Error en la definicion del IF: falta el END_IF
 
-%% Prueba estructura IF error en la condicion con ELSE e invocacion a procedimiento
+%%Prueba estructura IF error en la condicion con ELSE e invocacion a procedimiento
 IF (a=b){
 	print(s:f);
 } ELSE {
@@ -174,7 +174,7 @@ IF (a=b){
 %%Salida: Linea numero: 2 --Invocacion a procedimiento con parametros., Linea numero: 4 --Invocacion a procedimiento con parametros., Linea numero: 6 --Fin de programa.
 %%Errores: Numero de linea: 5  Error en la condicion del IF ELSE.
 
-%% Prueba estructura IF con ELSE y falta END_IF e invocacion a procedimiento
+%%Prueba estructura IF con ELSE y falta END_IF e invocacion a procedimiento
 IF (a==b){
 	print(s:f);
 } ELSE {
@@ -183,26 +183,26 @@ IF (a==b){
 %%Salida: Linea numero: 2 --Invocacion a procedimiento con parametros., Linea numero: 4 --Invocacion a procedimiento con parametros., Linea numero: 6 --Fin de programa.
 %%Errores: Numero de linea: 5  Error en la definicion del IF ELSE: falta el END_IF
 
-%% Prueba estructura OUT
+%%Prueba estructura OUT
 OUT("cadena");
 %%Salida: Linea numero: 1 --Sentencia imprimir por pantalla., Linea numero: 2 --Fin de programa.
 
-%% Prueba estructura OUT con un parentesis de mas del lado derecho
+%%Prueba estructura OUT con un parentesis de mas del lado derecho
 OUT("cadena"));
 %%Salida: Linea numero: 2 --Fin de programa.
 %%Errores: Numero de linea: 1  Error al imprimir por pantalla: caracter ) de mas en el lado derecho
 
-%% Prueba estructura OUT con un parentesis de mas del lado izquierdo
+%%Prueba estructura OUT con un parentesis de mas del lado izquierdo
 OUT(("cadena");
 %%Salida: Linea numero: 2 --Fin de programa.
 %%Errores: Numero de linea: 1  Error al imprimir por pantalla: caracter ( de mas en el lado izquierdo
 
-%% Prueba estructura OUT sin parentesis
+%%Prueba estructura OUT sin parentesis
 OUT"asd";
 %%Salida: Linea numero: 2 --Fin de programa.
 %%Errores: Numero de linea: 1  Error al imprimir por pantalla
 
-%% Prueba estructura OUT falta un parentesis del lado izquierdo
+%%Prueba estructura OUT falta un parentesis del lado izquierdo
 OUT"asd");
 %%Salida: Linea numero: 2 --Fin de programa.
 %%Errores: Numero de linea: 1  Error al imprimir GINT a;
@@ -210,74 +210,74 @@ OUT"asd");
 %%Salida: Linea numero: 2 --Sentencia declaracion variables., Linea numero: 4 --Fin de programa.
 %%Errores: Numero de linea: 3  Error al declarar procedimiento: falta cte
 
-%% Prueba declaracion de procedimiento con parametros, falta cte
+%%Prueba declaracion de procedimiento con parametros, falta cte
 PROC procedimiento (FLOAT x) NI = {
 	 LONGINT a;
  };
 %%Salida: Linea numero: 2 --Sentencia declaracion variables., Linea numero: 4 --Fin de programa.
 %%Errores: Numero de linea: 3  Error al declarar procedimiento: falta ctepor pantalla
 
-%% Prueba estructura OUT falta un parentesis del lado derecho
+%%Prueba estructura OUT falta un parentesis del lado derecho
 OUT("asd";
 %%Salida: Linea numero: 2 --Fin de programa.
 %%Errores: Numero de linea: 1  Error al imprimir por pantalla
 
-%% Prueba estructura OUT hay un error en la cadena
+%%Prueba estructura OUT hay un error en la cadena
 OUT(d);
 %%Salida: Linea numero: 2 --Fin de programa.
 %%Errores: Numero de linea: 1  Error al imprimir por pantalla
 
-%% Prueba invocacion de procedimiento sin parametros
+%%Prueba invocacion de procedimiento sin parametros
 h();
 %%Salida: Linea numero: 1 --Invocacion a procedimiento sin parametros., Linea numero: 2 --Fin de programa.
 
-%% Prueba invocacion de procedimiento con un parametro
+%%Prueba invocacion de procedimiento con un parametro
 h(h:h);
 %%Salida: Linea numero: 1 --Invocacion a procedimiento con parametros., Linea numero: 2 --Fin de programa.
 
-%% Prueba invocacion de procedimiento sin parametro, falta un parentesis del lado izquierdo
+%%Prueba invocacion de procedimiento sin parametro, falta un parentesis del lado izquierdo
 h);
 %%Salida: Linea numero: 2 --Fin de programa.
 %%Errores: Numero de linea: 1  Error al invocar procedimiento: falta (
 
-%% Prueba invocacion de procedimiento sin parametro, falta un parentesis del lado derecho
+%%Prueba invocacion de procedimiento sin parametro, falta un parentesis del lado derecho
 h(;
 %%Salida: Linea numero: 2 --Fin de programa.
 %%Errores: Numero de linea: 1  Error al invocar procedimiento: falta )
 
-%% Prueba invocacion de procedimiento sin parametro, hay un parentesis "(" de mas
+%%Prueba invocacion de procedimiento sin parametro, hay un parentesis "(" de mas
 h(();
 %%Salida: Linea numero: 2 --Fin de programa.
 %%Errores: Numero de linea: 1  Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo
 
-%% Prueba invocacion de procedimiento sin parametro, hay un parentesis ")" de mas
+%%Prueba invocacion de procedimiento sin parametro, hay un parentesis ")" de mas
 h());
 %%Salida: Linea numero: 2 --Fin de programa.
 %%Errores: Numero de linea: 1  Error al invocar procedimiento:hay uno o mas ) de mas del lado derecho
 
-%% Prueba invocacion de procedimiento sin parametro, hay dos parentesis "(" del lado izquierdo
+%%Prueba invocacion de procedimiento sin parametro, hay dos parentesis "(" del lado izquierdo
 h((;
 %%Salida: Linea numero: 2 --Fin de programa.
 %%Errores: Numero de linea: 1  Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo
 
-%% Prueba invocacion de procedimiento sin parametro, hay dos parentesis "(" del lado izquierdo
+%%Prueba invocacion de procedimiento sin parametro, hay dos parentesis "(" del lado izquierdo
 h(());
 %%Salida: Linea numero: 2 --Fin de programa.
 %%Errores: Numero de linea: 1  Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo
 
-%% Prueba declaracion de procedimiento sin parametro.
+%%Prueba declaracion de procedimiento sin parametro.
  PROC procedimiento() NI = 3_l {
 	 LONGINT a;
  };
  %%Salida:Linea numero: 2 --Sentencia declaracion variables., Linea numero: 3 --Sentencia declaracion procedimiento sin parametros., Linea numero: 4 --Fin de programa.
 
-%% Prueba declaracion de procedimiento con parametros.
+%%Prueba declaracion de procedimiento con parametros.
  PROC procedimiento(REF LONGINT a, LONGINT b, REF FLOAT c) NI = 3_l {
 	 LONGINT a;
  };
   %%Salida:Linea numero: 2 --Sentencia declaracion variables., Linea numero: 3 --Sentencia declaracion procedimiento con parametros., Linea numero: 4 --Fin de programa.
 
-%% Prueba declaracion de procedimiento con parametros, error cte.
+%%Prueba declaracion de procedimiento con parametros, error cte.
 PROC procedimiento(REF LONGINT a, LONGINT b, REF FLOAT c) NI = 4 {
 	 LONGINT a;
  };
@@ -287,28 +287,28 @@ PROC procedimiento(REF LONGINT a, LONGINT b, REF FLOAT c) NI = 4 {
 	Errores Sintacticos: 
 		Numero de linea: 3  Error al declarar procedimiento: falta cte
 
-%% Prueba declaracion de procedimiento con parametros, error cantidad de parametros.
+%%Prueba declaracion de procedimiento con parametros, error cantidad de parametros.
 PROC procedimiento(REF LONGINT a, LONGINT b, REF FLOAT c, FLOAT d) NI = 4_l {
 	 LONGINT a;
  };
  %%Salida: Linea numero: 2 --Sentencia declaracion variables., Linea numero: 3 --Sentencia declaracion procedimiento con parametros., Linea numero: 4 --Fin de programa.
  %%Errores: Numero de linea: 1  Error. El numero maximo de parametros permitido es 3.
 
-%% Prueba declaracion de procedimiento sin parametros, falta ID.
+%%Prueba declaracion de procedimiento sin parametros, falta ID.
 PROC () NI = 4_l {
 	 LONGINT a;
  };
  %%Salida:Linea numero: 2 --Sentencia declaracion variables., Linea numero: 4 --Fin de programa.
  %%Errores:	Numero de linea: 3  Error al declarar procedimiento: falta ID
 
-%% Prueba declaracion de procedimiento sin parametros, falta ).
+%%Prueba declaracion de procedimiento sin parametros, falta ).
 PROC procedimiento( NI = 4_l {
 	 LONGINT a;
  };
  %%Salida:Linea numero: 2 --Sentencia declaracion variables., Linea numero: 4 --Fin de programa.
  %%Errores: Numero de linea: 3  Error al declarar procedimiento: falta )
 
-%% Prueba declaracion de procedimiento sin parametros, falta ).
+%%Prueba declaracion de procedimiento sin parametros, falta ).
 PROC procedimiento) NI = 4_l {
 	 LONGINT a;
  };
@@ -351,56 +351,56 @@ PROC procedimiento() NI = {
  %%Salida: Linea numero: 2 --Sentencia declaracion variables., Linea numero: 4 --Fin de programa.
  %%Errores: Numero de linea: 3  Error al declarar procedimiento: falta cte
                     
-%% Prueba declaracion de procedimiento con parametros, error en los parametros
+%%Prueba declaracion de procedimiento con parametros, error en los parametros
 PROC h(FLOAT x;) NI = 4_l {
 	 LONGINT a;
 };
 %%Salida: Linea numero: 2 --Sentencia declaracion variables., Linea numero: 4 --Fin de programa.
 %%Errores: Numero de linea: 3  Error al declarar procedimiento: error en la lista de parametros
 
-%% Prueba declaracion de procedimiento sin parametros, falta ID.
+%%Prueba declaracion de procedimiento sin parametros, falta ID.
 PROC (FLOAT x) NI = 4_l {
 	 LONGINT a;
  };
 %%Salida: Linea numero: 2 --Sentencia declaracion variables., Linea numero: 4 --Fin de programa.
 %%Errores: Numero de linea: 3  Error al declarar procedimiento: falta ID
 
-%% Prueba declaracion de procedimiento con parametros, falta )
+%%Prueba declaracion de procedimiento con parametros, falta )
 PROC procedimiento(FLOAT x NI = 4_l {
 	 LONGINT a;
  };
 %%Salida: Linea numero: 2 --Sentencia declaracion variables., Linea numero: 4 --Fin de programa.
 %%Errores: Numero de linea: 3  Error al declarar procedimiento: falta )
 
-%% Prueba declaracion de procedimiento con parametros, falta (
+%%Prueba declaracion de procedimiento con parametros, falta (
 PROC procedimiento FLOAT x) NI = 4_l {
 	 LONGINT a;
  };
 %%Salida: Linea numero: 2 --Sentencia declaracion variables., Linea numero: 4 --Fin de programa.
 %%Errores: Numero de linea: 3  Error al declarar procedimiento: falta (
 
-%% Prueba declaracion de procedimiento con parametros, falta NI
+%%Prueba declaracion de procedimiento con parametros, falta NI
 PROC procedimiento (FLOAT x)  = 4_l {
 	 LONGINT a;
  };
 %%Salida: Linea numero: 2 --Sentencia declaracion variables., Linea numero: 4 --Fin de programa.
 %%Errores: Numero de linea: 3  Error al declarar procedimiento: falta NI
 
-%% Prueba declaracion de procedimiento con parametros, falta "="
+%%Prueba declaracion de procedimiento con parametros, falta "="
 PROC procedimiento (FLOAT x) NI  4_l {
 	 LONGINT a;
  };
 %%Salida: Linea numero: 2 --Sentencia declaracion variables., Linea numero: 4 --Fin de programa.
 %%Errores: Numero de linea: 3  Error al declarar procedimiento: falta =
 
-%% Prueba declaracion de procedimiento con parametros, cambio cte por ID
+%%Prueba declaracion de procedimiento con parametros, cambio cte por ID
 PROC procedimiento (FLOAT x) NI = d {
 	 LONGINT a;
  };
 %%Salida: Linea numero: 2 --Sentencia declaracion variables., Linea numero: 4 --Fin de programa.
 %%Errores: Numero de linea: 3  Error al declarar procedimiento: falta cte
 
-%% Prueba declaracion de procedimiento con parametros, falta cte
+%%Prueba declaracion de procedimiento con parametros, falta cte
 PROC procedimiento (FLOAT x) NI = {
 	 LONGINT a;
  };
@@ -409,7 +409,7 @@ PROC procedimiento (FLOAT x) NI = {
 
 
 
-%% Prueba programa, estructuras asginacion, ejecutables, etc.
+%%Prueba programa, estructuras asginacion, ejecutables, etc.
 
 FLOAT a,b,res;
 LONGINT c;
