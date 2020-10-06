@@ -286,7 +286,7 @@ public class AnalizadorLexico {
     }
     
     public void updateTablaSimbolos(String lexema) {
-    	//Utilizado en el Parser, cuando se lea una constante negativa.
+    	//Utilizado en el Parser, cuando se lea una constante negativa. Analisis Sintactico.
     	String lexema_negativo = "-"+lexema;
     	if (!tabla_simbolos.containsKey(lexema_negativo)) {
     		//Si no esta el lexema negativo en la tabla de simbolos, agregarlo.
@@ -406,7 +406,7 @@ public class AnalizadorLexico {
 	}
 	
 	public boolean check_rango_longint(String lexema) {
-		// Chequeo rango longint positivo < 2147483647.
+		// Chequeo rango longint positivo < 2147483647. Analisis Sintactico.
 		if(tabla_simbolos.get(lexema).get("Tipo") == "LONGINT") {
 			BigDecimal lexBig = new BigDecimal(lexema.toString());
 			Double db = Math.pow(2, 31)-1;
@@ -419,7 +419,7 @@ public class AnalizadorLexico {
 	}
 	
 	public ParserVal yylval() {
-		// Devuelvo el lexema por medio de ParserVal.
+		// Devuelvo el lexema por medio de ParserVal. Analisis Sintactico.
 		return new ParserVal(lexema.toString());
 	}
 	

@@ -106,32 +106,27 @@ invocacion_procedimiento : ID '(' lista_parametros_invocacion ')' ';'{estructura
              | ID error ';' {addErrorSintactico("Error al invocar procedimiento.");}
              ;
 
-sentencia_declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion ')' NI '=' cte '{' cuerpo_procedimiento '}' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento con parametros.");}
-				    | PROC ID '(' ')' NI '=' cte '{' cuerpo_procedimiento '}' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento sin parametros.");}
-                    | PROC error '(' ')' NI '=' cte '{' cuerpo_procedimiento '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta ID");} 
-                    | PROC ID '(' error NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta )");} 
-                    | PROC ID error ')' NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta (");} 
-                    | PROC ID '(' '(' error ')' NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");} 
-                    | PROC ID  '('  ')' ')' error NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}       
-                    | PROC ID '(' ')' error '=' cte '{' cuerpo_procedimiento '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta NI");} 
-                    | PROC ID '(' ')' NI error cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta =");} 
-                    | PROC ID '(' ')' NI '=' error '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta cte");}
-                    | PROC ID '(' error ')' NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: error en la lista de parametros");}
-                    | PROC error '(' lista_parametros_declaracion ')' NI '=' cte '{' cuerpo_procedimiento '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta ID");} 
-                    | PROC ID '(' lista_parametros_declaracion error NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta )");} 
-                    | PROC ID error lista_parametros_declaracion ')' NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta (");} 
-                    | PROC ID '(' lista_parametros_declaracion ')' error '=' cte '{' cuerpo_procedimiento '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta NI");} 
-                    | PROC ID '(' lista_parametros_declaracion ')' NI error cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta =");} 
-                    | PROC ID '(' lista_parametros_declaracion ')' NI '=' error '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta cte");}
-                    | PROC ID '(' '(' error lista_parametros_declaracion ')' NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");} 
-                    | PROC ID  '(' lista_parametros_declaracion ')' ')' error NI '=' cte '{' cuerpo_procedimiento '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}       
+sentencia_declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento con parametros.");}
+				    | PROC ID '(' ')' NI '=' cte '{' conjunto_sentencias '}' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento sin parametros.");}
+                    | PROC error '(' ')' NI '=' cte '{' conjunto_sentencias '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta ID");} 
+                    | PROC ID '(' error NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta )");} 
+                    | PROC ID error ')' NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta (");} 
+                    | PROC ID '(' '(' error ')' NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");} 
+                    | PROC ID  '('  ')' ')' error NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}       
+                    | PROC ID '(' ')' error '=' cte '{' conjunto_sentencias '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta NI");} 
+                    | PROC ID '(' ')' NI error cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta =");} 
+                    | PROC ID '(' ')' NI '=' error '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta cte");}
+                    | PROC ID '(' error ')' NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: error en la lista de parametros");}
+                    | PROC error '(' lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta ID");} 
+                    | PROC ID '(' lista_parametros_declaracion error NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta )");} 
+                    | PROC ID error lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta (");} 
+                    | PROC ID '(' lista_parametros_declaracion ')' error '=' cte '{' conjunto_sentencias '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta NI");} 
+                    | PROC ID '(' lista_parametros_declaracion ')' NI error cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta =");} 
+                    | PROC ID '(' lista_parametros_declaracion ')' NI '=' error '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta cte");}
+                    | PROC ID '(' '(' error lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");} 
+                    | PROC ID  '(' lista_parametros_declaracion ')' ')' error NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}       
                     ;
 
-cuerpo_procedimiento : sentencias_declarativas
-                     | sentencias_ejecutables
-                     | sentencias_declarativas cuerpo_procedimiento
-                     | sentencias_ejecutables cuerpo_procedimiento
-                     ;
 
 lista_parametros_invocacion: parametro_invocacion
                            | parametro_invocacion ',' parametro_invocacion
