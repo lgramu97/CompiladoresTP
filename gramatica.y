@@ -6,7 +6,8 @@
     import java.util.ArrayList;
 	import java.util.Scanner;
 	import javax.swing.JFileChooser;
-
+    import java.util.Stack;
+    import componentes.SimboloPolaca;
 	
 %}
 
@@ -26,38 +27,63 @@ conjunto_sentencias : sentencias_declarativas
                     ;
 
 condicion : expresion IGUAL expresion
-          | expresion MAYOR_IGUAL expresion
-          | expresion MENOR_IGUAL expresion
-          | expresion DISTINTO expresion
-          | expresion '>' expresion
-          | expresion '<' expresion
-          | expresion error {addErrorSintactico("Error en la condicion");}
-          ;
+     | expresion MAYOR_IGUAL expresion
+     | expresion MENOR_IGUAL expresion
+     | expresion DISTINTO expresion
+     | expresion '>' expresion
+     | expresion '<' expresion
+     | expresion error {addErrorSintactico("Error en la condicion");}
+     ;
 
-clausula_while : WHILE '(' condicion ')' LOOP '{' bloque_sentencias_control '}'';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia WHILE LOOP.");}
-               | WHILE '(' error ')' LOOP '{' bloque_sentencias_control '}'';'{addErrorSintactico("Error en la condicion del WHILE.");}
-               | WHILE '(' error LOOP '{' bloque_sentencias_control '}'';'{addErrorSintactico("Error en la definicion del WHILE: falta el )");}
-               | WHILE error condicion ')' LOOP '{' bloque_sentencias_control '}'';' {addErrorSintactico("Error en la condicion del WHILE: falta el (.");}
-               | WHILE '(' condicion ')' error '{' bloque_sentencias_control'}' ';'{addErrorSintactico("Error en la condicion del WHILE: falta LOOP luego del ).");} 
-               | WHILE '(' '(' error condicion  ')' LOOP '{' bloque_sentencias_control'}'';'{addErrorSintactico("Error en la condicion del WHILE: hay uno o mas ( de mas del lado izquierdo.");}
-               | WHILE '(' condicion ')' ')' error LOOP '{' bloque_sentencias_control'}'';'{addErrorSintactico("Error en la condicion del WHILE: hay uno o mas ) de mas del lado derecho.");}
+condicion_accion: condicion {apilarPasoIncompleto(SimboloPolaca.BF);}
+	/* PASO 1 del IF y PASO 2 del WHILE
+		TERMINA LA EVALUACIÓN DE LA CONDICIÓN. (Generar BF)
+		1. Crear espacio en blanco
+		2. Apilar la dirección del paso incompleto.
+		3. Crear el paso del BF.
+	*/
+	;
+
+clausula_while : incio_while '(' condicion_accion ')' LOOP '{' bloque_sentencias_control '}'';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia WHILE LOOP.");}
+               | incio_while '(' error ')' LOOP '{' bloque_sentencias_control '}'';'{addErrorSintactico("Error en la condicion del WHILE.");}
+               | incio_while '(' error LOOP '{' bloque_sentencias_control '}'';'{addErrorSintactico("Error en la definicion del WHILE: falta el )");}
+               | incio_while error condicion_accion ')' LOOP '{' bloque_sentencias_control '}'';' {addErrorSintactico("Error en la condicion del WHILE: falta el (.");}
+               | incio_while '(' condicion_accion ')' error '{' bloque_sentencias_control'}' ';'{addErrorSintactico("Error en la condicion del WHILE: falta LOOP luego del ).");}
+               | incio_while '(' '(' error condicion_accion  ')' LOOP '{' bloque_sentencias_control'}'';'{addErrorSintactico("Error en la condicion del WHILE: hay uno o mas ( de mas del lado izquierdo.");}
+               | incio_while '(' condicion_accion ')' ')' error LOOP '{' bloque_sentencias_control'}'';'{addErrorSintactico("Error en la condicion del WHILE: hay uno o mas ) de mas del lado derecho.");}
                ;
 
-clausula_seleccion : IF '(' condicion ')' '{' bloque_sentencias_control '}' END_IF ';' {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF sin ELSE");}
-                   | IF '(' condicion ')''{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF con bloque ELSE.");}
-                   | IF '(' error ')' '{' bloque_sentencias_control '}' END_IF ';'{addErrorSintactico("Error en la condicion del IF.");}
-                   | IF '('  error '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: falta el )");}
-                   | IF  error condicion ')' '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: falta el (");}
-                   | IF '(' condicion ')' '{' bloque_sentencias_control '}' error  ';' {addErrorSintactico("Error en la definicion del IF: falta el END_IF");}
-                   | IF '(' '(' error condicion ')' '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: hay uno o mas ( de mas del lado izquierdo");}
-                   | IF '(' condicion ')' ')' error '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: hay uno o mas ) de mas del lado derecho");}
-                   | IF '(' error ')'  '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la condicion del IF ELSE.");}
-                   | IF '('  error '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el )");}
-                   | IF error condicion ')' '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el (");}
-                   | IF '(' condicion ')' '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' error ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el END_IF");}
-                   | IF '(' '(' error condicion ')''{'  bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: hay uno o mas ( de mas del lado izquierdo");}
-                   | IF '(' condicion ')' ')' error '{' bloque_sentencias_control '}' ELSE '{' bloque_sentencias_control '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: hay uno o mas ) de mas del lado derecho");}
+incio_while: WHILE {apilarPasoActual();}
+	   ;
+
+clausula_seleccion : IF '(' condicion_accion ')' '{' bloque_then '}' END_IF ';' {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF sin ELSE");}
+                   | IF '(' condicion_accion ')''{' bloque_then '}' ELSE '{' bloque_else '}' END_IF ';' {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF con bloque ELSE.");}
+                   | IF '(' error ')' '{' bloque_then '}' END_IF ';'{addErrorSintactico("Error en la condicion del IF.");}
+                   | IF '('  error '{' bloque_then '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: falta el )");}
+                   | IF  error condicion_accion ')' '{' bloque_then '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: falta el (");}
+                   | IF '(' condicion_accion ')' '{' bloque_then '}' error  ';' {addErrorSintactico("Error en la definicion del IF: falta el END_IF");}
+                   | IF '(' '(' error condicion_accion ')' '{' bloque_then '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: hay uno o mas ( de mas del lado izquierdo");}
+                   | IF '(' condicion_accion ')' ')' error '{' bloque_then '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF: hay uno o mas ) de mas del lado derecho");}
+                   | IF '(' error ')'  '{' bloque_then '}' ELSE '{' bloque_else '}' END_IF ';' {addErrorSintactico("Error en la condicion del IF ELSE.");}
+                   | IF '('  error '{' bloque_then '}' ELSE '{' bloque_else '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el )");}
+                   | IF error condicion_accion ')' '{' bloque_then '}' ELSE '{' bloque_else '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el (");}
+                   | IF '(' condicion_accion ')' '{' bloque_then '}' ELSE '{' bloque_else '}' error ';' {addErrorSintactico("Error en la definicion del IF ELSE: falta el END_IF");}
+                   | IF '(' '(' error condicion_accion ')''{'  bloque_then '}' ELSE '{' bloque_else '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: hay uno o mas ( de mas del lado izquierdo");}
+                   | IF '(' condicion_accion ')' ')' error '{' bloque_then '}' ELSE '{' bloque_else '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: hay uno o mas ) de mas del lado derecho");}
                    ;
+
+bloque_then: bloque_sentencias_control {completarPasoIncompleto();apilarPasoIncompleto(SimboloPolaca.BI);}
+	/* PASO 2
+		#_paso_incomp = desapilar_paso(); //Desapila dirección incompleta.
+		completar(#_paso_incomp , #_paso_actual + 2); //Completa el destino de BF.
+		#_paso_actual = create_paso(“ ”); //Crea paso incompleto.
+		apilar_paso(#_paso_actual); //Apila el número del paso incompleto.
+		#_paso_actual = generar_paso(“BI”); //Se crea el paso BI.
+	*/
+         ;
+
+bloque_else: bloque_sentencias_control {}
+           ;
 
 bloque_sentencias_control :  sentencias_ejecutables 
                           |  sentencias_ejecutables bloque_sentencias_control
@@ -68,8 +94,12 @@ sentencias_declarativas : sentencia_declaracion_datos
                         ;
 
 sentencias_ejecutables : asignacion
-                       | clausula_seleccion
-                       | clausula_while
+                       | clausula_seleccion {completarPasoIncompleto();}
+                       	// PASO 3
+                       	// #_paso_incomp = desapilar_paso(); //Desapila dirección incompleta.
+			// completar_paso(#_paso_incomp, #_paso_actual + 1); //Completa el destino de
+			// BI.
+                       | clausula_while {completarPasoIncompleto();generarBIinicio();}
                        | sentencia_salida
                        | invocacion_procedimiento
                        | error ';' {addErrorSintactico("Syntax error");}
@@ -177,14 +207,42 @@ cte : CTE {if (!analizadorLexico.check_rango_longint($1.sval)){
     ;
 %%
 
-// codigo
 
-
+ArrayList<SimboloPolaca> listaReglas = new ArrayList<>();
+Stack<Integer> pasosIncompletos = new Stack<>();
 AnalizadorLexico analizadorLexico = new AnalizadorLexico();
 ArrayList<String> erroresSintacticos = new ArrayList<>();
 ArrayList<String> erroresParser = new ArrayList<>();
 ArrayList<String> tokens = new ArrayList<>();
 ArrayList<String> estructuras = new ArrayList<>();
+
+public void addSimbolo(String simbolo) {
+	listaReglas.add(new SimboloPolaca(simbolo));
+}
+
+public void apilarPasoIncompleto(String nombre) {
+	apilarPasoActual();
+	addSimbolo(null);
+	addSimbolo(nombre);
+}
+
+public void completarPasoIncompleto() {
+	int posIncompleto = pasosIncompletos.pop();
+	SimboloPolaca simbolo = listaReglas.get(posIncompleto);
+	int pos = listaReglas.size()+2;
+	simbolo.setSimbolo(pos+"");
+}
+
+public void generarBIinicio(){
+	int posInicial = pasosIncompletos.pop();
+	addSimbolo(posInicial+"");
+	addSimbolo(SimboloPolaca.BI);
+}
+
+public void apilarPasoActual() {
+	pasosIncompletos.push(listaReglas.size());
+}
+
 
 public int yylex(){
 		int token = analizadorLexico.yylex();
@@ -217,22 +275,20 @@ public void yyerror(String error){
 
 public StringBuilder copiarErrores(ArrayList<String> errores){
     StringBuilder out = new StringBuilder();
-    for ( int i=0; i<errores.size();i++){
-        out.append("\t" +errores.get(i));
+    for (String errore : errores) {
+        out.append("\t").append(errore);
         out.append("\n");
     }
     return out;
 }
 
 public String getErrores(){
-    StringBuilder errores = new StringBuilder("Errores Lexicos: ");
-    errores.append("\n");
-    errores.append(copiarErrores(analizadorLexico.getErrores()));
-    errores.append("\n");
-    errores.append("Errores Sintacticos: ");
-    errores.append("\n");
-    errores.append(copiarErrores(this.erroresSintacticos));
-    return errores.toString();
+    return "Errores Lexicos: " + "\n" +
+            copiarErrores(analizadorLexico.getErrores()) +
+            "\n" +
+            "Errores Sintacticos: " +
+            "\n" +
+            copiarErrores(this.erroresSintacticos);
 }
 
 public void saveFile() {
@@ -241,28 +297,28 @@ public void saveFile() {
 	 jchooser.setCurrentDirectory(workingDirectory);
 	 jchooser.setDialogTitle("Guardar archivo de salida.");
 	 jchooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-	 
+
 	 if (jchooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-		File out = jchooser.getSelectedFile(); 
+		File out = jchooser.getSelectedFile();
 
 	    try {
 			FileWriter salida = new FileWriter(out+"/out.txt");
-			
+
 			salida.write(this.getErrores() + "\n");
-			
+
 			salida.write("Tokens detectados en el codigo fuente: " + "\n");
-			for (int i = 0; i<tokens.size();i++) {
-				salida.write("\t" + tokens.get(i) + "\n");
-			}
-			
+            for (String token : tokens) {
+                salida.write("\t" + token + "\n");
+            }
+
 			salida.write("\n" + "Estructuras detectadas en el codigo fuente: " + "\n");
-			for (int i = 0; i<estructuras.size();i++) {
-				salida.write("\t" + estructuras.get(i) + "\n");
-			}
-			
+            for (String estructura : estructuras) {
+                salida.write("\t" + estructura + "\n");
+            }
+
 			salida.write("\n"+"Contenido de la tabla de simbolos: " + "\n");
 			salida.write(this.getAnalizadorLexico().getDatosTabla_simbolos());
-			
+
 			salida.close();
 
 		} catch (IOException e) {
@@ -274,24 +330,24 @@ public void saveFile() {
 }
 
 
-public static void main(String args[]){
+public static void main(String[] args){
 	Parser parser = new Parser();
 	parser.yyparse();
 	System.out.println(parser.getErrores());
-	
+
 	ArrayList<String> tokens = parser.getTokens();
 	System.out.println();
 	System.out.println("Tokens detectados en el codigo fuente: ");
-	for (int i = 0; i<tokens.size();i++) {
-		System.out.println(tokens.get(i));
-	}
-	
+    for (String token : tokens) {
+        System.out.println(token);
+    }
+
 	ArrayList<String> estructuras = parser.getEstructuras();
 	System.out.println();
 	System.out.println("Estructuras detectadas en el codigo fuente: ");
-	for (int i = 0; i<estructuras.size();i++) {
-		System.out.println(estructuras.get(i));
-	}
+    for (String estructura : estructuras) {
+        System.out.println(estructura);
+    }
 	
 	System.out.println();
 	System.out.println("Contenido de la tabla de simbolos: ");
