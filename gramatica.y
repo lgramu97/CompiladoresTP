@@ -26,12 +26,12 @@ conjunto_sentencias : sentencias_declarativas
                     | sentencias_ejecutables conjunto_sentencias 
                     ;
 
-condicion : expresion IGUAL expresion
-     | expresion MAYOR_IGUAL expresion
-     | expresion MENOR_IGUAL expresion
-     | expresion DISTINTO expresion
-     | expresion '>' expresion
-     | expresion '<' expresion
+condicion : expresion IGUAL expresion {addSimbolo("==");}
+     | expresion MAYOR_IGUAL expresion {addSimbolo(">=");}
+     | expresion MENOR_IGUAL expresion {addSimbolo("<=");}
+     | expresion DISTINTO expresion {addSimbolo("!=");}
+     | expresion '>' expresion {addSimbolo(">");}
+     | expresion '<' expresion {addSimbolo("<");}
      | expresion error {addErrorSintactico("Error en la condicion");}
      ;
 
@@ -72,7 +72,7 @@ clausula_seleccion : IF '(' condicion_accion ')' '{' bloque_then '}' END_IF ';' 
                    | IF '(' condicion_accion ')' ')' error '{' bloque_then '}' ELSE '{' bloque_else '}' END_IF ';' {addErrorSintactico("Error en la definicion del IF ELSE: hay uno o mas ) de mas del lado derecho");}
                    ;
 
-bloque_then: bloque_sentencias_control {completarPasoIncompleto();apilarPasoIncompleto(SimboloPolaca.BI);}
+bloque_then: bloque_sentencias_control {completarPasoIncompleto(false);apilarPasoIncompleto(SimboloPolaca.BI);}
 	/* PASO 2
 		#_paso_incomp = desapilar_paso(); //Desapila dirección incompleta.
 		completar(#_paso_incomp , #_paso_actual + 2); //Completa el destino de BF.
@@ -94,12 +94,12 @@ sentencias_declarativas : sentencia_declaracion_datos
                         ;
 
 sentencias_ejecutables : asignacion
-                       | clausula_seleccion {completarPasoIncompleto();}
+                       | clausula_seleccion {completarPasoIncompleto(true);}
                        	// PASO 3
                        	// #_paso_incomp = desapilar_paso(); //Desapila dirección incompleta.
 			// completar_paso(#_paso_incomp, #_paso_actual + 1); //Completa el destino de
 			// BI.
-                       | clausula_while {completarPasoIncompleto();generarBIinicio();}
+                       | clausula_while {completarPasoIncompleto(true);generarBIinicio();}
                        | sentencia_salida
                        | invocacion_procedimiento
                        | error ';' {addErrorSintactico("Syntax error");}
@@ -180,23 +180,25 @@ parametro_invocacion : ID ':' ID
                      | error ':' ID { addErrorSintactico("Error en la definicion de parametros del lado izquierdo");}
                      ;
 
-asignacion : ID '=' expresion ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia asignacion variable.");}
+asignacion : ID '=' expresion ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia asignacion variable.");
+								  addSimbolo( $1.sval); 
+								  addSimbolo( "=");}
            | ID '=' error ';' {addErrorSintactico("Error de asignación a la derecha.");}
            | error '=' expresion ';' {addErrorSintactico("Error de asignación a la izquierda.");}
            ;
 
-expresion : expresion '+' termino {addSimbolo($1.sval);addSimbolo($3.sval);addSimbolo($2.sval);}
-          | expresion '-' termino {addSimbolo($1.sval);addSimbolo($3.sval);addSimbolo($2.sval);}
-          | termino
+expresion : expresion '+' termino {addSimbolo("+");}
+          | expresion '-' termino {addSimbolo("-");}
+          | termino 
           ;
 
-termino : termino '*' factor {addSimbolo($1.sval);addSimbolo($3.sval);addSimbolo($2.sval);}
-        | termino '/' factor {addSimbolo($1.sval);addSimbolo($3.sval);addSimbolo($2.sval);}
-        | factor
+termino : termino '*' factor {addSimbolo("*");}
+        | termino '/' factor {addSimbolo("/");}
+        | factor 
         ;
 
-factor : ID
-       | cte
+factor : ID {addSimbolo($1.sval);}
+       | cte {addSimbolo($1.sval);}
        | ERROR
        ;
 
@@ -217,7 +219,6 @@ ArrayList<String> tokens = new ArrayList<>();
 ArrayList<String> estructuras = new ArrayList<>();
 
 public void addSimbolo(String simbolo) {
-    System.out.println("Valor a agregar : " + simbolo);
 	listaReglas.add(new SimboloPolaca(simbolo));
 }
 
@@ -227,10 +228,13 @@ public void apilarPasoIncompleto(String nombre) {
 	addSimbolo(nombre);
 }
 
-public void completarPasoIncompleto() {
+public void completarPasoIncompleto(boolean fin) {
 	int posIncompleto = pasosIncompletos.pop();
 	SimboloPolaca simbolo = listaReglas.get(posIncompleto);
-	int pos = listaReglas.size()+2;
+    int pos = listaReglas.size();
+    if (!fin) {
+        pos += 2;
+    }
 	simbolo.setSimbolo(pos+"");
 }
 
@@ -248,7 +252,7 @@ public void apilarPasoActual() {
 public int yylex(){
 		int token = analizadorLexico.yylex();
         //Si el token es un ID, CTE, CADENA necesito el valor del lexema.
-		if(token == 270 || token == 276 || token  == 277)
+		if(token == Parser.ID || token == Parser.CTE || token  == Parser.CADENA)
             yylval = analizadorLexico.yylval();
 		tokens.add("Linea numero: "+ (analizadorLexico.getFilaActual()+1) +" token " + token+" --" + analizadorLexico.tokenToString(token));
 		return token;
