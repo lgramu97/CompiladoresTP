@@ -635,6 +635,7 @@ ArrayList<String> tokens = new ArrayList<>();
 ArrayList<String> estructuras = new ArrayList<>();
 
 public void addSimbolo(String simbolo) {
+    System.out.println("Valor a agregar : " + simbolo);
 	listaReglas.add(new SimboloPolaca(simbolo));
 }
 
@@ -681,6 +682,10 @@ public ArrayList<String> getTokens(){
 
 public ArrayList<String> getEstructuras(){
 	return this.estructuras;
+}
+
+public ArrayList<SimboloPolaca> getListaSimboloPolaca(){
+    return this.listaReglas;
 }
 
 public void addErrorSintactico(String error){
@@ -778,9 +783,16 @@ public static void main(String[] args){
 	if (rta.equals("Y") || rta.equals("y"))
 		parser.saveFile();
 	in.close();
-	
+
+
+    ArrayList<SimboloPolaca> lista = parser.getListaSimboloPolaca();
+    System.out.println("Tamaño de la lista de simbolos: " + lista.size());
+    for (SimboloPolaca simboloPolaca : lista) {
+        System.out.println("VALOR POLACA: " + simboloPolaca.getSimbolo());
+    }
+
 }
-//#line 712 "Parser.java"
+//#line 724 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1226,6 +1238,22 @@ case 103:
 //#line 185 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error de asignación a la izquierda.");}
 break;
+case 104:
+//#line 188 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{addSimbolo(val_peek(2).sval);addSimbolo(val_peek(0).sval);addSimbolo(val_peek(1).sval);}
+break;
+case 105:
+//#line 189 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{addSimbolo(val_peek(2).sval);addSimbolo(val_peek(0).sval);addSimbolo(val_peek(1).sval);}
+break;
+case 107:
+//#line 193 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{addSimbolo(val_peek(2).sval);addSimbolo(val_peek(0).sval);addSimbolo(val_peek(1).sval);}
+break;
+case 108:
+//#line 194 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{addSimbolo(val_peek(2).sval);addSimbolo(val_peek(0).sval);addSimbolo(val_peek(1).sval);}
+break;
 case 113:
 //#line 203 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {if (!analizadorLexico.check_rango_longint(val_peek(0).sval)){
@@ -1236,7 +1264,7 @@ case 114:
 {analizadorLexico.updateTablaSimbolos(val_peek(0).sval);
                yyval = new ParserVal("-"+val_peek(0).sval);}
 break;
-//#line 1163 "Parser.java"
+//#line 1191 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

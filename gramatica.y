@@ -185,13 +185,13 @@ asignacion : ID '=' expresion ';'{estructuras.add("Linea numero: "+(analizadorLe
            | error '=' expresion ';' {addErrorSintactico("Error de asignación a la izquierda.");}
            ;
 
-expresion : expresion '+' termino 
-          | expresion '-' termino 
+expresion : expresion '+' termino {addSimbolo($1.sval);addSimbolo($3.sval);addSimbolo($2.sval);}
+          | expresion '-' termino {addSimbolo($1.sval);addSimbolo($3.sval);addSimbolo($2.sval);}
           | termino
           ;
 
-termino : termino '*' factor
-        | termino '/' factor
+termino : termino '*' factor {addSimbolo($1.sval);addSimbolo($3.sval);addSimbolo($2.sval);}
+        | termino '/' factor {addSimbolo($1.sval);addSimbolo($3.sval);addSimbolo($2.sval);}
         | factor
         ;
 
@@ -217,6 +217,7 @@ ArrayList<String> tokens = new ArrayList<>();
 ArrayList<String> estructuras = new ArrayList<>();
 
 public void addSimbolo(String simbolo) {
+    System.out.println("Valor a agregar : " + simbolo);
 	listaReglas.add(new SimboloPolaca(simbolo));
 }
 
@@ -263,6 +264,10 @@ public ArrayList<String> getTokens(){
 
 public ArrayList<String> getEstructuras(){
 	return this.estructuras;
+}
+
+public ArrayList<SimboloPolaca> getListaSimboloPolaca(){
+    return this.listaReglas;
 }
 
 public void addErrorSintactico(String error){
@@ -360,5 +365,12 @@ public static void main(String[] args){
 	if (rta.equals("Y") || rta.equals("y"))
 		parser.saveFile();
 	in.close();
-	
+
+
+    ArrayList<SimboloPolaca> lista = parser.getListaSimboloPolaca();
+    System.out.println("Tamaño de la lista de simbolos: " + lista.size());
+    for (SimboloPolaca simboloPolaca : lista) {
+        System.out.println("VALOR POLACA: " + simboloPolaca.getSimbolo());
+    }
+
 }
