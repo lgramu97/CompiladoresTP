@@ -1,0 +1,180 @@
+IF ( a - b > c + 1.0 ) {
+	a  = b;
+} END_IF ;
+
+0  a 
+1  b 
+2  - 
+3  c 
+4  1.0 
+5  + 
+6  > 
+7  [14] 
+8  BF 
+9  b   
+10 a  
+11 =  
+12 [14] 
+13 BI  
+14 ...
+
+IF ( a - b > c + 1.0 ) {
+	a  = b + c;
+} ELSE { 
+	a = b - c;
+} END_IF ;
+
+0  a
+1  b
+2  -
+3  c
+4  1.0
+5  +
+6  >
+7  [16]
+8  BF
+9  b
+10 c
+11 +
+12 a
+13 =
+14 [21]
+15 BI
+16 b
+17 c
+18 -
+19 a
+20 =
+21 ...
+
+IF ( a == 0.0 ) {
+	a  = b;
+	IF ( b == 0.0 ) {
+		c = 1.0;
+	} END_IF;
+} END_IF;
+
+0	a
+1	0.0
+2	==
+3	[20]
+4	BF
+5	b
+6	a
+7	=
+8	b
+9	0.0
+10	==
+11	[18]
+12	BF
+13	1.0
+14	c
+15	=
+16	[18]
+17	BI
+18	[20]
+19	BI
+20  ..
+
+
+IF ( a - b > c + 1.0 ) {
+	OUT("hola como andas");
+} END_IF ;
+
+0  a
+1  b
+2  -
+3  c
+4  1.0
+5  +
+6  >
+7  [12]
+8  BF
+9  "hola como andas"
+10 [12]
+11 BI
+12 ...
+
+
+IF ( a - b > c + 1.0 ) {
+	OUT("hola como andas-
+		asdads");
+} END_IF ;
+
+VALOR POLACA [0]: a
+VALOR POLACA [1]: b
+VALOR POLACA [2]: -
+VALOR POLACA [3]: c
+VALOR POLACA [4]: 1.0
+VALOR POLACA [5]: +
+VALOR POLACA [6]: >
+VALOR POLACA [7]: 12
+VALOR POLACA [8]: BF
+VALOR POLACA [9]: "hola como andas
+		asdads"
+VALOR POLACA [10]: 12
+VALOR POLACA [11]: BI
+
+
+ PROC procedimiento() NI = 3_l {
+	 LONGINT a;
+ };
+
+PROC procedimientoo(REF LONGINT a, LONGINT b, REF FLOAT c) NI = 3_l {
+	 LONGINT a;
+ };
+
+Contenido de la tabla de simbolos: 
+Lexema: a
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: b
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: 3
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 2
+Lexema: c
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: procedimientoo
+	Atributo: Tipo   Valor: PROC
+	Atributo: Cantidad   Valor: 1
+Lexema: procedimiento
+	Atributo: Tipo   Valor: PROC
+	Atributo: Cantidad   Valor: 1
+
+
+PROC procedimiento() NI = 3_l {
+	 LONGINT x1;
+ };
+
+PROC procedimientoo(REF LONGINT x2, LONGINT x3, REF FLOAT x4) NI = 3_l {
+	 LONGINT x5;
+ };
+
+Contenido de la tabla de simbolos: 
+Lexema: 3
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 2
+Lexema: x1
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: x2
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: procedimientoo
+	Atributo: Tipo   Valor: PROC
+	Atributo: Cantidad   Valor: 1
+Lexema: x3
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: x4
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: procedimiento
+	Atributo: Tipo   Valor: PROC
+	Atributo: Cantidad   Valor: 1
+Lexema: x5
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1

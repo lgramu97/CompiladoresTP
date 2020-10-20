@@ -4,10 +4,10 @@
     import java.io.FileWriter;
     import java.io.IOException;
     import java.util.ArrayList;
+    import java.util.HashMap;
 	import java.util.Scanner;
 	import javax.swing.JFileChooser;
     import java.util.Stack;
-    import componentes.SimboloPolaca;
 	
 %}
 
@@ -99,27 +99,29 @@ sentencias_ejecutables : asignacion
                        	// #_paso_incomp = desapilar_paso(); //Desapila dirección incompleta.
 			// completar_paso(#_paso_incomp, #_paso_actual + 1); //Completa el destino de
 			// BI.
-                       | clausula_while {completarPasoIncompleto(true);generarBIinicio();}
+                       | clausula_while {completarPasoIncompleto(false);generarBIinicio();}
                        | sentencia_salida
                        | invocacion_procedimiento
                        | error ';' {addErrorSintactico("Syntax error");}
                        ;
 
-sentencia_salida : OUT '(' CADENA ')' ';' {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia imprimir por pantalla.");}
+sentencia_salida : OUT '(' CADENA ')' ';' {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia imprimir por pantalla.");
+                                           addSimbolo($3.sval);}
                  | OUT '(' CADENA ')' ')' ';' {addErrorSintactico("Error al imprimir por pantalla: caracter ) de mas en el lado derecho");} 
                  | OUT '(' '(' CADENA ')' ';' {addErrorSintactico("Error al imprimir por pantalla: caracter ( de mas en el lado izquierdo");}  
                  | OUT error ';' {addErrorSintactico("Error al imprimir por pantalla");}
                  ;
 
-lista_variables: ID
-               | ID ',' lista_variables
+lista_variables: ID {modificarLexema($1.sval);}
+               | ID ',' lista_variables {modificarLexema($1.sval);}
                ;
 
-tipo : LONGINT
-     | FLOAT
+tipo : LONGINT {$$ = new ParserVal("LONGINT");}
+     | FLOAT {$$ = new ParserVal("FLOAT");}
      ;
 
-sentencia_declaracion_datos : tipo lista_variables ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion variables.");}
+sentencia_declaracion_datos : tipo lista_variables ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion variables.");
+                                                      addTipoListaVariables($1.sval,"VARIABLE");}
                             ;
 
 invocacion_procedimiento : ID '(' lista_parametros_invocacion ')' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento con parametros.");}
@@ -136,27 +138,33 @@ invocacion_procedimiento : ID '(' lista_parametros_invocacion ')' ';'{estructura
              | ID error ';' {addErrorSintactico("Error al invocar procedimiento.");}
              ;
 
-sentencia_declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento con parametros.");}
-				    | PROC ID '(' ')' NI '=' cte '{' conjunto_sentencias '}' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento sin parametros.");}
-                    | PROC error '(' ')' NI '=' cte '{' conjunto_sentencias '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta ID");} 
-                    | PROC ID '(' error NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta )");} 
-                    | PROC ID error ')' NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta (");} 
-                    | PROC ID '(' '(' error ')' NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");} 
-                    | PROC ID  '('  ')' ')' error NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}       
-                    | PROC ID '(' ')' error '=' cte '{' conjunto_sentencias '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta NI");} 
-                    | PROC ID '(' ')' NI error cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta =");} 
-                    | PROC ID '(' ')' NI '=' error '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta cte");}
-                    | PROC ID '(' error ')' NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: error en la lista de parametros");}
-                    | PROC error '(' lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta ID");} 
-                    | PROC ID '(' lista_parametros_declaracion error NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta )");} 
-                    | PROC ID error lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta (");} 
-                    | PROC ID '(' lista_parametros_declaracion ')' error '=' cte '{' conjunto_sentencias '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta NI");} 
-                    | PROC ID '(' lista_parametros_declaracion ')' NI error cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta =");} 
-                    | PROC ID '(' lista_parametros_declaracion ')' NI '=' error '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta cte");}
-                    | PROC ID '(' '(' error lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");} 
-                    | PROC ID  '(' lista_parametros_declaracion ')' ')' error NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}       
+sentencia_declaracion_procedimiento : inicio_proc '(' lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento con parametros.");
+                                                                                                                                  deleteAmbito();}
+				    | inicio_proc '(' ')' NI '=' cte '{' conjunto_sentencias '}' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento sin parametros.");
+                                                                                    deleteAmbito();}
+                    | inicio_proc '(' error NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta )");} 
+                    | inicio_proc error ')' NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta (");} 
+                    | inicio_proc '(' '(' error ')' NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");} 
+                    | inicio_proc  '('  ')' ')' error NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}       
+                    | inicio_proc '(' ')' error '=' cte '{' conjunto_sentencias '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta NI");} 
+                    | inicio_proc '(' ')' NI error cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta =");} 
+                    | inicio_proc '(' ')' NI '=' error '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta cte");}
+                    | inicio_proc '(' error ')' NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: error en la lista de parametros");}
+                    | inicio_proc '(' lista_parametros_declaracion error NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta )");} 
+                    | inicio_proc error lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta (");} 
+                    | inicio_proc '(' lista_parametros_declaracion ')' error '=' cte '{' conjunto_sentencias '}' ';'  {addErrorSintactico("Error al declarar procedimiento: falta NI");} 
+                    | inicio_proc '(' lista_parametros_declaracion ')' NI error cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta =");} 
+                    | inicio_proc '(' lista_parametros_declaracion ')' NI '=' error '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: falta cte");}
+                    | inicio_proc '(' '(' error lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");} 
+                    | inicio_proc  '(' lista_parametros_declaracion ')' ')' error NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}       
                     ;
 
+inicio_proc: PROC ID {
+                    modificarLexema($2.sval);
+                    addTipoListaVariables("PROC","PROC");
+                    addAmbito($2.sval);}
+            | PROC error '(' {addErrorSintactico("Error al declarar procedimiento: falta ID");}
+           ;
 
 lista_parametros_invocacion: parametro_invocacion
                            | parametro_invocacion ',' parametro_invocacion
@@ -171,8 +179,12 @@ lista_parametros_declaracion : parametro_declaracion
 			 | parametro_declaracion ',' parametro_declaracion ',' parametro_declaracion ',' error {addErrorSintactico("Error. El numero maximo de parametros permitido es 3.");}
 			 ;
 
-parametro_declaracion: tipo ID
-         | REF tipo ID
+parametro_declaracion: tipo ID {
+				addTipoListaVariables($1.sval,"PARAMETRO");
+                modificarLexema($2.sval);}
+         | REF tipo ID {
+                       	addTipoListaVariables($2.sval,"PARAMETRO");
+                        modificarLexema($3.sval);}
          ;
 
 parametro_invocacion : ID ':' ID
@@ -209,7 +221,6 @@ cte : CTE {if (!analizadorLexico.check_rango_longint($1.sval)){
     ;
 %%
 
-
 ArrayList<SimboloPolaca> listaReglas = new ArrayList<>();
 Stack<Integer> pasosIncompletos = new Stack<>();
 AnalizadorLexico analizadorLexico = new AnalizadorLexico();
@@ -217,6 +228,44 @@ ArrayList<String> erroresSintacticos = new ArrayList<>();
 ArrayList<String> erroresParser = new ArrayList<>();
 ArrayList<String> tokens = new ArrayList<>();
 ArrayList<String> estructuras = new ArrayList<>();
+ArrayList<String> lista_variables = new ArrayList<>();
+ArrayList<String> ambito = new ArrayList<String>() {
+    {
+        add("@main");
+    }
+};
+
+public void addAmbito(String ambito_actual){
+    ambito.add("@" + ambito_actual);
+}
+
+public void deleteAmbito(){
+    ambito.remove(ambito.size()-1);
+}
+
+public String nameMangling(String simbolo) {
+    return simbolo + ambito.toString()
+        .replaceAll("\\[|]|, ", "");
+}
+
+public void modificarLexema(String lexema){
+    HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
+    HashMap<String,Object> atributos = ts.get(lexema);
+    ts.remove(lexema);
+    String newLexema = nameMangling(lexema);
+    ts.put(newLexema ,atributos);
+    lista_variables.add(newLexema);
+}
+
+public void addTipoListaVariables(String tipo, String uso){
+  HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
+    for (String lista_variable : lista_variables) {
+        HashMap<String, Object> atributos =  ts.get(lista_variable);
+        atributos.put("Tipo", tipo);
+        atributos.put("Uso", uso);
+    }
+  lista_variables.clear();
+}
 
 public void addSimbolo(String simbolo) {
 	listaReglas.add(new SimboloPolaca(simbolo));
@@ -373,8 +422,10 @@ public static void main(String[] args){
 
     ArrayList<SimboloPolaca> lista = parser.getListaSimboloPolaca();
     System.out.println("Tamaño de la lista de simbolos: " + lista.size());
-    for (SimboloPolaca simboloPolaca : lista) {
-        System.out.println("VALOR POLACA: " + simboloPolaca.getSimbolo());
+    for (int i = 0, listaSize = lista.size(); i < listaSize; i++) {
+        SimboloPolaca simboloPolaca = lista.get(i);
+        System.out.println("VALOR POLACA [" + i + "]: " + simboloPolaca.getSimbolo());
     }
+    System.out.println("VALOR POLACA [" + lista.size() +  "]: ...");
 
 }

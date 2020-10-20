@@ -16,16 +16,16 @@
 
 
 
-//#line 2 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 2 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 	package componentes;
     import java.io.File;
     import java.io.FileWriter;
     import java.io.IOException;
     import java.util.ArrayList;
+    import java.util.HashMap;
 	import java.util.Scanner;
 	import javax.swing.JFileChooser;
     import java.util.Stack;
-    import componentes.SimboloPolaca;
 	
 //#line 28 "Parser.java"
 
@@ -197,10 +197,10 @@ final static short yylhs[] = {                           -1,
    16,   18,   18,   19,   19,   13,   17,   17,   17,   17,
    17,   17,   17,   17,   17,   17,   17,   17,   14,   14,
    14,   14,   14,   14,   14,   14,   14,   14,   14,   14,
-   14,   14,   14,   14,   14,   14,   14,   20,   20,   20,
-   20,   21,   21,   21,   21,   24,   24,   23,   23,   23,
-   15,   15,   15,    5,    5,    5,   25,   25,   25,   26,
-   26,   26,   22,   22,
+   14,   14,   14,   14,   14,   21,   21,   20,   20,   20,
+   20,   22,   22,   22,   22,   25,   25,   24,   24,   24,
+   15,   15,   15,    5,    5,    5,   26,   26,   26,   27,
+   27,   27,   23,   23,
 };
 final static short yylen[] = {                            2,
     1,    1,    1,    2,    2,    3,    3,    3,    3,    3,
@@ -209,9 +209,9 @@ final static short yylen[] = {                            2,
    12,   13,   13,   15,   15,    1,    1,    1,    2,    1,
     1,    1,    1,    1,    1,    1,    2,    5,    6,    6,
     3,    1,    3,    1,    1,    3,    5,    4,    4,    4,
-    5,    6,    5,    5,    5,    7,    7,    3,   12,   11,
-   11,   11,   11,   13,   13,   11,   11,   11,   12,   12,
-   12,   12,   12,   12,   12,   14,   14,    1,    3,    5,
+    5,    6,    5,    5,    5,    7,    7,    3,   11,   10,
+   10,   10,   12,   12,   10,   10,   10,   11,   11,   11,
+   11,   11,   11,   13,   13,    2,    3,    1,    3,    5,
     7,    1,    3,    5,    7,    2,    3,    3,    3,    3,
     4,    4,    4,    3,    3,    1,    3,    3,    1,    1,
     1,    1,    1,    2,
@@ -219,127 +219,123 @@ final static short yylen[] = {                            2,
 final static short yydefred[] = {                         0,
     0,    0,    0,   54,   55,   21,    0,    0,    0,    1,
     0,    0,   44,    0,   43,   40,   41,   42,   45,   46,
-    0,   47,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    4,    5,    0,    0,    0,    0,  110,  113,
-  112,    0,    0,  111,    0,  109,   13,    0,    0,    0,
-    0,    0,   51,    0,    0,    0,    0,    0,    0,    0,
-    0,   68,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,   56,  114,  103,    0,    0,
+    0,    0,   47,    0,    0,    0,    0,    0,    0,   86,
+    0,    0,    0,    4,    5,    0,    0,    0,    0,    0,
+    0,  110,  113,  112,    0,    0,  111,    0,  109,   13,
+    0,    0,    0,    0,    0,   51,    0,    0,   87,    0,
+    0,    0,   68,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,   56,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,  114,  103,    0,    0,
     0,    0,   12,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,   60,    0,
+    0,    0,   59,    0,    0,   58,    0,    0,  102,  101,
+    0,    0,    0,    0,    0,   53,    0,    0,   96,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,   60,
-    0,    0,    0,   59,    0,    0,   58,    0,    0,  102,
-  101,    0,    0,    0,    0,    0,   53,    0,    0,  107,
-  108,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-   36,    0,    0,    0,    0,    0,   48,    0,    0,    0,
-   96,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,  100,   99,   98,   65,    0,   64,   61,
-    0,    0,   63,    0,   57,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,   39,    0,    0,    0,    0,   49,
-   50,   97,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,  107,  108,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,   36,    0,    0,    0,    0,    0,   48,    0,
+  100,   99,   98,   65,    0,   64,   61,    0,    0,   63,
+    0,   57,    0,    0,    0,    0,    0,    0,    0,   97,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,   62,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,   39,    0,    0,
+    0,    0,   49,   50,    0,    0,   62,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,   66,   67,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-   25,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+   66,   67,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,   16,
-    0,    0,    0,    0,    0,   26,    0,   24,    0,   37,
-    0,    0,    0,   27,   22,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,   91,   17,   15,    0,
-   18,   14,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,   95,    0,    0,    0,    0,    0,    0,
+    0,   25,    0,    0,    0,    0,    0,    0,    0,    0,
+   16,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,   28,    0,   29,    0,
-    0,   71,    0,   73,    0,   72,    0,    0,    0,   76,
-   77,   78,   70,    0,    0,    0,    0,    0,    0,    0,
-   19,   20,    0,    0,   31,    0,    0,    0,    0,   80,
-   82,   79,    0,    0,    0,   81,   83,   84,   85,   69,
-    0,   32,   30,    0,    0,   33,   23,   74,    0,   75,
-    0,    0,    0,   86,   87,   34,   35,
+    0,    0,    0,    0,   26,    0,   24,    0,   37,    0,
+    0,    0,   27,   22,    0,   91,   17,   15,    0,   18,
+   14,    0,    0,    0,   95,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+   72,    0,   71,    0,    0,    0,   75,   76,   77,   70,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+   28,    0,   29,    0,    0,   19,   20,   80,   78,    0,
+    0,    0,   79,   81,   82,   83,   69,    0,    0,    0,
+   31,    0,    0,    0,    0,   73,    0,   74,    0,   32,
+   30,    0,    0,   33,   23,   84,   85,    0,    0,   34,
+   35,
 };
 final static short yydgoto[] = {                          9,
-   10,   11,   12,   47,   48,   49,   13,   14,  141,   15,
-  142,  301,   16,   17,   18,   19,   20,   38,   21,   63,
-  100,   44,   64,  101,   45,   46,
+   10,   11,   12,   50,   51,   52,   13,   14,  153,   15,
+  154,  310,   16,   17,   18,   19,   20,   39,   21,   64,
+   22,   81,   47,   65,   82,   48,   49,
 };
-final static short yysindex[] = {                       -89,
-  142,  -26,  -24,    0,    0,    0, -155,  -35,    0,    0,
-  -89,  -89,    0,   14,    0,    0,    0,    0,    0,    0,
- -240,    0,    6,    6,  -37,  -16,  -34,   20,   27,   51,
-   31,  -20,    0,    0,    6,  -36,   33,   43,    0,    0,
-    0, -190,   75,    0,    5,    0,    0,   19,   73,   -4,
- -134,   91,    0,  116, -104,   34,   44,   25,  124,  128,
-  132,    0,  156,  162,   41,  -45,   37,  -31,  154,   78,
-  174,   12,  -39,  190, -240,    0,    0,    0,    6,    6,
-    6,    6,    0,    6,    6,    6,    6,    6,    6,  125,
-  163,  -62,    6,    4,   49,  224, -124,    8,   60,  244,
-  283,   63,  288,   -5,   77,   50,  -29,   65, -139,    0,
-  275, -117,  280,    0,   66,   87,    0,  282,   57,    0,
-    0,   82,  222,   83,    6,  -30,    0,    5,    5,    0,
-    0,  167,  167,  167,  167,  167,  167,  -62,  -62,  -62,
-    0,  226,  311,   97,  -62,  295,    0,  296,   86,  297,
-    0,   88, -115,  298,   92,  299,   93,   52,  302,  -42,
-  108,   98,   62,    0,    0,    0,    0,  322,    0,    0,
-  328,  312,    0,  114,    0,  249,  -62,  251,  334,  254,
-  257,  126,  256,  258,    0, -121,  261,  262,  265,    0,
-    0,    0,  -17,  330,  348,  -17,  332,  -17,  333,  127,
-  354,  -17,  -17,  -38,  129,  336,  338,  -32,  145, -117,
-  341,    0,  343,  -62,  278,  -62,  137,  -62,  -62,  138,
-  -93,  -85,  347,  284,  -62,  -62,  -76,  285,  -17, -115,
-  286,  -17,  287,  -17,  350,  143,  290,  291,  292,  293,
-  356,  -17,  -17,  -17,  -27,  149,  376,    0,    0,  303,
-  363,  304,  300,  305,  306,  301,  368,  309,  374,  313,
-    0,  -62,  310,  314,  375,  378,  315,  -89,  317,  397,
-  -89,  319,  -89,  320,  -17,  383,  -89,  -89,  -89,  -89,
-  -17,  323,  324,  325,  326,  327,  384,  195,  393,    0,
-  394,  -62,  395,  396,  -62,    0,  -62,    0,  -62,    0,
-  331,  -70,  -63,    0,    0,  -62,  335,  -89,  201,  337,
-  -89,  339,  -89,  340,  -17,  342,  344,  346,  349,  345,
-  -89,  -89,  -89,  -89,  -89,  -17,    0,    0,    0,  351,
-    0,    0,  352,  353,  355,  199,  402,  358,  406,  359,
-  360,  407,  361,    0,  413,  362,  414,  364,  -89,  365,
-  416,  420,  424,  425,  -89,  366,  367,  369,  370,  371,
-  377,  431,  434,  238,  240,  442,    0,  -62,    0,  -62,
- -105,    0,  443,    0,  444,    0,  445,  380,  -89,    0,
-    0,    0,    0,  381,  448,  449,  450,  451,  452,  -89,
-    0,    0,  453,  454,    0,  389,  390,  457,  458,    0,
-    0,    0,  459,  398,  460,    0,    0,    0,    0,    0,
-  399,    0,    0,  263,  266,    0,    0,    0,  461,    0,
-  462,  467,  468,    0,    0,    0,    0,
+final static short yysindex[] = {                       -76,
+  -17,  -34,  -31,    0,    0,    0, -185,  -36,    0,    0,
+  -76,  -76,    0,  -29,    0,    0,    0,    0,    0,    0,
+ -237,  -28,    0,  -13,  -13,  -35,   32,  -37,   24,    0,
+   49,    5,    3,    0,    0,  -13,  -26,   63,   91,   39,
+  -33,    0,    0,    0, -145,   33,    0,   76,    0,    0,
+   55,  117,   17,  -79,  134,    0,  138,  -95,    0,  127,
+  133,  128,    0,  152,  156,   62,  -55,  -10,  -23,  143,
+   90,  162,   -7,  -52,  166, -237,    0, -123,  -57,  -56,
+  175,  173,  -24,  -30,   13,  -20,    0,    0,  -13,  -13,
+  -13,  -13,    0,  -13,  -13,  -13,  -13,  -13,  -13,   96,
+  111,  -61,  -13,   21,   36,  188,  -12, -140,    0,  208,
+ -134,  209,    0,  -46,   14,    0,  226,   47,    0,    0,
+   31,  195,   57,  -13,   20,    0,   50,  261,    0,   64,
+ -137,  264,   66,   42,  265,  -45,   80,   68,   52,   76,
+   76,    0,    0,  129,  129,  129,  129,  129,  129,  -61,
+  -61,  -61,    0,  207,  300,   86,  -61,  284,    0,  285,
+    0,    0,    0,    0,  302,    0,    0,  306,  289,    0,
+   93,    0,  228,  -61,  230,  316,  235,  236,  104,    0,
+  -25,  301,  317,  -25,  303,   94,  324,  -25,  -25,    8,
+   97,  307,  308,  -38,  115,  247,  248,    0, -184,  251,
+  252,  257,    0,    0, -134,  318,    0,  325,  -61,  258,
+  -61,  109,  -61,  -61,  118,  263,  -25, -137,  266,  -25,
+  326,  119,  267,  268,  269,  270,  333,  -25,  -25,  -25,
+   10,  126, -120, -104,  337,  274,  -61,  -61, -111,  354,
+    0,    0,  275,  340,  276,  279,  278,  281,  286,  -76,
+  287,  360,  -76,  290,  -25,  346,  -76,  -76,  -76,  -76,
+  -25,  292,  293,  294,  295,  296,  347,  353,  297,  362,
+  299,    0,  -61,  298,  304,  366,  367,  305,  174,  372,
+    0,  373,  -61,  374,  375,  -61,  310,  -76,  180,  312,
+  -76,  315,  -25,  314,  319,  320,  321,  327,  -76,  -76,
+  -76,  -76,  -76,  -25,    0,  -61,    0,  -61,    0,  323,
+ -103, -102,    0,    0,  -61,    0,    0,    0,  328,    0,
+    0,  330,  381,  332,    0,  382,  334,  -76,  329,  383,
+  392,  399,  401,  -76,  336,  338,  339,  341,  342,  345,
+  344,  348,  203,  406,  349,  411,  351,  350,  412,  417,
+    0,  418,    0,  419,  355,  -76,    0,    0,    0,    0,
+  356,  420,  423,  424,  425,  426,  -76,  227,  229,  428,
+    0,  -61,    0,  -61,  -94,    0,    0,    0,    0,  430,
+  365,  432,    0,    0,    0,    0,    0,  368,  433,  435,
+    0,  370,  371,  438,  439,    0,  440,    0,  441,    0,
+    0,  242,  243,    0,    0,    0,    0,  444,  445,    0,
+    0,
 };
 final static short yyrindex[] = {                         0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-   21,   23,    0,    0,    0,    0,    0,    0,    0,    0,
+   28,   29,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,  469,    0,    0,    0,
-    0,    0,    0,    0,  -28,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,  446,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,  -19,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,   32,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    6,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-   39,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,  -21,   -1,    0,
-    0,  488,  489,  490,  491,  492,  493,    0,    0,  410,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,   47,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,   48,    0,    0,    0,    0,    0,
+    0,   15,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,   64,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,   22,
+   27,    0,    0,  465,  466,  467,  468,  469,  470,    0,
+    0,  387,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,   53,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,   72,
+    0,    0,   56,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,   58,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,   60,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
@@ -354,132 +350,129 @@ final static short yyrindex[] = {                         0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,
 };
 final static short yygindex[] = {                         0,
-  -11,    0,  -90,    0,   74,   59,    0,    0, -107,    0,
-  -82, -223,    0,    0,    0,    0,    0,  463,  268,   15,
-   11,  144,  -77, -126,   85,  141,
+  -11,    0, -100,    0,   72,    1,    0,    0,  141,    0,
+  -91, -196,    0,    0,    0,    0,    0,  442,   -5,   37,
+    0,   -2,  150,  -81, -116,   74,  106,
 };
-final static int YYTABLESIZE=538;
+final static int YYTABLESIZE=518;
 static short yytable[];
 static { yytable();}
 static void yytable(){
-yytable = new short[]{                         33,
-   34,  140,   51,   73,   31,   55,   42,   42,   42,  119,
-  182,  163,  106,   25,  106,   27,  106,   42,  204,  104,
-    2,  104,    3,  104,   42,   32,  195,   42,  245,   37,
-  106,  106,  185,  106,  168,  157,   91,  104,  104,  105,
-  104,  105,   53,  105,  144,   68,   81,  140,  140,  140,
-   42,   82,  124,   36,  140,  183,  184,  105,  105,   56,
-  105,   79,  189,   80,  105,  106,   58,  103,  107,  215,
-   66,   67,   88,  334,   98,  335,   75,  116,   89,   92,
-   88,  113,  341,   52,  102,   77,  140,   89,   93,  146,
-  161,   61,  200,   71,   74,  117,   43,  174,  108,  114,
-   28,   76,  209,  270,   90,   70,  250,  147,  252,   62,
-  254,  255,   94,   90,   29,  175,  165,   79,   92,   80,
-   79,   93,   80,  140,  170,  140,  145,  140,  140,  171,
-  166,   94,  247,   78,  140,  140,  121,  223,   59,    4,
-    5,  224,  263,  264,  396,    2,  397,    3,    4,    5,
-  398,  143,   60,  399,  300,   97,   95,  132,  133,  134,
-  135,  136,  137,  128,  129,  257,    1,    2,  201,  258,
-    3,  140,   96,  259,    4,    5,    6,  260,    7,  265,
-    8,  108,  266,  179,  330,  109,  267,  333,  337,  300,
-  110,  300,  338,    1,    2,  339,  111,    3,  300,  340,
-   22,  140,   23,    6,  140,  112,  140,    8,  140,   79,
-  115,   80,  120,  203,  122,  140,  125,  239,   50,   72,
-   30,  130,  131,  244,  118,  180,  162,  106,  285,   24,
-  126,   26,   39,   39,  104,   69,  181,   40,   40,   40,
-   41,   41,   54,  106,  106,  106,  106,  138,   40,   39,
-  104,  104,  104,  104,  105,   40,  307,   41,   40,  310,
-  300,  312,  300,  156,  148,  316,  317,  318,  319,   35,
-  105,  105,  105,  105,   83,   39,  150,  140,  123,  140,
-  104,   40,   57,   41,  152,  139,   65,   88,    4,    5,
-   84,   85,   86,   87,   92,   97,  343,    4,    5,  346,
-   60,  348,   89,   93,   97,  159,   59,    4,    5,  356,
-  357,  358,  359,  360,   97,    4,    5,  207,  160,   90,
-   60,   59,   97,   99,   99,   99,  153,   94,  155,  151,
-  208,  154,  158,  167,  164,   60,  228,  378,  169,  231,
-  173,  233,  172,  384,  177,  237,  238,  240,  176,  178,
-  186,  187,  188,  190,  191,  192,  194,  193,  196,  198,
-  197,  199,  202,  205,  149,  210,  206,  404,  211,  213,
-  212,  214,  269,  216,  217,  272,  218,  274,  411,  219,
-  221,  220,  222,  225,  226,  282,  283,  284,  286,  227,
-  229,  230,  232,  234,  236,  235,  242,  241,  243,  248,
-  246,  249,  251,  253,  256,  261,  262,  268,  271,  273,
-  275,  276,  277,  278,  279,  280,  281,  287,  314,  288,
-   99,  290,  292,  295,  320,   99,  296,  289,  291,  293,
-  294,  297,  298,  304,  302,  299,  305,  306,  303,  308,
-  309,  311,  313,  315,  326,  321,  322,  323,  324,  325,
-  327,  328,  329,  331,  332,  336,  344,  366,  350,  342,
-  367,  345,  349,  347,  369,  372,  351,  355,  352,  361,
-  353,  374,  376,  354,  380,  362,  363,  364,  381,  365,
-  368,  370,  382,  383,  371,  373,  375,  379,  377,  391,
-  385,  386,  392,  387,  388,  389,  393,   99,  394,  390,
-  395,  400,  401,  402,  403,  405,  406,  407,  408,  409,
-  410,  412,  413,  414,  415,  416,  417,  418,  420,  424,
-  425,  422,  419,  421,  423,  426,  427,   52,    9,    6,
-    7,    8,   10,   11,   38,    0,    0,  127,
+yytable = new short[]{                         34,
+   35,  152,   58,   32,   54,   26,   84,   85,   28,   45,
+   37,   41,  167,   74,  183,  190,  133,  118,   45,   45,
+  139,  106,  231,  106,   33,  106,   55,    2,    3,  165,
+  115,   45,   38,  123,   80,   80,   72,   75,   86,  106,
+  106,   23,  106,   24,   67,   68,   88,   45,  116,  152,
+  152,  152,   45,  137,   45,   92,  152,  101,  196,  197,
+  179,  156,  104,   59,  104,  202,  104,  105,   69,  105,
+   29,  105,  127,  152,  235,   89,  158,   90,  236,   79,
+  104,  104,  186,  104,   30,  105,  105,  171,  105,   62,
+   56,   88,  195,   89,  159,   46,   93,   89,   90,   90,
+   94,  252,  112,  155,   71,  172,   76,   63,  152,  341,
+  152,  342,  152,  152,   99,  162,   98,   91,  348,  107,
+  113,   60,   92,  240,  176,   80,    4,    5,   80,  163,
+   87,  187,   89,   78,   90,   61,  152,  152,  268,  102,
+    4,    5,  269,  157,  276,  274,  275,  277,  120,   77,
+  168,  278,    2,    3,  270,  344,  346,  100,  271,  345,
+  347,  394,  140,  141,  395,  144,  145,  146,  147,  148,
+  149,   89,  152,   90,  104,  392,  103,  393,  105,    1,
+    2,  106,  152,    3,  107,  152,  109,    4,    5,    6,
+  108,    7,  110,    8,    1,    2,  142,  143,    3,  111,
+  114,  119,  121,  124,    6,  152,  125,  152,    8,   60,
+  189,  128,   80,  129,  152,  130,  131,  230,  150,   31,
+   53,   25,   83,   61,   27,  134,   36,   40,  160,   73,
+    4,    5,  117,  151,   42,  138,  106,   78,  287,   57,
+   43,  290,   44,   42,  132,  294,  295,  296,  297,   43,
+   43,   44,  106,  106,  106,  106,   42,  161,   70,  122,
+   66,   88,   43,  225,   44,  265,  164,  166,  135,  169,
+   92,  152,   42,  152,   61,  177,  324,  104,   43,  327,
+   44,  136,  105,   43,  170,   43,  178,  335,  336,  337,
+  338,  339,  198,  104,  104,  104,  104,  173,  105,  105,
+  105,  105,    4,    5,   60,    4,    5,  193,   89,   78,
+   93,   93,   78,   90,  210,   94,  355,  174,   61,  180,
+  194,  181,  361,  175,  184,  188,   94,   95,   96,   97,
+  216,  199,  182,  219,  185,  191,  192,  223,  224,  226,
+  200,  201,  203,  204,  381,  205,  206,  207,  208,  243,
+  209,  245,  211,  247,  248,  388,  212,  213,  214,  215,
+  218,  217,  221,  220,  222,  227,  251,  228,  229,  254,
+  232,  233,  234,  237,  238,  246,  241,  262,  263,  264,
+  266,  239,  244,  242,  249,  250,  255,  256,  253,  257,
+  258,  259,  260,  261,  267,  272,  273,  279,  281,  280,
+  282,  283,  284,  289,  292,  285,  293,  304,  286,  288,
+  298,  305,  291,  309,  299,  300,  301,  302,  303,  306,
+  307,  308,  311,  319,  313,  314,  322,  315,  312,  316,
+  317,  318,  320,  321,  323,  325,  326,  328,  330,  351,
+  353,  357,  329,  331,  332,  333,  309,  343,  309,  334,
+  358,  356,  349,  340,  350,  309,  352,  359,  354,  360,
+  362,  370,  363,  364,  371,  365,  366,  367,  368,  373,
+  376,  372,  369,  374,  375,  377,  378,  379,  383,  380,
+  382,  384,  385,  386,  387,  389,  391,  390,  396,  397,
+  398,  400,  399,  401,  402,  403,  404,  405,  406,  407,
+  408,  409,  410,  411,   52,    9,    6,    7,    8,   10,
+   11,   38,  309,    0,  309,    0,    0,  126,
 };
 }
 static short yycheck[];
 static { yycheck(); }
 static void yycheck() {
 yycheck = new short[] {                         11,
-   12,   92,   40,   40,   40,   40,   45,   45,   45,   41,
-   41,   41,   41,   40,   43,   40,   45,   45,   61,   41,
-    0,   43,    0,   45,   45,   61,  153,   45,   61,  270,
-   59,   60,  140,   62,  112,   41,   41,   59,   60,   41,
-   62,   43,   59,   45,   41,   31,   42,  138,  139,  140,
-   45,   47,   41,   40,  145,  138,  139,   59,   60,   40,
-   62,   43,  145,   45,   40,   41,   40,   57,   58,  177,
-   40,   41,   41,  297,   41,  299,   44,   41,   60,   41,
-   62,   41,  306,   25,   41,  276,  177,   41,   41,   41,
-   41,   41,   41,   35,   36,   59,   23,   41,   58,   59,
-  256,   59,   41,  230,   41,   32,  214,   59,  216,   59,
-  218,  219,   41,   41,  270,   59,  256,   43,  123,   45,
-   43,  256,   45,  214,   59,  216,  123,  218,  219,  115,
-  270,   41,  210,   59,  225,  226,   59,  259,  256,  264,
-  265,  263,  225,  226,  368,  125,  370,  125,  264,  265,
-  256,   93,  270,  259,  262,  271,   41,   84,   85,   86,
-   87,   88,   89,   79,   80,  259,  256,  257,  158,  263,
-  260,  262,  277,  259,  264,  265,  266,  263,  268,  256,
-  270,   58,  259,  125,  292,   58,  263,  295,  259,  297,
-   59,  299,  263,  256,  257,  259,   41,  260,  306,  263,
-   59,  292,   61,  266,  295,   44,  297,  270,  299,   43,
-  256,   45,   59,  256,   41,  306,  256,  256,  256,  256,
-  256,   81,   82,  256,  256,  256,  256,  256,  256,  256,
-   41,  256,  270,  270,  256,  256,  267,  276,  276,  276,
-  278,  278,  277,  272,  273,  274,  275,  123,  276,  270,
-  272,  273,  274,  275,  256,  276,  268,  278,  276,  271,
-  368,  273,  370,  269,   41,  277,  278,  279,  280,  256,
-  272,  273,  274,  275,  256,  270,  269,  368,  267,  370,
-  256,  276,  256,  278,   41,  123,  256,  256,  264,  265,
-  272,  273,  274,  275,  256,  271,  308,  264,  265,  311,
-  270,  313,  256,  256,  271,  256,  256,  264,  265,  321,
-  322,  323,  324,  325,  271,  264,  265,  256,  269,  256,
-  270,  256,  271,   56,   57,   58,   44,  256,   41,  270,
-  269,  269,  256,   59,  270,  270,  193,  349,   59,  196,
-   59,  198,  256,  355,  123,  202,  203,  204,  267,  267,
-  125,   41,  256,   59,   59,  270,  269,   61,   61,   61,
-  269,  269,   61,  256,   97,   44,  269,  379,   41,  256,
-   59,  123,  229,  123,   41,  232,  123,  234,  390,  123,
-  125,  256,  125,  123,  123,  242,  243,  244,  245,  125,
-   61,   44,   61,   61,   41,  269,   61,  269,   61,   59,
-  256,   59,  125,  267,  267,   59,  123,  123,  123,  123,
-   61,  269,  123,  123,  123,  123,   61,  269,  275,   44,
-  153,   59,  123,  123,  281,  158,   59,  125,  125,  125,
-  125,  123,   59,   59,  125,  123,   59,  123,  125,  123,
-   44,  123,  123,   61,   61,  123,  123,  123,  123,  123,
-  256,   59,   59,   59,   59,  125,  256,  259,  315,  125,
-   59,  125,  123,  125,   59,   59,  125,  123,  125,  326,
-  125,   59,   59,  125,   59,  125,  125,  125,   59,  125,
-  123,  123,   59,   59,  125,  125,  125,  123,  125,   59,
-  125,  125,   59,  125,  125,  125,  259,  230,  259,  123,
-   59,   59,   59,   59,  125,  125,   59,   59,   59,   59,
-   59,   59,   59,  125,  125,   59,   59,   59,   59,   59,
-   59,  259,  125,  125,  259,   59,   59,   59,   41,   41,
-   41,   41,   41,   41,  125,   -1,   -1,   75,
+   12,  102,   40,   40,   40,   40,   40,   41,   40,   45,
+   40,   40,   59,   40,  131,   61,   41,   41,   45,   45,
+   41,   41,   61,   43,   61,   45,   26,    0,    0,  111,
+   41,   45,  270,   41,   40,   41,   36,   37,   41,   59,
+   60,   59,   62,   61,   40,   41,   41,   45,   59,  150,
+  151,  152,   45,   41,   45,   41,  157,   41,  150,  151,
+   41,   41,   41,   40,   43,  157,   45,   41,   32,   43,
+  256,   45,   78,  174,  259,   43,   41,   45,  263,   41,
+   59,   60,   41,   62,  270,   59,   60,   41,   62,   41,
+   59,   59,   41,   41,   59,   24,   41,   43,   41,   45,
+   41,  218,   41,  103,   33,   59,   44,   59,  209,  306,
+  211,  308,  213,  214,   60,  256,   62,   42,  315,   58,
+   59,  256,   47,  205,  124,  131,  264,  265,  134,  270,
+  276,  134,   43,  271,   45,  270,  237,  238,  259,  123,
+  264,  265,  263,  123,  256,  237,  238,  259,   59,   59,
+  114,  263,  125,  125,  259,  259,  259,   41,  263,  263,
+  263,  256,   89,   90,  259,   94,   95,   96,   97,   98,
+   99,   43,  273,   45,   41,  372,  256,  374,   41,  256,
+  257,  277,  283,  260,   58,  286,   59,  264,  265,  266,
+   58,  268,   41,  270,  256,  257,   91,   92,  260,   44,
+  256,   59,   41,  256,  266,  306,   41,  308,  270,  256,
+  256,  269,  218,  270,  315,   41,   44,  256,  123,  256,
+  256,  256,  256,  270,  256,  256,  256,  256,   41,  256,
+  264,  265,  256,  123,  270,  256,  256,  271,  250,  277,
+  276,  253,  278,  270,  269,  257,  258,  259,  260,  276,
+  276,  278,  272,  273,  274,  275,  270,  270,  256,  267,
+  256,  256,  276,  256,  278,  256,   59,   59,  256,  256,
+  256,  372,  270,  374,  270,  256,  288,  256,  276,  291,
+  278,  269,  256,  276,   59,  276,  267,  299,  300,  301,
+  302,  303,  152,  272,  273,  274,  275,  267,  272,  273,
+  274,  275,  264,  265,  256,  264,  265,  256,  256,  271,
+  256,  256,  271,  256,  174,  256,  328,  123,  270,  270,
+  269,   61,  334,  267,   61,   61,  272,  273,  274,  275,
+  181,  125,  269,  184,  269,  256,  269,  188,  189,  190,
+   41,  256,   59,   59,  356,   44,   41,   59,  256,  209,
+  123,  211,  123,  213,  214,  367,   41,  123,  123,  256,
+   44,   61,  269,   61,   41,  269,  217,   61,   61,  220,
+  256,  125,  125,  123,  123,  267,   59,  228,  229,  230,
+  231,  125,  125,   59,  267,  123,   61,  269,  123,  123,
+  123,  123,  123,   61,  269,   59,  123,   44,   59,  125,
+  125,  123,  125,   44,  255,  125,   61,   61,  123,  123,
+  261,   59,  123,  273,  123,  123,  123,  123,  123,  123,
+   59,  123,  125,  283,   59,   59,  286,  123,  125,  256,
+   59,   59,   59,   59,  125,  256,  125,  123,  125,   59,
+   59,   59,  293,  125,  125,  125,  306,  125,  308,  123,
+   59,  123,  125,  304,  125,  315,  125,   59,  125,   59,
+  125,  259,  125,  125,   59,  125,  125,  123,  125,   59,
+   59,  123,  125,  123,  125,   59,   59,   59,   59,  125,
+  125,   59,   59,   59,   59,  259,   59,  259,   59,  125,
+   59,   59,  125,   59,  125,  125,   59,   59,   59,   59,
+  259,  259,   59,   59,   59,   41,   41,   41,   41,   41,
+   41,  125,  372,   -1,  374,   -1,   -1,   76,
 };
 }
 final static short YYFINAL=9;
@@ -575,25 +568,25 @@ final static String yyrule[] = {
 "invocacion_procedimiento : ID '(' '(' error lista_parametros_invocacion ')' ';'",
 "invocacion_procedimiento : ID '(' lista_parametros_invocacion ')' ')' error ';'",
 "invocacion_procedimiento : ID error ';'",
-"sentencia_declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC ID '(' ')' NI '=' cte '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC error '(' ')' NI '=' cte '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC ID '(' error NI '=' cte '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC ID error ')' NI '=' cte '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC ID '(' '(' error ')' NI '=' cte '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC ID '(' ')' ')' error NI '=' cte '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC ID '(' ')' error '=' cte '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC ID '(' ')' NI error cte '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC ID '(' ')' NI '=' error '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC ID '(' error ')' NI '=' cte '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC error '(' lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion error NI '=' cte '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC ID error lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion ')' error '=' cte '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion ')' NI error cte '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion ')' NI '=' error '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC ID '(' '(' error lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';'",
-"sentencia_declaracion_procedimiento : PROC ID '(' lista_parametros_declaracion ')' ')' error NI '=' cte '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc '(' lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc '(' ')' NI '=' cte '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc '(' error NI '=' cte '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc error ')' NI '=' cte '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc '(' '(' error ')' NI '=' cte '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc '(' ')' ')' error NI '=' cte '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc '(' ')' error '=' cte '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc '(' ')' NI error cte '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc '(' ')' NI '=' error '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc '(' error ')' NI '=' cte '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc '(' lista_parametros_declaracion error NI '=' cte '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc error lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc '(' lista_parametros_declaracion ')' error '=' cte '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc '(' lista_parametros_declaracion ')' NI error cte '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc '(' lista_parametros_declaracion ')' NI '=' error '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc '(' '(' error lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';'",
+"sentencia_declaracion_procedimiento : inicio_proc '(' lista_parametros_declaracion ')' ')' error NI '=' cte '{' conjunto_sentencias '}' ';'",
+"inicio_proc : PROC ID",
+"inicio_proc : PROC error '('",
 "lista_parametros_invocacion : parametro_invocacion",
 "lista_parametros_invocacion : parametro_invocacion ',' parametro_invocacion",
 "lista_parametros_invocacion : parametro_invocacion ',' parametro_invocacion ',' parametro_invocacion",
@@ -623,8 +616,7 @@ final static String yyrule[] = {
 "cte : '-' CTE",
 };
 
-//#line 211 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-
+//#line 223 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 
 ArrayList<SimboloPolaca> listaReglas = new ArrayList<>();
 Stack<Integer> pasosIncompletos = new Stack<>();
@@ -633,6 +625,44 @@ ArrayList<String> erroresSintacticos = new ArrayList<>();
 ArrayList<String> erroresParser = new ArrayList<>();
 ArrayList<String> tokens = new ArrayList<>();
 ArrayList<String> estructuras = new ArrayList<>();
+ArrayList<String> lista_variables = new ArrayList<>();
+ArrayList<String> ambito = new ArrayList<String>() {
+    {
+        add("@main");
+    }
+};
+
+public void addAmbito(String ambito_actual){
+    ambito.add("@" + ambito_actual);
+}
+
+public void deleteAmbito(){
+    ambito.remove(ambito.size()-1);
+}
+
+public String nameMangling(String simbolo) {
+    return simbolo + ambito.toString()
+        .replaceAll("\\[|]|, ", "");
+}
+
+public void modificarLexema(String lexema){
+    HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
+    HashMap<String,Object> atributos = ts.get(lexema);
+    ts.remove(lexema);
+    String newLexema = nameMangling(lexema);
+    ts.put(newLexema ,atributos);
+    lista_variables.add(newLexema);
+}
+
+public void addTipoListaVariables(String tipo, String uso){
+  HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
+    for (String lista_variable : lista_variables) {
+        HashMap<String, Object> atributos =  ts.get(lista_variable);
+        atributos.put("Tipo", tipo);
+        atributos.put("Uso", uso);
+    }
+  lista_variables.clear();
+}
 
 public void addSimbolo(String simbolo) {
 	listaReglas.add(new SimboloPolaca(simbolo));
@@ -789,12 +819,14 @@ public static void main(String[] args){
 
     ArrayList<SimboloPolaca> lista = parser.getListaSimboloPolaca();
     System.out.println("Tamaño de la lista de simbolos: " + lista.size());
-    for (SimboloPolaca simboloPolaca : lista) {
-        System.out.println("VALOR POLACA: " + simboloPolaca.getSimbolo());
+    for (int i = 0, listaSize = lista.size(); i < listaSize; i++) {
+        SimboloPolaca simboloPolaca = lista.get(i);
+        System.out.println("VALOR POLACA [" + i + "]: " + simboloPolaca.getSimbolo());
     }
+    System.out.println("VALOR POLACA [" + lista.size() +  "]: ...");
 
 }
-//#line 726 "Parser.java"
+//#line 758 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -949,358 +981,393 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 1:
-//#line 20 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 20 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Fin de programa.");}
 break;
 case 6:
-//#line 29 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 29 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo("==");}
 break;
 case 7:
-//#line 30 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 30 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo(">=");}
 break;
 case 8:
-//#line 31 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 31 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo("<=");}
 break;
 case 9:
-//#line 32 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 32 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo("!=");}
 break;
 case 10:
-//#line 33 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 33 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo(">");}
 break;
 case 11:
-//#line 34 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 34 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo("<");}
 break;
 case 12:
-//#line 35 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 35 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la condicion");}
 break;
 case 13:
-//#line 38 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 38 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {apilarPasoIncompleto(SimboloPolaca.BF);}
 break;
 case 14:
-//#line 47 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 47 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia WHILE LOOP.");}
 break;
 case 15:
-//#line 48 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 48 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la condicion del WHILE.");}
 break;
 case 16:
-//#line 49 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 49 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la definicion del WHILE: falta el )");}
 break;
 case 17:
-//#line 50 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 50 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la condicion del WHILE: falta el (.");}
 break;
 case 18:
-//#line 51 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 51 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la condicion del WHILE: falta LOOP luego del ).");}
 break;
 case 19:
-//#line 52 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 52 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la condicion del WHILE: hay uno o mas ( de mas del lado izquierdo.");}
 break;
 case 20:
-//#line 53 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 53 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la condicion del WHILE: hay uno o mas ) de mas del lado derecho.");}
 break;
 case 21:
-//#line 56 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 56 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {apilarPasoActual();}
 break;
 case 22:
-//#line 59 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 59 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF sin ELSE");}
 break;
 case 23:
-//#line 60 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 60 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF con bloque ELSE.");}
 break;
 case 24:
-//#line 61 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 61 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la condicion del IF.");}
 break;
 case 25:
-//#line 62 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 62 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la definicion del IF: falta el )");}
 break;
 case 26:
-//#line 63 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 63 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la definicion del IF: falta el (");}
 break;
 case 27:
-//#line 64 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 64 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la definicion del IF: falta el END_IF");}
 break;
 case 28:
-//#line 65 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 65 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la definicion del IF: hay uno o mas ( de mas del lado izquierdo");}
 break;
 case 29:
-//#line 66 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 66 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la definicion del IF: hay uno o mas ) de mas del lado derecho");}
 break;
 case 30:
-//#line 67 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 67 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la condicion del IF ELSE.");}
 break;
 case 31:
-//#line 68 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 68 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la definicion del IF ELSE: falta el )");}
 break;
 case 32:
-//#line 69 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 69 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la definicion del IF ELSE: falta el (");}
 break;
 case 33:
-//#line 70 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 70 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la definicion del IF ELSE: falta el END_IF");}
 break;
 case 34:
-//#line 71 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 71 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la definicion del IF ELSE: hay uno o mas ( de mas del lado izquierdo");}
 break;
 case 35:
-//#line 72 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 72 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error en la definicion del IF ELSE: hay uno o mas ) de mas del lado derecho");}
 break;
 case 36:
-//#line 75 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 75 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {completarPasoIncompleto(false);apilarPasoIncompleto(SimboloPolaca.BI);}
 break;
 case 37:
-//#line 85 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 85 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {}
 break;
 case 43:
-//#line 97 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 97 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {completarPasoIncompleto(true);}
 break;
 case 44:
-//#line 102 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{completarPasoIncompleto(true);generarBIinicio();}
+//#line 102 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{completarPasoIncompleto(false);generarBIinicio();}
 break;
 case 47:
-//#line 105 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 105 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Syntax error");}
 break;
 case 48:
-//#line 108 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia imprimir por pantalla.");}
+//#line 108 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia imprimir por pantalla.");
+                                           addSimbolo(val_peek(2).sval);}
 break;
 case 49:
-//#line 109 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 110 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al imprimir por pantalla: caracter ) de mas en el lado derecho");}
 break;
 case 50:
-//#line 110 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 111 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al imprimir por pantalla: caracter ( de mas en el lado izquierdo");}
 break;
 case 51:
-//#line 111 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 112 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al imprimir por pantalla");}
 break;
+case 52:
+//#line 115 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{modificarLexema(val_peek(0).sval);}
+break;
+case 53:
+//#line 116 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{modificarLexema(val_peek(2).sval);}
+break;
+case 54:
+//#line 119 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{yyval = new ParserVal("LONGINT");}
+break;
+case 55:
+//#line 120 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{yyval = new ParserVal("FLOAT");}
+break;
 case 56:
-//#line 122 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion variables.");}
+//#line 123 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion variables.");
+                                                      addTipoListaVariables(val_peek(2).sval,"VARIABLE");}
 break;
 case 57:
-//#line 125 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 127 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento con parametros.");}
 break;
 case 58:
-//#line 126 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 128 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento sin parametros.");}
 break;
 case 59:
-//#line 127 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 129 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento: falta )");}
 break;
 case 60:
-//#line 128 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 130 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento: falta (");}
 break;
 case 61:
-//#line 129 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 131 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo");}
 break;
 case 62:
-//#line 130 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 132 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento:hay uno o mas ) de mas del lado derecho");}
 break;
 case 63:
-//#line 131 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 133 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento: falta )");}
 break;
 case 64:
-//#line 132 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 134 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento: error en la lista de parametros ");}
 break;
 case 65:
-//#line 133 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 135 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento: falta (");}
 break;
 case 66:
-//#line 134 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 136 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo");}
 break;
 case 67:
-//#line 135 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 137 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento:hay uno o mas ) de mas del lado derecho");}
 break;
 case 68:
-//#line 136 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 138 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento.");}
 break;
 case 69:
-//#line 139 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento con parametros.");}
+//#line 141 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento con parametros.");
+                                                                                                                                  deleteAmbito();}
 break;
 case 70:
-//#line 140 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento sin parametros.");}
+//#line 143 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento sin parametros.");
+                                                                                    deleteAmbito();}
 break;
 case 71:
-//#line 141 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta ID");}
+//#line 145 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{addErrorSintactico("Error al declarar procedimiento: falta )");}
 break;
 case 72:
-//#line 142 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta )");}
+//#line 146 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{addErrorSintactico("Error al declarar procedimiento: falta (");}
 break;
 case 73:
-//#line 143 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta (");}
+//#line 147 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");}
 break;
 case 74:
-//#line 144 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");}
+//#line 148 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}
 break;
 case 75:
-//#line 145 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}
+//#line 149 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{addErrorSintactico("Error al declarar procedimiento: falta NI");}
 break;
 case 76:
-//#line 146 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta NI");}
+//#line 150 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{addErrorSintactico("Error al declarar procedimiento: falta =");}
 break;
 case 77:
-//#line 147 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta =");}
+//#line 151 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{addErrorSintactico("Error al declarar procedimiento: falta cte");}
 break;
 case 78:
-//#line 148 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta cte");}
-break;
-case 79:
-//#line 149 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 152 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: error en la lista de parametros");}
 break;
-case 80:
-//#line 150 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta ID");}
-break;
-case 81:
-//#line 151 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+case 79:
+//#line 153 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: falta )");}
 break;
-case 82:
-//#line 152 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+case 80:
+//#line 154 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: falta (");}
 break;
-case 83:
-//#line 153 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+case 81:
+//#line 155 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: falta NI");}
 break;
-case 84:
-//#line 154 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+case 82:
+//#line 156 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: falta =");}
 break;
-case 85:
-//#line 155 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+case 83:
+//#line 157 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: falta cte");}
 break;
-case 86:
-//#line 156 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+case 84:
+//#line 158 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");}
 break;
-case 87:
-//#line 157 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+case 85:
+//#line 159 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}
 break;
+case 86:
+//#line 162 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{
+                    modificarLexema(val_peek(0).sval);
+                    addTipoListaVariables("PROC","PROC");
+                    addAmbito(val_peek(0).sval);}
+break;
+case 87:
+//#line 166 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{addErrorSintactico("Error al declarar procedimiento: falta ID");}
+break;
 case 91:
-//#line 164 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 172 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error. El numero maximo de parametros permitido es 3.");}
 break;
 case 95:
-//#line 171 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 179 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error. El numero maximo de parametros permitido es 3.");}
 break;
+case 96:
+//#line 182 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{
+				addTipoListaVariables(val_peek(1).sval,"PARAMETRO");
+                modificarLexema(val_peek(0).sval);}
+break;
+case 97:
+//#line 185 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{
+                       	addTipoListaVariables(val_peek(1).sval,"PARAMETRO");
+                        modificarLexema(val_peek(0).sval);}
+break;
 case 99:
-//#line 179 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 191 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 { addErrorSintactico("Error en la definicion de parametro del lado derecho");}
 break;
 case 100:
-//#line 180 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 192 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 { addErrorSintactico("Error en la definicion de parametros del lado izquierdo");}
 break;
 case 101:
-//#line 183 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 195 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia asignacion variable.");
 								  addSimbolo( val_peek(3).sval); 
 								  addSimbolo( "=");}
 break;
 case 102:
-//#line 186 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 198 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error de asignación a la derecha.");}
 break;
 case 103:
-//#line 187 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 199 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error de asignación a la izquierda.");}
 break;
 case 104:
-//#line 190 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 202 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo("+");}
 break;
 case 105:
-//#line 191 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 203 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo("-");}
 break;
 case 107:
-//#line 195 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 207 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo("*");}
 break;
 case 108:
-//#line 196 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 208 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo("/");}
 break;
 case 110:
-//#line 200 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 212 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo(val_peek(0).sval);}
 break;
 case 111:
-//#line 201 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 213 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo(val_peek(0).sval);}
 break;
 case 113:
-//#line 205 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 217 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {if (!analizadorLexico.check_rango_longint(val_peek(0).sval)){
                 addErrorSintactico("Error longint fuera de rango");}}
 break;
 case 114:
-//#line 207 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 219 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {analizadorLexico.updateTablaSimbolos(val_peek(0).sval);
                yyval = new ParserVal("-"+val_peek(0).sval);}
 break;
-//#line 1227 "Parser.java"
+//#line 1294 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
