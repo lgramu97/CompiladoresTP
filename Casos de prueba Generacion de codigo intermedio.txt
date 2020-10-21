@@ -354,3 +354,20 @@ Lexema: c@main
 	Atributo: Uso   Valor: VARIABLE
 	Atributo: Tipo   Valor: LONGINT
 	Atributo: Cantidad   Valor: 1
+
+
+LONGINT k;
+LONGINT k;
+
+Errores Semanticos: 
+	Numero de linea: 2 Variable 'k' re-declarada
+
+
+PROC a(LONGINT c, LONGINT c) NI = 3_l {
+    LONGINT d;
+    LONGINT c;
+};
+
+Errores Semanticos: 
+	Numero de linea: 1 Variable 'c' re-declarada
+	Numero de linea: 3 Variable 'c' re-declarada

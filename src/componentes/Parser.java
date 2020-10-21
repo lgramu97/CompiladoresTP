@@ -616,7 +616,7 @@ final static String yyrule[] = {
 "cte : '-' CTE",
 };
 
-//#line 226 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 230 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 
 ArrayList<SimboloPolaca> listaReglas = new ArrayList<>();
 Stack<Integer> pasosIncompletos = new Stack<>();
@@ -635,8 +635,28 @@ ArrayList<String> ambito = new ArrayList<String>() {
 
 public void checkIDNoDeclarado(String variable) {
     HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
-    if (!ts.containsKey(lexema)) {
-        erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " Variable no declarada");
+    ArrayList<String> ambitoCopia = new ArrayList<>(ambito);
+    for(int i = ambitoCopia.size(); i > 0; i--) {
+        String newVar = variable + listToString(ambitoCopia);
+        System.out.println(newVar);
+        if (ts.containsKey(newVar)) {
+            break;
+        }
+        ambitoCopia.remove(ambitoCopia.size()-1);
+    }
+    System.out.println(ambitoCopia.size());
+    if (ambitoCopia.size()==0)
+        erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " Variable '" + variable + "' no declarada");
+
+    if (ts.containsKey(variable)) {
+        ts.remove(variable);
+    }
+}
+
+public void checkIDReDeclarado(String variable) {
+    HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
+    if (ts.containsKey(nameMangling(variable))) {
+        erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " Variable '" + variable + "' re-declarada");
     }
 }
 
@@ -648,9 +668,13 @@ public void deleteAmbito(){
     ambito.remove(ambito.size()-1);
 }
 
-public String nameMangling(String simbolo) {
-    return simbolo + ambito.toString()
+public String listToString(ArrayList<String> list) {
+    return list.toString()
         .replaceAll("\\[|]|, ", "");
+}
+
+public String nameMangling(String simbolo) {
+    return simbolo + listToString(ambito);
 }
 
 public void modificarLexema(String lexema){
@@ -732,11 +756,11 @@ public void addErrorSintactico(String error){
     erroresSintacticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + "  " + error);
 }
 
-/*
+
 public void yyerror(String error){
 	erroresParser.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + "  " + error);
 }
-*/
+
 
 public StringBuilder copiarErrores(ArrayList<String> errores){
     StringBuilder out = new StringBuilder();
@@ -841,7 +865,7 @@ public static void main(String[] args){
     System.out.println("VALOR POLACA [" + lista.size() +  "]: ...");
 
 }
-//#line 773 "Parser.java"
+//#line 797 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1158,238 +1182,242 @@ case 51:
 break;
 case 52:
 //#line 115 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
-{modificarLexema(val_peek(0).sval);}
+{checkIDReDeclarado(val_peek(0).sval);
+                    modificarLexema(val_peek(0).sval);}
 break;
 case 53:
-//#line 116 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
-{modificarLexema(val_peek(2).sval);}
+//#line 117 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{checkIDReDeclarado(val_peek(2).sval);
+                                        modificarLexema(val_peek(2).sval);}
 break;
 case 54:
-//#line 119 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 121 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {yyval = new ParserVal("LONGINT");}
 break;
 case 55:
-//#line 120 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 122 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {yyval = new ParserVal("FLOAT");}
 break;
 case 56:
-//#line 123 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 125 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion variables.");
                                                       addTipoListaVariables(val_peek(2).sval,"VARIABLE");}
 break;
 case 57:
-//#line 127 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 129 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento con parametros.");checkIDNoDeclarado(val_peek(4).sval);}
 break;
 case 58:
-//#line 128 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 130 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento sin parametros.");checkIDNoDeclarado(val_peek(3).sval);}
 break;
 case 59:
-//#line 129 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 131 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento: falta )");}
 break;
 case 60:
-//#line 130 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 132 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento: falta (");}
 break;
 case 61:
-//#line 131 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 133 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo");}
 break;
 case 62:
-//#line 132 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 134 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento:hay uno o mas ) de mas del lado derecho");}
 break;
 case 63:
-//#line 133 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 135 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento: falta )");}
 break;
 case 64:
-//#line 134 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 136 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento: error en la lista de parametros ");}
 break;
 case 65:
-//#line 135 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 137 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento: falta (");}
 break;
 case 66:
-//#line 136 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 138 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo");}
 break;
 case 67:
-//#line 137 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 139 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento:hay uno o mas ) de mas del lado derecho");}
 break;
 case 68:
-//#line 138 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 140 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al invocar procedimiento.");}
 break;
 case 69:
-//#line 141 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 143 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento con parametros.");
                                                                                                                                   deleteAmbito();}
 break;
 case 70:
-//#line 143 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 145 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento sin parametros.");
                                                                                     deleteAmbito();}
 break;
 case 71:
-//#line 145 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 147 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: falta )");}
 break;
 case 72:
-//#line 146 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 148 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: falta (");}
 break;
 case 73:
-//#line 147 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 149 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");}
 break;
 case 74:
-//#line 148 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 150 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}
 break;
 case 75:
-//#line 149 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 151 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: falta NI");}
 break;
 case 76:
-//#line 150 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 152 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: falta =");}
 break;
 case 77:
-//#line 151 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 153 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: falta cte");}
 break;
 case 78:
-//#line 152 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 154 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: error en la lista de parametros");}
 break;
 case 79:
-//#line 153 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 155 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: falta )");}
 break;
 case 80:
-//#line 154 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 156 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: falta (");}
 break;
 case 81:
-//#line 155 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 157 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: falta NI");}
 break;
 case 82:
-//#line 156 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 158 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: falta =");}
 break;
 case 83:
-//#line 157 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 159 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: falta cte");}
 break;
 case 84:
-//#line 158 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 160 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");}
 break;
 case 85:
-//#line 159 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 161 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}
 break;
 case 86:
-//#line 162 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 164 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {
                     modificarLexema(val_peek(0).sval);
                     addTipoListaVariables("PROC","PROC");
                     addAmbito(val_peek(0).sval);}
 break;
 case 87:
-//#line 166 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 168 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error al declarar procedimiento: falta ID");}
 break;
 case 91:
-//#line 172 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 174 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error. El numero maximo de parametros permitido es 3.");}
 break;
 case 95:
-//#line 179 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 181 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error. El numero maximo de parametros permitido es 3.");}
 break;
 case 96:
-//#line 182 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 184 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {
+                checkIDReDeclarado(val_peek(0).sval);
 				addTipoListaVariables(val_peek(1).sval,"PARAMETRO");
                 modificarLexema(val_peek(0).sval);}
 break;
 case 97:
-//#line 185 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 188 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {
+                        checkIDReDeclarado(val_peek(0).sval);
                        	addTipoListaVariables(val_peek(1).sval,"PARAMETRO");
                         modificarLexema(val_peek(0).sval);}
 break;
 case 98:
-//#line 190 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 194 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {checkIDNoDeclarado(val_peek(2).sval);
                                   checkIDNoDeclarado(val_peek(1).sval);}
 break;
 case 99:
-//#line 192 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 196 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 { addErrorSintactico("Error en la definicion de parametro del lado derecho");}
 break;
 case 100:
-//#line 193 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 197 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 { addErrorSintactico("Error en la definicion de parametros del lado izquierdo");}
 break;
 case 101:
-//#line 196 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 200 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia asignacion variable.");
 								  addSimbolo( val_peek(3).sval); 
 								  addSimbolo( "=");
                                   checkIDNoDeclarado(val_peek(3).sval);}
 break;
 case 102:
-//#line 200 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 204 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error de asignación a la derecha.");}
 break;
 case 103:
-//#line 201 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 205 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error de asignación a la izquierda.");}
 break;
 case 104:
-//#line 204 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 208 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo("+");}
 break;
 case 105:
-//#line 205 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 209 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo("-");}
 break;
 case 107:
-//#line 209 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 213 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo("*");}
 break;
 case 108:
-//#line 210 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 214 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo("/");}
 break;
 case 110:
-//#line 214 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 218 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo(val_peek(0).sval);
             checkIDNoDeclarado(val_peek(0).sval);}
 break;
 case 111:
-//#line 216 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 220 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo(val_peek(0).sval);}
 break;
 case 113:
-//#line 220 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 224 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {if (!analizadorLexico.check_rango_longint(val_peek(0).sval)){
                 addErrorSintactico("Error longint fuera de rango");}}
 break;
 case 114:
-//#line 222 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 226 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {analizadorLexico.updateTablaSimbolos(val_peek(0).sval);
                yyval = new ParserVal("-"+val_peek(0).sval);}
 break;
-//#line 1316 "Parser.java"
+//#line 1344 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

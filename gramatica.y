@@ -112,8 +112,10 @@ sentencia_salida : OUT '(' CADENA ')' ';' {estructuras.add("Linea numero: "+(ana
                  | OUT error ';' {addErrorSintactico("Error al imprimir por pantalla");}
                  ;
 
-lista_variables: ID {modificarLexema($1.sval);}
-               | ID ',' lista_variables {modificarLexema($1.sval);}
+lista_variables: ID {checkIDReDeclarado($1.sval);
+                    modificarLexema($1.sval);}
+               | ID ',' lista_variables {checkIDReDeclarado($1.sval);
+                                        modificarLexema($1.sval);}
                ;
 
 tipo : LONGINT {$$ = new ParserVal("LONGINT");}
@@ -180,9 +182,11 @@ lista_parametros_declaracion : parametro_declaracion
 			 ;
 
 parametro_declaracion: tipo ID {
+                checkIDReDeclarado($2.sval);
 				addTipoListaVariables($1.sval,"PARAMETRO");
                 modificarLexema($2.sval);}
          | REF tipo ID {
+                        checkIDReDeclarado($3.sval);
                        	addTipoListaVariables($2.sval,"PARAMETRO");
                         modificarLexema($3.sval);}
          ;
@@ -256,6 +260,13 @@ public void checkIDNoDeclarado(String variable) {
 
     if (ts.containsKey(variable)) {
         ts.remove(variable);
+    }
+}
+
+public void checkIDReDeclarado(String variable) {
+    HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
+    if (ts.containsKey(nameMangling(variable))) {
+        erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " Variable '" + variable + "' re-declarada");
     }
 }
 
