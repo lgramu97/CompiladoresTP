@@ -1,8 +1,17 @@
+LONGINT a, b ,c ;
+a = b + c;
+d = a + b;
+a = b;
+a = z;
+FLOAT k;
 
- PROC procedimiento(REF LONGINT a, LONGINT b, REF FLOAT c) NI = 3_l {
-	 LONGINT a;
+PROC procedimiento() NI = 3_l {
+	 LONGINT x1;
+	 IF ( a - b > c + 1.0 ) {
+		y = k * 3_l;
+	} END_IF ;
  };
 
- PROC procedimiento()) NI = 4_l {
-	 LONGINT a;
+PROC procedimientoo(REF LONGINT x2, LONGINT x3, REF FLOAT x4) NI = 3_l {
+	 LONGINT x5;
  };

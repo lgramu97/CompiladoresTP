@@ -616,12 +616,13 @@ final static String yyrule[] = {
 "cte : '-' CTE",
 };
 
-//#line 223 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 226 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 
 ArrayList<SimboloPolaca> listaReglas = new ArrayList<>();
 Stack<Integer> pasosIncompletos = new Stack<>();
 AnalizadorLexico analizadorLexico = new AnalizadorLexico();
 ArrayList<String> erroresSintacticos = new ArrayList<>();
+ArrayList<String> erroresSemanticos = new ArrayList<>();
 ArrayList<String> erroresParser = new ArrayList<>();
 ArrayList<String> tokens = new ArrayList<>();
 ArrayList<String> estructuras = new ArrayList<>();
@@ -631,6 +632,13 @@ ArrayList<String> ambito = new ArrayList<String>() {
         add("@main");
     }
 };
+
+public void checkIDNoDeclarado(String variable) {
+    HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
+    if (!ts.containsKey(lexema)) {
+        erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " Variable no declarada");
+    }
+}
 
 public void addAmbito(String ambito_actual){
     ambito.add("@" + ambito_actual);
@@ -724,9 +732,11 @@ public void addErrorSintactico(String error){
     erroresSintacticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + "  " + error);
 }
 
+/*
 public void yyerror(String error){
-	    erroresParser.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + "  " + error);
+	erroresParser.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + "  " + error);
 }
+*/
 
 public StringBuilder copiarErrores(ArrayList<String> errores){
     StringBuilder out = new StringBuilder();
@@ -738,12 +748,17 @@ public StringBuilder copiarErrores(ArrayList<String> errores){
 }
 
 public String getErrores(){
-    return "Errores Lexicos: " + "\n" +
+    return "Errores Lexicos: " + 
+            "\n" +
             copiarErrores(analizadorLexico.getErrores()) +
             "\n" +
             "Errores Sintacticos: " +
             "\n" +
-            copiarErrores(this.erroresSintacticos);
+            copiarErrores(this.erroresSintacticos) + 
+            "\n" + 
+            "Errores Semanticos: " + 
+            "\n" + 
+            copiarErrores(this.erroresSemanticos);
 }
 
 public void saveFile() {
@@ -826,7 +841,7 @@ public static void main(String[] args){
     System.out.println("VALOR POLACA [" + lista.size() +  "]: ...");
 
 }
-//#line 758 "Parser.java"
+//#line 773 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1164,11 +1179,11 @@ case 56:
 break;
 case 57:
 //#line 127 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
-{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento con parametros.");}
+{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento con parametros.");checkIDNoDeclarado(val_peek(4).sval);}
 break;
 case 58:
 //#line 128 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
-{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento sin parametros.");}
+{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento sin parametros.");checkIDNoDeclarado(val_peek(3).sval);}
 break;
 case 59:
 //#line 129 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
@@ -1311,63 +1326,70 @@ case 97:
                        	addTipoListaVariables(val_peek(1).sval,"PARAMETRO");
                         modificarLexema(val_peek(0).sval);}
 break;
+case 98:
+//#line 190 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{checkIDNoDeclarado(val_peek(2).sval);
+                                  checkIDNoDeclarado(val_peek(1).sval);}
+break;
 case 99:
-//#line 191 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 192 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 { addErrorSintactico("Error en la definicion de parametro del lado derecho");}
 break;
 case 100:
-//#line 192 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 193 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 { addErrorSintactico("Error en la definicion de parametros del lado izquierdo");}
 break;
 case 101:
-//#line 195 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 196 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia asignacion variable.");
 								  addSimbolo( val_peek(3).sval); 
-								  addSimbolo( "=");}
+								  addSimbolo( "=");
+                                  checkIDNoDeclarado(val_peek(3).sval);}
 break;
 case 102:
-//#line 198 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 200 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error de asignación a la derecha.");}
 break;
 case 103:
-//#line 199 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 201 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addErrorSintactico("Error de asignación a la izquierda.");}
 break;
 case 104:
-//#line 202 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 204 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo("+");}
 break;
 case 105:
-//#line 203 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 205 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo("-");}
 break;
 case 107:
-//#line 207 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 209 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo("*");}
 break;
 case 108:
-//#line 208 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 210 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo("/");}
 break;
 case 110:
-//#line 212 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
-{addSimbolo(val_peek(0).sval);}
+//#line 214 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+{addSimbolo(val_peek(0).sval);
+            checkIDNoDeclarado(val_peek(0).sval);}
 break;
 case 111:
-//#line 213 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 216 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {addSimbolo(val_peek(0).sval);}
 break;
 case 113:
-//#line 217 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 220 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {if (!analizadorLexico.check_rango_longint(val_peek(0).sval)){
                 addErrorSintactico("Error longint fuera de rango");}}
 break;
 case 114:
-//#line 219 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
+//#line 222 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 {analizadorLexico.updateTablaSimbolos(val_peek(0).sval);
                yyval = new ParserVal("-"+val_peek(0).sval);}
 break;
-//#line 1294 "Parser.java"
+//#line 1316 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

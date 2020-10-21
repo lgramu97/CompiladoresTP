@@ -178,3 +178,84 @@ Lexema: procedimiento
 Lexema: x5
 	Atributo: Tipo   Valor: LONGINT
 	Atributo: Cantidad   Valor: 1
+
+
+LONGINT a, b ,c ;
+a = b + c;
+d = a + b;
+a = b;
+a = z;
+FLOAT k;
+
+PROC procedimiento() NI = 3_l {
+	 LONGINT x1;
+	 IF ( a - b > c + 1.0 ) {
+		y = k * 3_l;
+	} END_IF ;
+ };
+
+PROC procedimientoo(REF LONGINT x2, LONGINT x3, REF FLOAT x4) NI = 3_l {
+	 LONGINT x5;
+ };
+
+
+Errores Lexicos: 
+
+Errores Sintacticos: 
+
+Errores Semanticos: 
+	Numero de linea: 3 Variable 'd' no declarada
+	Numero de linea: 5 Variable 'z' no declarada
+	Numero de linea: 11 Variable 'y' no declarada
+
+Contenido de la tabla de simbolos: 
+Lexema: k@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: x4@main@procedimientoo
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: b@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: a@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: x5@main@procedimientoo
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: procedimientoo@main
+	Atributo: Uso   Valor: PROC
+	Atributo: Tipo   Valor: PROC
+	Atributo: Cantidad   Valor: 1
+Lexema: 3
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 3
+Lexema: x1@main@procedimiento
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: 1.0
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: procedimiento@main
+	Atributo: Uso   Valor: PROC
+	Atributo: Tipo   Valor: PROC
+	Atributo: Cantidad   Valor: 1
+Lexema: x2@main@procedimientoo
+	Atributo: Uso   Valor: PARAMETRO
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: x3@main@procedimientoo
+	Atributo: Uso   Valor: PARAMETRO
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: c@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1

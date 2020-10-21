@@ -124,8 +124,8 @@ sentencia_declaracion_datos : tipo lista_variables ';'{estructuras.add("Linea nu
                                                       addTipoListaVariables($1.sval,"VARIABLE");}
                             ;
 
-invocacion_procedimiento : ID '(' lista_parametros_invocacion ')' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento con parametros.");}
-			 | ID '(' ')' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento sin parametros.");}
+invocacion_procedimiento : ID '(' lista_parametros_invocacion ')' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento con parametros.");checkIDNoDeclarado($1.sval);}
+			 | ID '(' ')' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento sin parametros.");checkIDNoDeclarado($1.sval);}
              | ID '(' error ';' {addErrorSintactico("Error al invocar procedimiento: falta )");}
              | ID error ')' ';' {addErrorSintactico("Error al invocar procedimiento: falta (");}
              | ID '(' '(' error ';' {addErrorSintactico("Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo");}
@@ -187,14 +187,16 @@ parametro_declaracion: tipo ID {
                         modificarLexema($3.sval);}
          ;
 
-parametro_invocacion : ID ':' ID
+parametro_invocacion : ID ':' ID {checkIDNoDeclarado($1.sval);
+                                  checkIDNoDeclarado($2.sval);}
                      | ID ':' error { addErrorSintactico("Error en la definicion de parametro del lado derecho");}
                      | error ':' ID { addErrorSintactico("Error en la definicion de parametros del lado izquierdo");}
                      ;
 
 asignacion : ID '=' expresion ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia asignacion variable.");
 								  addSimbolo( $1.sval); 
-								  addSimbolo( "=");}
+								  addSimbolo( "=");
+                                  checkIDNoDeclarado($1.sval);}
            | ID '=' error ';' {addErrorSintactico("Error de asignación a la derecha.");}
            | error '=' expresion ';' {addErrorSintactico("Error de asignación a la izquierda.");}
            ;
@@ -209,7 +211,8 @@ termino : termino '*' factor {addSimbolo("*");}
         | factor 
         ;
 
-factor : ID {addSimbolo($1.sval);}
+factor : ID {addSimbolo($1.sval);
+            checkIDNoDeclarado($1.sval);}
        | cte {addSimbolo($1.sval);}
        | ERROR
        ;
@@ -225,6 +228,7 @@ ArrayList<SimboloPolaca> listaReglas = new ArrayList<>();
 Stack<Integer> pasosIncompletos = new Stack<>();
 AnalizadorLexico analizadorLexico = new AnalizadorLexico();
 ArrayList<String> erroresSintacticos = new ArrayList<>();
+ArrayList<String> erroresSemanticos = new ArrayList<>();
 ArrayList<String> erroresParser = new ArrayList<>();
 ArrayList<String> tokens = new ArrayList<>();
 ArrayList<String> estructuras = new ArrayList<>();
@@ -235,6 +239,26 @@ ArrayList<String> ambito = new ArrayList<String>() {
     }
 };
 
+public void checkIDNoDeclarado(String variable) {
+    HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
+    ArrayList<String> ambitoCopia = new ArrayList<>(ambito);
+    for(int i = ambitoCopia.size(); i > 0; i--) {
+        String newVar = variable + listToString(ambitoCopia);
+        System.out.println(newVar);
+        if (ts.containsKey(newVar)) {
+            break;
+        }
+        ambitoCopia.remove(ambitoCopia.size()-1);
+    }
+    System.out.println(ambitoCopia.size());
+    if (ambitoCopia.size()==0)
+        erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " Variable '" + variable + "' no declarada");
+
+    if (ts.containsKey(variable)) {
+        ts.remove(variable);
+    }
+}
+
 public void addAmbito(String ambito_actual){
     ambito.add("@" + ambito_actual);
 }
@@ -243,9 +267,13 @@ public void deleteAmbito(){
     ambito.remove(ambito.size()-1);
 }
 
-public String nameMangling(String simbolo) {
-    return simbolo + ambito.toString()
+public String listToString(ArrayList<String> list) {
+    return list.toString()
         .replaceAll("\\[|]|, ", "");
+}
+
+public String nameMangling(String simbolo) {
+    return simbolo + listToString(ambito);
 }
 
 public void modificarLexema(String lexema){
@@ -327,9 +355,11 @@ public void addErrorSintactico(String error){
     erroresSintacticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + "  " + error);
 }
 
+
 public void yyerror(String error){
-	    erroresParser.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + "  " + error);
+	erroresParser.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + "  " + error);
 }
+
 
 public StringBuilder copiarErrores(ArrayList<String> errores){
     StringBuilder out = new StringBuilder();
@@ -341,12 +371,17 @@ public StringBuilder copiarErrores(ArrayList<String> errores){
 }
 
 public String getErrores(){
-    return "Errores Lexicos: " + "\n" +
+    return "Errores Lexicos: " + 
+            "\n" +
             copiarErrores(analizadorLexico.getErrores()) +
             "\n" +
             "Errores Sintacticos: " +
             "\n" +
-            copiarErrores(this.erroresSintacticos);
+            copiarErrores(this.erroresSintacticos) + 
+            "\n" + 
+            "Errores Semanticos: " + 
+            "\n" + 
+            copiarErrores(this.erroresSemanticos);
 }
 
 public void saveFile() {
