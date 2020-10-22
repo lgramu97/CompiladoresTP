@@ -101,21 +101,29 @@ sentencias_ejecutables : asignacion
 			// BI.
                        | clausula_while {completarPasoIncompleto(false);generarBIinicio();}
                        | sentencia_salida
-                       | invocacion_procedimiento
+                       | invocacion_procedimiento {addSimbolo("INV");}
                        | error ';' {addErrorSintactico("Syntax error");}
                        ;
 
 sentencia_salida : OUT '(' CADENA ')' ';' {estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia imprimir por pantalla.");
-                                           addSimbolo($3.sval);}
+                                           addSimbolo($3.sval);
+                                           addSimbolo("OUT");
+                                           }
                  | OUT '(' CADENA ')' ')' ';' {addErrorSintactico("Error al imprimir por pantalla: caracter ) de mas en el lado derecho");} 
                  | OUT '(' '(' CADENA ')' ';' {addErrorSintactico("Error al imprimir por pantalla: caracter ( de mas en el lado izquierdo");}  
                  | OUT error ';' {addErrorSintactico("Error al imprimir por pantalla");}
                  ;
 
-lista_variables: ID {checkIDReDeclarado($1.sval);
-                    modificarLexema($1.sval);}
-               | ID ',' lista_variables {checkIDReDeclarado($1.sval);
-                                        modificarLexema($1.sval);}
+lista_variables: ID 
+                {
+                    checkIDReDeclarado($1.sval);
+                    modificarLexema($1.sval);
+                }
+               | ID ',' lista_variables 
+               {
+                    checkIDReDeclarado($1.sval);
+                    modificarLexema($1.sval);
+               }
                ;
 
 tipo : LONGINT {$$ = new ParserVal("LONGINT");}
@@ -126,19 +134,33 @@ sentencia_declaracion_datos : tipo lista_variables ';'{estructuras.add("Linea nu
                                                       addTipoListaVariables($1.sval,"VARIABLE");}
                             ;
 
-invocacion_procedimiento : ID '(' lista_parametros_invocacion ')' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento con parametros.");checkIDNoDeclarado($1.sval);}
-			 | ID '(' ')' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento sin parametros.");checkIDNoDeclarado($1.sval);}
-             | ID '(' error ';' {addErrorSintactico("Error al invocar procedimiento: falta )");}
+invocacion_procedimiento : inicio_inv_proc lista_parametros_invocacion ')' ';'
+                        {
+                            estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento con parametros.");
+                            checkIDNoDeclarado($1.sval);
+                        }
+			 | inicio_inv_proc ')' ';'
+             {
+                estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento sin parametros.");
+                checkIDNoDeclarado($1.sval);
+             }
+             | inicio_inv_proc error ';' {addErrorSintactico("Error al invocar procedimiento: falta )");}
+             | inicio_inv_proc '(' error ';' {addErrorSintactico("Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo");}
+             | inicio_inv_proc  ')' ')' error ';' {addErrorSintactico("Error al invocar procedimiento:hay uno o mas ) de mas del lado derecho");}
+             | inicio_inv_proc lista_parametros_invocacion error ';' {addErrorSintactico("Error al invocar procedimiento: falta )");}
+             | inicio_inv_proc error ')' ';' {addErrorSintactico("Error al invocar procedimiento: error en la lista de parametros ");}
+			 | inicio_inv_proc '(' error lista_parametros_invocacion ')' ';' {addErrorSintactico("Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo");}
+             | inicio_inv_proc lista_parametros_invocacion ')' ')' error ';' {addErrorSintactico("Error al invocar procedimiento:hay uno o mas ) de mas del lado derecho");}
              | ID error ')' ';' {addErrorSintactico("Error al invocar procedimiento: falta (");}
-             | ID '(' '(' error ';' {addErrorSintactico("Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo");}
-             | ID '('  ')' ')' error ';' {addErrorSintactico("Error al invocar procedimiento:hay uno o mas ) de mas del lado derecho");}
-             | ID '(' lista_parametros_invocacion error ';' {addErrorSintactico("Error al invocar procedimiento: falta )");}
-             | ID '(' error ')' ';' {addErrorSintactico("Error al invocar procedimiento: error en la lista de parametros ");}
              | ID error lista_parametros_invocacion ')' ';' {addErrorSintactico("Error al invocar procedimiento: falta (");}
-			 | ID '(' '(' error lista_parametros_invocacion ')' ';' {addErrorSintactico("Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo");}
-             | ID '(' lista_parametros_invocacion ')' ')' error ';' {addErrorSintactico("Error al invocar procedimiento:hay uno o mas ) de mas del lado derecho");}
              | ID error ';' {addErrorSintactico("Error al invocar procedimiento.");}
              ;
+
+inicio_inv_proc: ID '(' {
+    addSimbolo("PROC");
+    addSimbolo($1.sval);
+}
+;
 
 sentencia_declaracion_procedimiento : inicio_proc '(' lista_parametros_declaracion ')' NI '=' cte '{' conjunto_sentencias '}' ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento con parametros.");
                                                                                                                                   deleteAmbito();}
@@ -161,10 +183,12 @@ sentencia_declaracion_procedimiento : inicio_proc '(' lista_parametros_declaraci
                     | inicio_proc  '(' lista_parametros_declaracion ')' ')' error NI '=' cte '{' conjunto_sentencias '}' ';' {addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}       
                     ;
 
-inicio_proc: PROC ID {
-                    modificarLexema($2.sval);
-                    addTipoListaVariables("PROC","PROC");
-                    addAmbito($2.sval);}
+inicio_proc: PROC ID 
+            {
+                modificarLexema($2.sval);
+                addTipoListaVariables("PROC","PROC");
+                addAmbito($2.sval);
+            }
             | PROC error '(' {addErrorSintactico("Error al declarar procedimiento: falta ID");}
            ;
 
@@ -181,21 +205,31 @@ lista_parametros_declaracion : parametro_declaracion
 			 | parametro_declaracion ',' parametro_declaracion ',' parametro_declaracion ',' error {addErrorSintactico("Error. El numero maximo de parametros permitido es 3.");}
 			 ;
 
-parametro_declaracion: tipo ID {
-                checkIDReDeclarado($2.sval);
-				addTipoListaVariables($1.sval,"PARAMETRO");
-                modificarLexema($2.sval);}
-         | REF tipo ID {
+parametro_declaracion: tipo ID 
+                    {
+                        checkIDReDeclarado($2.sval);
+                        modificarLexema($2.sval);
+                        addTipoListaVariables($1.sval,"PARAMETRO"); 
+                    }
+                    | REF tipo ID 
+                    {
                         checkIDReDeclarado($3.sval);
-                       	addTipoListaVariables($2.sval,"PARAMETRO");
-                        modificarLexema($3.sval);}
-         ;
+                        modificarLexema($3.sval);
+                        addTipoListaVariables($2.sval,"PARAMETRO");
+                    }
+                    ;
 
-parametro_invocacion : ID ':' ID {checkIDNoDeclarado($1.sval);
-                                  checkIDNoDeclarado($2.sval);}
-                     | ID ':' error { addErrorSintactico("Error en la definicion de parametro del lado derecho");}
-                     | error ':' ID { addErrorSintactico("Error en la definicion de parametros del lado izquierdo");}
-                     ;
+parametro_invocacion: ID ':' ID 
+                    {
+                        checkIDNoDeclarado($1.sval);
+                        checkIDNoDeclarado($2.sval);
+                        addSimbolo($1.sval);
+                        addSimbolo($3.sval);
+                        addSimbolo(":");
+                    }
+                    | ID ':' error { addErrorSintactico("Error en la definicion de parametro del lado derecho");}
+                    | error ':' ID { addErrorSintactico("Error en la definicion de parametros del lado izquierdo");}
+                    ;
 
 asignacion : ID '=' expresion ';'{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia asignacion variable.");
 								  addSimbolo( $1.sval); 
@@ -215,9 +249,15 @@ termino : termino '*' factor {addSimbolo("*");}
         | factor 
         ;
 
-factor : ID {addSimbolo($1.sval);
-            checkIDNoDeclarado($1.sval);}
-       | cte {addSimbolo($1.sval);}
+factor : ID 
+        {
+            addSimbolo($1.sval);
+            checkIDNoDeclarado($1.sval);
+        }
+       | cte 
+       {
+           addSimbolo($1.sval);
+        }
        | ERROR
        ;
 
@@ -248,16 +288,14 @@ public void checkIDNoDeclarado(String variable) {
     ArrayList<String> ambitoCopia = new ArrayList<>(ambito);
     for(int i = ambitoCopia.size(); i > 0; i--) {
         String newVar = variable + listToString(ambitoCopia);
-        System.out.println(newVar);
         if (ts.containsKey(newVar)) {
             break;
         }
         ambitoCopia.remove(ambitoCopia.size()-1);
     }
-    System.out.println(ambitoCopia.size());
-    if (ambitoCopia.size()==0)
+    if (ambitoCopia.size()==0) {
         erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " Variable '" + variable + "' no declarada");
-
+    }
     if (ts.containsKey(variable)) {
         ts.remove(variable);
     }

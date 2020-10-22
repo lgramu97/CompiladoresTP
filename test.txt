@@ -1,8 +1,5 @@
-PROC a(LONGINT c, LONGINT c) NI = 3_l {
-    LONGINT d;
-    LONGINT c;
+LONGINT a;
+PROC procedimiento (REF LONGINT a, LONGINT b, REF FLOAT c) NI = 3_l {
+	 LONGINT a;
+     FLOAT a;
 };
-
-Errores Semanticos: 
-	Numero de linea: 1 Variable 'c' re-declarada
-	Numero de linea: 3 Variable 'c' re-declarada
