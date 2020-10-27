@@ -137,12 +137,10 @@ sentencia_declaracion_datos : tipo lista_variables ';'{estructuras.add("Linea nu
 invocacion_procedimiento : inicio_inv_proc lista_parametros_invocacion ')' ';'
                         {
                             estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento con parametros.");
-                            checkIDNoDeclarado($1.sval);
                         }
 			 | inicio_inv_proc ')' ';'
              {
                 estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento sin parametros.");
-                checkIDNoDeclarado($1.sval);
              }
              | inicio_inv_proc error ';' {addErrorSintactico("Error al invocar procedimiento: falta )");}
              | inicio_inv_proc '(' error ';' {addErrorSintactico("Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo");}
@@ -157,6 +155,7 @@ invocacion_procedimiento : inicio_inv_proc lista_parametros_invocacion ')' ';'
              ;
 
 inicio_inv_proc: ID '(' {
+ 	checkIDNoDeclarado($1.sval);//VER CASO EN EL QUE LA INVOCACION SE HACE DENTRO DEL PROCEDIMIENTO.
     addSimbolo("PROC");
     addSimbolo($1.sval);
 }
@@ -185,9 +184,11 @@ sentencia_declaracion_procedimiento : inicio_proc '(' lista_parametros_declaraci
 
 inicio_proc: PROC ID 
             {
+            	checkIDReDeclarado($2.sval);
                 modificarLexema($2.sval);
                 addTipoListaVariables("PROC","PROC");
                 addAmbito($2.sval);
+                // Agregar para el procedimiento, nombre de los parametros.
             }
             | PROC error '(' {addErrorSintactico("Error al declarar procedimiento: falta ID");}
            ;
@@ -221,8 +222,11 @@ parametro_declaracion: tipo ID
 
 parametro_invocacion: ID ':' ID 
                     {
-                        checkIDNoDeclarado($1.sval);
-                        checkIDNoDeclarado($2.sval);
+                        checkIDNoDeclarado($1.sval);// CHEQUEAR QUE SE CORRESPONDA CON EL NOMBRE DEL PARAMETRO DECLARADO.
+                        							// Yo los agregaria todos los $1 a una lista, y cuando invoca al proc, chquear con los parametros reales
+                        							// Si falta alguno, se repite alguno, o alguno no se corresponde, informar error.
+                        							// Para esto en la declaracion de proc, agregar atributo en la ts (parametros) con una lista de los ids.
+                        checkIDNoDeclarado($3.sval);
                         addSimbolo($1.sval);
                         addSimbolo($3.sval);
                         addSimbolo(":");
@@ -448,6 +452,7 @@ public void saveFile() {
 
 			salida.write(this.getErrores() + "\n");
 
+			/*
 			salida.write("Tokens detectados en el codigo fuente: " + "\n");
             for (String token : tokens) {
                 salida.write("\t" + token + "\n");
@@ -457,7 +462,7 @@ public void saveFile() {
             for (String estructura : estructuras) {
                 salida.write("\t" + estructura + "\n");
             }
-
+			*/
 			salida.write("\n"+"Contenido de la tabla de simbolos: " + "\n");
 			salida.write(this.getAnalizadorLexico().getDatosTabla_simbolos());
 
@@ -471,26 +476,30 @@ public void saveFile() {
 	 }
 }
 
+public void mostrar_tokens(){
+	System.out.println();
+	System.out.println("Tokens detectados en el codigo fuente: ");
+    for (String token : this.tokens) {
+        System.out.println(token);
+    }
+}
+
+public void mostrar_estructuras(){
+	System.out.println();
+	System.out.println("Estructuras detectadas en el codigo fuente: ");
+    for (String estructura : this.estructuras) {
+        System.out.println(estructura);
+    }
+}
 
 public static void main(String[] args){
 	Parser parser = new Parser();
 	parser.yyparse();
 	System.out.println(parser.getErrores());
 
-	ArrayList<String> tokens = parser.getTokens();
-	System.out.println();
-	System.out.println("Tokens detectados en el codigo fuente: ");
-    for (String token : tokens) {
-        System.out.println(token);
-    }
+	//parser.mostrar_tokens();
+	//parser.mostrar_estructuras();
 
-	ArrayList<String> estructuras = parser.getEstructuras();
-	System.out.println();
-	System.out.println("Estructuras detectadas en el codigo fuente: ");
-    for (String estructura : estructuras) {
-        System.out.println(estructura);
-    }
-	
 	System.out.println();
 	System.out.println("Contenido de la tabla de simbolos: ");
 	System.out.println(parser.getAnalizadorLexico().getDatosTabla_simbolos());

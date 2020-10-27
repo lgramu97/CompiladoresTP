@@ -1,5 +1,24 @@
 LONGINT a;
 PROC procedimiento (REF LONGINT a, LONGINT b, REF FLOAT c) NI = 3_l {
-	 LONGINT a;
-     FLOAT a;
+	 FLOAT x1,x2,x3;
+	 FLOAT x2;
+	 x2 = x3;
 };
+
+PROC b(LONGINT c, LONGINT c) NI = 3_l {
+    LONGINT d;
+    LONGINT c;
+    LONGINT s;
+    j(c:d,c:c);
+    PROC c(FLOAT c) NI = 3_l {
+	FLOAT s;
+    };
+};
+
+b(); %% FALTA CONTROLAR EL TEMA DE LOS PARAMETROS. 
+     %% NO ARROJA ERROR PORQUE ESTA DECLARADA. 
+     %% DEBERIA ARROJAR ERROR POR MAL INVOCADO.
+
+FLOAT s;
+
+b(a:s);
