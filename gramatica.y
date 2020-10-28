@@ -563,11 +563,7 @@ ArrayList<String> erroresParser = new ArrayList<>();
 ArrayList<String> tokens = new ArrayList<>();
 ArrayList<String> estructuras = new ArrayList<>();
 ArrayList<String> lista_variables = new ArrayList<>();
-ArrayList<String> ambito = new ArrayList<String>() {
-    {
-        add("@main");
-    }
-};
+ArrayList<String> ambito = new ArrayList<String>() { { add("@main"); } };
 Stack<String> ids = new Stack<>();
 Stack<ListParameters> parametros = new Stack<ListParameters>();
 
@@ -576,7 +572,6 @@ public void addParametrosProcedimiento(String lexema){
     HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
     String lex_mangling = nameMangling(lexema);
     ts.get(lex_mangling).put("Parametros", parametros.pop());
-
 }
 
 public void addInvocacionesProcedimiento(String lexema, String invocaciones){
