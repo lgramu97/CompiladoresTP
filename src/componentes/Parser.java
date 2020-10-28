@@ -619,7 +619,7 @@ final static String yyrule[] = {
 "cte : '-' CTE",
 };
 
-//#line 274 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 557 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
 
 ArrayList<SimboloPolaca> listaReglas = new ArrayList<>();
 Stack<Integer> pasosIncompletos = new Stack<>();
@@ -635,6 +635,36 @@ ArrayList<String> ambito = new ArrayList<String>() {
         add("@main");
     }
 };
+Stack<String> ids = new Stack<>();
+ArrayList<ListParameters> parametros = new ArrayList<ListParameters>();
+
+public void checkInvocacion(){
+    for ( int j = 0 ; j < parametros.size(); j++){
+        ArrayList<String> out = parametros.get(j).getParameters();
+        System.out.println("Nuevo proc");
+        for ( int i = 0 ; i< out.size();i++){
+            System.out.println(out.get(i));
+        }
+    }
+    parametros.clear();
+}
+
+public void addInvocacionesProcedimiento(String lexema, String invocaciones){
+    HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
+    String lex_mangling = nameMangling(lexema);
+    ts.get(lex_mangling).put("Invocaciones",Integer.valueOf(invocaciones));
+    ts.get(lex_mangling).put("Llamadas",0);
+}
+
+public void addTipoPasajeParametros(String lexema, String pasaje){
+    HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
+    ts.get(nameMangling(lexema)).put("Pasaje",pasaje);
+}
+
+public boolean checkTipoCte(String cte){
+    HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
+    return ts.get(cte).get("Tipo").equals("LONGINT");
+}
 
 public void checkIDNoDeclarado(String variable) {
     HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
@@ -840,7 +870,7 @@ public void mostrar_estructuras(){
         System.out.println(estructura);
     }
 }
-
+ 
 public static void main(String[] args){
 	Parser parser = new Parser();
 	parser.yyparse();
@@ -871,7 +901,7 @@ public static void main(String[] args){
     System.out.println("VALOR POLACA [" + lista.size() +  "]: ...");
 
 }
-//#line 803 "Parser.java"
+//#line 833 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1026,374 +1056,559 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 1:
-//#line 20 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Fin de programa.");}
+//#line 21 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+            estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Fin de programa.");
+        }
 break;
 case 6:
-//#line 29 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addSimbolo("==");}
+//#line 33 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+            addSimbolo("==");
+        }
 break;
 case 7:
-//#line 30 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addSimbolo(">=");}
+//#line 37 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+            addSimbolo(">=");
+        }
 break;
 case 8:
-//#line 31 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addSimbolo("<=");}
+//#line 41 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+            addSimbolo("<=");
+        }
 break;
 case 9:
-//#line 32 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addSimbolo("!=");}
+//#line 45 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+            addSimbolo("!=");
+        }
 break;
 case 10:
-//#line 33 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addSimbolo(">");}
+//#line 49 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+            addSimbolo(">");
+        }
 break;
 case 11:
-//#line 34 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addSimbolo("<");}
+//#line 53 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+            addSimbolo("<");
+        }
 break;
 case 12:
-//#line 35 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la condicion");}
+//#line 57 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+            addErrorSintactico("Error en la condicion");
+        }
 break;
 case 13:
-//#line 38 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{apilarPasoIncompleto(SimboloPolaca.BF);}
+//#line 63 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                    apilarPasoIncompleto(SimboloPolaca.BF);
+                }
 break;
 case 14:
-//#line 47 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia WHILE LOOP.");}
+//#line 75 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                    estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia WHILE LOOP.");
+                }
 break;
 case 15:
-//#line 48 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la condicion del WHILE.");}
+//#line 79 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                    addErrorSintactico("Error en la condicion del WHILE.");
+                }
 break;
 case 16:
-//#line 49 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la definicion del WHILE: falta el )");}
+//#line 83 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                    addErrorSintactico("Error en la definicion del WHILE: falta el )");
+                }
 break;
 case 17:
-//#line 50 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la condicion del WHILE: falta el (.");}
+//#line 87 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                    addErrorSintactico("Error en la condicion del WHILE: falta el (.");
+                }
 break;
 case 18:
-//#line 51 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la condicion del WHILE: falta LOOP luego del ).");}
+//#line 91 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                    addErrorSintactico("Error en la condicion del WHILE: falta LOOP luego del ).");
+                }
 break;
 case 19:
-//#line 52 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la condicion del WHILE: hay uno o mas ( de mas del lado izquierdo.");}
+//#line 95 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                    addErrorSintactico("Error en la condicion del WHILE: hay uno o mas ( de mas del lado izquierdo.");
+                }
 break;
 case 20:
-//#line 53 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la condicion del WHILE: hay uno o mas ) de mas del lado derecho.");}
+//#line 99 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                    addErrorSintactico("Error en la condicion del WHILE: hay uno o mas ) de mas del lado derecho.");
+                }
 break;
 case 21:
-//#line 56 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{apilarPasoActual();}
+//#line 105 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                apilarPasoActual();
+            }
 break;
 case 22:
-//#line 59 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF sin ELSE");}
+//#line 111 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF sin ELSE");
+                    }
 break;
 case 23:
-//#line 60 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF con bloque ELSE.");}
+//#line 115 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia IF con bloque ELSE.");
+                    }
 break;
 case 24:
-//#line 61 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la condicion del IF.");}
+//#line 119 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        addErrorSintactico("Error en la condicion del IF.");
+                    }
 break;
 case 25:
-//#line 62 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la definicion del IF: falta el )");}
+//#line 123 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        addErrorSintactico("Error en la definicion del IF: falta el )");
+                    }
 break;
 case 26:
-//#line 63 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la definicion del IF: falta el (");}
+//#line 127 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        addErrorSintactico("Error en la definicion del IF: falta el (");
+                    }
 break;
 case 27:
-//#line 64 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la definicion del IF: falta el END_IF");}
+//#line 131 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        addErrorSintactico("Error en la definicion del IF: falta el END_IF");
+                    }
 break;
 case 28:
-//#line 65 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la definicion del IF: hay uno o mas ( de mas del lado izquierdo");}
+//#line 135 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        addErrorSintactico("Error en la definicion del IF: hay uno o mas ( de mas del lado izquierdo");
+                    }
 break;
 case 29:
-//#line 66 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la definicion del IF: hay uno o mas ) de mas del lado derecho");}
+//#line 139 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        addErrorSintactico("Error en la definicion del IF: hay uno o mas ) de mas del lado derecho");
+                    }
 break;
 case 30:
-//#line 67 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la condicion del IF ELSE.");}
+//#line 143 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        addErrorSintactico("Error en la condicion del IF ELSE.");
+                    }
 break;
 case 31:
-//#line 68 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la definicion del IF ELSE: falta el )");}
+//#line 147 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        addErrorSintactico("Error en la definicion del IF ELSE: falta el )");
+                    }
 break;
 case 32:
-//#line 69 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la definicion del IF ELSE: falta el (");}
+//#line 151 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        addErrorSintactico("Error en la definicion del IF ELSE: falta el (");
+                    }
 break;
 case 33:
-//#line 70 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la definicion del IF ELSE: falta el END_IF");}
+//#line 155 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        addErrorSintactico("Error en la definicion del IF ELSE: falta el END_IF");
+                    }
 break;
 case 34:
-//#line 71 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la definicion del IF ELSE: hay uno o mas ( de mas del lado izquierdo");}
+//#line 159 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        addErrorSintactico("Error en la definicion del IF ELSE: hay uno o mas ( de mas del lado izquierdo");
+                    }
 break;
 case 35:
-//#line 72 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error en la definicion del IF ELSE: hay uno o mas ) de mas del lado derecho");}
+//#line 163 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        addErrorSintactico("Error en la definicion del IF ELSE: hay uno o mas ) de mas del lado derecho");
+                    }
 break;
 case 36:
-//#line 75 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{completarPasoIncompleto(false);apilarPasoIncompleto(SimboloPolaca.BI);}
+//#line 169 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                completarPasoIncompleto(false);
+                apilarPasoIncompleto(SimboloPolaca.BI);
+            }
 break;
 case 37:
-//#line 85 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 182 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
 {}
 break;
 case 43:
-//#line 97 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{completarPasoIncompleto(true);}
+//#line 195 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        completarPasoIncompleto(true);
+                    }
 break;
 case 44:
-//#line 102 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{completarPasoIncompleto(false);generarBIinicio();}
+//#line 203 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        completarPasoIncompleto(false);generarBIinicio();
+                    }
 break;
 case 46:
-//#line 104 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addSimbolo("INV");}
+//#line 208 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        addSimbolo("INV");
+                    }
 break;
 case 47:
-//#line 105 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Syntax error");}
+//#line 212 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        addErrorSintactico("Syntax error");
+                    }
 break;
 case 48:
-//#line 108 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia imprimir por pantalla.");
-                                           addSimbolo(val_peek(2).sval);
-                                           addSimbolo("OUT");
-                                           }
+//#line 218 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                    estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia imprimir por pantalla.");
+                    addSimbolo(val_peek(2).sval);
+                    addSimbolo("OUT");
+                }
 break;
 case 49:
-//#line 112 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al imprimir por pantalla: caracter ) de mas en el lado derecho");}
+//#line 224 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                    addErrorSintactico("Error al imprimir por pantalla: caracter ) de mas en el lado derecho");
+                }
 break;
 case 50:
-//#line 113 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al imprimir por pantalla: caracter ( de mas en el lado izquierdo");}
+//#line 228 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                    addErrorSintactico("Error al imprimir por pantalla: caracter ( de mas en el lado izquierdo");
+                }
 break;
 case 51:
-//#line 114 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al imprimir por pantalla");}
+//#line 232 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                    addErrorSintactico("Error al imprimir por pantalla");
+                }
 break;
 case 52:
-//#line 118 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 238 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
 {
                     checkIDReDeclarado(val_peek(0).sval);
                     modificarLexema(val_peek(0).sval);
                 }
 break;
 case 53:
-//#line 123 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 243 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
 {
                     checkIDReDeclarado(val_peek(2).sval);
                     modificarLexema(val_peek(2).sval);
-               }
+                }
 break;
 case 54:
-//#line 129 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{yyval = new ParserVal("LONGINT");}
+//#line 250 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+         yyval = new ParserVal("LONGINT");
+     }
 break;
 case 55:
-//#line 130 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{yyval = new ParserVal("FLOAT");}
+//#line 254 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+         yyval = new ParserVal("FLOAT");
+     }
 break;
 case 56:
-//#line 133 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion variables.");
-                                                      addTipoListaVariables(val_peek(2).sval,"VARIABLE");}
+//#line 260 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion variables.");
+                                addTipoListaVariables(val_peek(2).sval,"VARIABLE");
+                            }
 break;
 case 57:
-//#line 138 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 267 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
 {
                             estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento con parametros.");
                         }
 break;
 case 58:
-//#line 142 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 271 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
 {
-                estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento sin parametros.");
-             }
+                            estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento sin parametros.");
+                        }
 break;
 case 59:
-//#line 145 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al invocar procedimiento: falta )");}
+//#line 275 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                            addErrorSintactico("Error al invocar procedimiento: falta )");
+                        }
 break;
 case 60:
-//#line 146 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo");}
+//#line 279 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                            addErrorSintactico("Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo");
+                        }
 break;
 case 61:
-//#line 147 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al invocar procedimiento:hay uno o mas ) de mas del lado derecho");}
+//#line 283 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                            addErrorSintactico("Error al invocar procedimiento:hay uno o mas ) de mas del lado derecho");
+                        }
 break;
 case 62:
-//#line 148 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al invocar procedimiento: falta )");}
+//#line 287 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                            addErrorSintactico("Error al invocar procedimiento: falta )");
+                        }
 break;
 case 63:
-//#line 149 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al invocar procedimiento: error en la lista de parametros ");}
+//#line 291 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                            addErrorSintactico("Error al invocar procedimiento: error en la lista de parametros ");
+                        }
 break;
 case 64:
-//#line 150 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo");}
+//#line 295 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                            addErrorSintactico("Error al invocar procedimiento: hay uno o mas ( de mas del lado izquierdo");
+                        }
 break;
 case 65:
-//#line 151 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al invocar procedimiento:hay uno o mas ) de mas del lado derecho");}
+//#line 299 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                            addErrorSintactico("Error al invocar procedimiento:hay uno o mas ) de mas del lado derecho");
+                        }
 break;
 case 66:
-//#line 152 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al invocar procedimiento: falta (");}
+//#line 303 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                            addErrorSintactico("Error al invocar procedimiento: falta (");
+                        }
 break;
 case 67:
-//#line 153 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al invocar procedimiento: falta (");}
+//#line 307 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                            addErrorSintactico("Error al invocar procedimiento: falta (");
+                        }
 break;
 case 68:
-//#line 154 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al invocar procedimiento.");}
+//#line 311 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                            addErrorSintactico("Error al invocar procedimiento.");
+                        }
 break;
 case 69:
-//#line 157 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 317 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
 {
- 	checkIDNoDeclarado(val_peek(1).sval);/*VER CASO EN EL QUE LA INVOCACION SE HACE DENTRO DEL PROCEDIMIENTO.*/
-    addSimbolo("PROC");
-    addSimbolo(val_peek(1).sval);
-}
+                    checkIDNoDeclarado(val_peek(1).sval);/*VER CASO EN EL QUE LA INVOCACION SE HACE DENTRO DEL PROCEDIMIENTO.*/
+                    addSimbolo("PROC");
+                    addSimbolo(val_peek(1).sval);
+                }
 break;
 case 70:
-//#line 164 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento con parametros.");
-                                                                                                                                  deleteAmbito();}
+//#line 325 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        deleteAmbito();
+                                        if (checkTipoCte(val_peek(4).sval)) {
+                                            estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento con parametros.");
+                                            addInvocacionesProcedimiento(ids.pop(),val_peek(4).sval);
+                                        }
+                                        else
+                                            erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " La constante declarada en el procedimiento no es de tipo LONGINT." );
+                                    }
 break;
 case 71:
-//#line 166 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento sin parametros.");
-                                                                                    deleteAmbito();}
+//#line 335 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        deleteAmbito();
+                                        if (checkTipoCte(val_peek(4).sval)) {
+                                            estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento sin parametros.");
+                                            addInvocacionesProcedimiento(ids.pop(),val_peek(4).sval);
+                                        }
+                                        else
+                                            erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " La constante declarada en el procedimiento no es de tipo LONGINT." );
+                                    }
 break;
 case 72:
-//#line 168 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta )");}
+//#line 345 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        addErrorSintactico("Error al declarar procedimiento: falta )");
+                                    }
 break;
 case 73:
-//#line 169 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta (");}
+//#line 349 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        addErrorSintactico("Error al declarar procedimiento: falta (");
+                                    }
 break;
 case 74:
-//#line 170 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");}
+//#line 353 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");
+                                    }
 break;
 case 75:
-//#line 171 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}
+//#line 357 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");
+                                    }
 break;
 case 76:
-//#line 172 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta NI");}
+//#line 361 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        addErrorSintactico("Error al declarar procedimiento: falta NI");
+                                    }
 break;
 case 77:
-//#line 173 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta =");}
+//#line 365 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        addErrorSintactico("Error al declarar procedimiento: falta =");
+                                    }
 break;
 case 78:
-//#line 174 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta cte");}
+//#line 369 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        addErrorSintactico("Error al declarar procedimiento: falta cte");
+                                    }
 break;
 case 79:
-//#line 175 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: error en la lista de parametros");}
+//#line 373 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        addErrorSintactico("Error al declarar procedimiento: error en la lista de parametros");
+                                    }
 break;
 case 80:
-//#line 176 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta )");}
+//#line 377 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        addErrorSintactico("Error al declarar procedimiento: falta )");
+                                    }
 break;
 case 81:
-//#line 177 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta (");}
+//#line 381 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        addErrorSintactico("Error al declarar procedimiento: falta (");
+                                    }
 break;
 case 82:
-//#line 178 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta NI");}
+//#line 385 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        addErrorSintactico("Error al declarar procedimiento: falta NI");
+                                    }
 break;
 case 83:
-//#line 179 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta =");}
+//#line 389 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        addErrorSintactico("Error al declarar procedimiento: falta =");
+                                    }
 break;
 case 84:
-//#line 180 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta cte");}
+//#line 393 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        addErrorSintactico("Error al declarar procedimiento: falta cte");
+                                    }
 break;
 case 85:
-//#line 181 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");}
+//#line 397 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ( de  mas. ");
+                                    }
 break;
 case 86:
-//#line 182 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");}
+//#line 401 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                        addErrorSintactico("Error al declarar procedimiento: tiene uno o mas ) de mas. ");
+                                    }
 break;
 case 87:
-//#line 186 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 407 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
 {
-            	checkIDReDeclarado(val_peek(0).sval);
+            	checkIDReDeclarado(val_peek(0).sval);/*Check que exista el id.*/
                 modificarLexema(val_peek(0).sval);
                 addTipoListaVariables("PROC","PROC");
                 addAmbito(val_peek(0).sval);
+                ids.push(val_peek(0).sval);
                 /* Agregar para el procedimiento, nombre de los parametros.*/
             }
 break;
 case 88:
-//#line 193 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error al declarar procedimiento: falta ID");}
+//#line 416 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                addErrorSintactico("Error al declarar procedimiento: falta ID");
+            }
 break;
 case 92:
-//#line 199 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error. El numero maximo de parametros permitido es 3.");}
+//#line 425 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                addErrorSintactico("Error. El numero maximo de parametros permitido es 3.");
+                            }
+break;
+case 93:
+//#line 431 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                parametros.add(new ListParameters(val_peek(0).sval));
+                                checkInvocacion();
+                            }
+break;
+case 94:
+//#line 436 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                parametros.add(new ListParameters(val_peek(2).sval, val_peek(0).sval));
+                                checkInvocacion();
+                            }
+break;
+case 95:
+//#line 441 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                parametros.add(new ListParameters(val_peek(4).sval, val_peek(2).sval, val_peek(0).sval));
+                                checkInvocacion();
+                            }
 break;
 case 96:
-//#line 206 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error. El numero maximo de parametros permitido es 3.");}
+//#line 446 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                                addErrorSintactico("Error. El numero maximo de parametros permitido es 3.");
+                            }
 break;
 case 97:
-//#line 210 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{
-                        checkIDReDeclarado(val_peek(0).sval);
-                        modificarLexema(val_peek(0).sval);
-                        addTipoListaVariables(val_peek(1).sval,"PARAMETRO"); 
-                    }
-break;
-case 98:
-//#line 216 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 452 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
 {
                         checkIDReDeclarado(val_peek(0).sval);
                         modificarLexema(val_peek(0).sval);
                         addTipoListaVariables(val_peek(1).sval,"PARAMETRO");
+                        addTipoPasajeParametros(val_peek(0).sval,"COPIA-VALOR");
+                        yyval = new ParserVal(val_peek(0).sval); 
+                    }
+break;
+case 98:
+//#line 460 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        checkIDReDeclarado(val_peek(0).sval);
+                        modificarLexema(val_peek(0).sval);
+                        addTipoListaVariables(val_peek(1).sval,"PARAMETRO");
+                        addTipoPasajeParametros(val_peek(0).sval,"REFERENCIA");
+                        yyval = new ParserVal(val_peek(0).sval); 
                     }
 break;
 case 99:
-//#line 224 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 470 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
 {
-                        checkIDNoDeclarado(val_peek(2).sval);/* CHEQUEAR QUE SE CORRESPONDA CON EL NOMBRE DEL PARAMETRO DECLARADO.*/
-                        							/* Yo los agregaria todos los $1 a una lista, y cuando invoca al proc, chquear con los parametros reales*/
-                        							/* Si falta alguno, se repite alguno, o alguno no se corresponde, informar error.*/
-                        							/* Para esto en la declaracion de proc, agregar atributo en la ts (parametros) con una lista de los ids.*/
+                        checkIDNoDeclarado(val_peek(2).sval);
+                        /*
+                        * CHEQUEAR QUE SE CORRESPONDA CON EL NOMBRE DEL PARAMETRO DECLARADO.
+                        * Yo los agregaria todos los $1 a una lista, y cuando invoca al proc, chquear con los parametros reales
+                        * Si falta alguno, se repite alguno, o alguno no se corresponde, informar error.
+                        * Para esto en la declaracion de proc, agregar atributo en la ts (parametros) con una lista de los ids.
+                        */
                         checkIDNoDeclarado(val_peek(0).sval);
                         addSimbolo(val_peek(2).sval);
                         addSimbolo(val_peek(0).sval);
@@ -1401,68 +1616,91 @@ case 99:
                     }
 break;
 case 100:
-//#line 234 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{ addErrorSintactico("Error en la definicion de parametro del lado derecho");}
+//#line 484 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        addErrorSintactico("Error en la definicion de parametro del lado derecho");
+                    }
 break;
 case 101:
-//#line 235 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{ addErrorSintactico("Error en la definicion de parametros del lado izquierdo");}
+//#line 488 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                        addErrorSintactico("Error en la definicion de parametros del lado izquierdo");
+                    }
 break;
 case 102:
-//#line 238 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia asignacion variable.");
-								  addSimbolo( val_peek(3).sval); 
-								  addSimbolo( "=");
-                                  checkIDNoDeclarado(val_peek(3).sval);}
+//#line 494 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia asignacion variable.");
+                addSimbolo(val_peek(3).sval);
+                addSimbolo("=");
+                checkIDNoDeclarado(val_peek(3).sval);
+            }
 break;
 case 103:
-//#line 242 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error de asignación a la derecha.");}
+//#line 501 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                addErrorSintactico("Error de asignación a la derecha.");
+            }
 break;
 case 104:
-//#line 243 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addErrorSintactico("Error de asignación a la izquierda.");}
+//#line 505 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+                addErrorSintactico("Error de asignación a la izquierda.");
+            }
 break;
 case 105:
-//#line 246 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addSimbolo("+");}
+//#line 511 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+            addSimbolo("+");
+        }
 break;
 case 106:
-//#line 247 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addSimbolo("-");}
+//#line 515 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+            addSimbolo("-");
+        }
 break;
 case 108:
-//#line 251 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addSimbolo("*");}
+//#line 522 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+            addSimbolo("*");
+        }
 break;
 case 109:
-//#line 252 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{addSimbolo("/");}
+//#line 526 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+            addSimbolo("/");
+        }
 break;
 case 111:
-//#line 257 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 533 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
 {
             addSimbolo(val_peek(0).sval);
             checkIDNoDeclarado(val_peek(0).sval);
         }
 break;
 case 112:
-//#line 262 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+//#line 538 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
 {
            addSimbolo(val_peek(0).sval);
         }
 break;
 case 114:
-//#line 268 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{if (!analizadorLexico.check_rango_longint(val_peek(0).sval)){
-                addErrorSintactico("Error longint fuera de rango");}}
+//#line 545 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+        if (!analizadorLexico.check_rango_longint(val_peek(0).sval)){
+            addErrorSintactico("Error longint fuera de rango");}
+        yyval = val_peek(0);
+    }
 break;
 case 115:
-//#line 270 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
-{analizadorLexico.updateTablaSimbolos(val_peek(0).sval);
-               yyval = new ParserVal("-"+val_peek(0).sval);}
+//#line 551 "/home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/Compilador/gramatica.y"
+{
+        analizadorLexico.updateTablaSimbolos(val_peek(0).sval);
+        yyval = new ParserVal("-"+val_peek(0).sval);
+    }
 break;
-//#line 1389 "Parser.java"
+//#line 1627 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
