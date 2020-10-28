@@ -326,7 +326,9 @@ sentencia_declaracion_procedimiento : inicio_proc '(' lista_parametros_declaraci
                                         deleteAmbito();
                                         if (checkTipoCte($7.sval)) {
                                             estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia declaracion procedimiento con parametros.");
-                                            addInvocacionesProcedimiento(ids.pop(),$7.sval);
+                                            String val = ids.pop();
+                                            addInvocacionesProcedimiento(val,$7.sval);
+                                            addParametrosProcedimiento(val);
                                         }
                                         else
                                             erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " La constante declarada en el procedimiento no es de tipo LONGINT." );
@@ -429,18 +431,15 @@ lista_parametros_invocacion : parametro_invocacion
 
 lista_parametros_declaracion : parametro_declaracion 
                             {
-                                parametros.add(new ListParameters($1.sval));
-                                checkInvocacion();
+                                parametros.push(new ListParameters($1.sval));
                             }
                             | parametro_declaracion ',' parametro_declaracion
                             {
-                                parametros.add(new ListParameters($1.sval, $3.sval));
-                                checkInvocacion();
+                                parametros.push(new ListParameters($1.sval, $3.sval));
                             }
                             | parametro_declaracion ',' parametro_declaracion ',' parametro_declaracion
                             {
-                                parametros.add(new ListParameters($1.sval, $3.sval, $5.sval));
-                                checkInvocacion();
+                                parametros.push(new ListParameters($1.sval, $3.sval, $5.sval));
                             }
                             | parametro_declaracion ',' parametro_declaracion ',' parametro_declaracion ',' error 
                             {
@@ -570,17 +569,14 @@ ArrayList<String> ambito = new ArrayList<String>() {
     }
 };
 Stack<String> ids = new Stack<>();
-ArrayList<ListParameters> parametros = new ArrayList<ListParameters>();
+Stack<ListParameters> parametros = new Stack<ListParameters>();
 
-public void checkInvocacion(){
-    for ( int j = 0 ; j < parametros.size(); j++){
-        ArrayList<String> out = parametros.get(j).getParameters();
-        System.out.println("Nuevo proc");
-        for ( int i = 0 ; i< out.size();i++){
-            System.out.println(out.get(i));
-        }
-    }
-    parametros.clear();
+
+public void addParametrosProcedimiento(String lexema){
+    HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
+    String lex_mangling = nameMangling(lexema);
+    ts.get(lex_mangling).put("Parametros", parametros.pop());
+
 }
 
 public void addInvocacionesProcedimiento(String lexema, String invocaciones){

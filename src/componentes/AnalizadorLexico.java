@@ -344,7 +344,10 @@ public class AnalizadorLexico {
 		for (String key: tabla_simbolos.keySet()) {
 			datos.append("Lexema: ").append(key).append("\n");
 			for(String att: tabla_simbolos.get(key).keySet()) {
-				datos.append("\t" + "Atributo: ").append(att).append("   ").append("Valor: ").append(tabla_simbolos.get(key).get(att)).append("\n");
+                if (att.equals("Parametros"))
+                    datos.append("\t" + "Atributo: ").append(att).append("   ").append("Valor: ").append(((ListParameters)(tabla_simbolos.get(key).get(att))).getParameters()).append("\n");
+                else
+				    datos.append("\t" + "Atributo: ").append(att).append("   ").append("Valor: ").append(tabla_simbolos.get(key).get(att)).append("\n");
 			}
 		}
 		return datos.toString();	
