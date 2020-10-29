@@ -8,6 +8,8 @@
 	import java.util.Scanner;
 	import javax.swing.JFileChooser;
     import java.util.Stack;
+    import org.javatuples.Pair;
+
 	
 %}
 
@@ -265,11 +267,21 @@ sentencia_declaracion_datos : tipo lista_variables ';'
 
 invocacion_procedimiento : inicio_inv_proc lista_parametros_invocacion ')' ';'
                         {
-                            estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento con parametros.");
+                            if (checkInvocacionProcedimiento($1.sval)){
+                                addDireccionParametroReferencia($1.sval);
+                                estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento con parametros.");
+
+                            } else {
+                                erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " Error en la invocacion del procedimiento." );
+                            }
                         }
                         | inicio_inv_proc ')' ';'
                         {
-                            estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento sin parametros.");
+                            if (checkInvocacionProcedimiento($1.sval)){
+                                estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento sin parametros.");
+                            } else {
+                                erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " Error en la invocacion del procedimiento." );
+                            }
                         }
                         | inicio_inv_proc error ';' 
                         {
@@ -318,6 +330,7 @@ inicio_inv_proc: ID '('
                     checkIDNoDeclarado($1.sval);//VER CASO EN EL QUE LA INVOCACION SE HACE DENTRO DEL PROCEDIMIENTO.
                     addSimbolo("PROC");
                     addSimbolo($1.sval);
+                    $$ =  new ParserVal($1.sval);
                 }
                 ;
 
@@ -470,11 +483,17 @@ parametro_invocacion: ID ':' ID
                         checkIDNoDeclarado($1.sval);
                         /*
                         * CHEQUEAR QUE SE CORRESPONDA CON EL NOMBRE DEL PARAMETRO DECLARADO.
-                        * Yo los agregaria todos los $1 a una lista, y cuando invoca al proc, chquear con los parametros reales
+                        * Yo los agregaria todos los $1 a una lista, y cuando invoca al proc, chquear 
+                        * con los parametros reales
                         * Si falta alguno, se repite alguno, o alguno no se corresponde, informar error.
-                        * Para esto en la declaracion de proc, agregar atributo en la ts (parametros) con una lista de los ids.
+                        * Para esto en la declaracion de proc, agregar atributo en la ts (parametros) con 
+                        * una lista de los ids.
                         */
                         checkIDNoDeclarado($3.sval);
+                        if (!parametrosInvocacion.contains($1.sval)) {
+                            parametrosInvocacion.add($1.sval);
+                            addPair($1.sval,$3.sval);
+                        }
                         addSimbolo($1.sval);
                         addSimbolo($3.sval);
                         addSimbolo(":");
@@ -566,7 +585,47 @@ ArrayList<String> lista_variables = new ArrayList<>();
 ArrayList<String> ambito = new ArrayList<String>() { { add("@main"); } };
 Stack<String> ids = new Stack<>();
 Stack<ListParameters> parametros = new Stack<ListParameters>();
+ArrayList<String> parametrosInvocacion = new ArrayList<>();
+Stack<Pair<String,String>> parametrosInvocacionPar = new Stack<>();
 
+public void addPair(String paramForaml, String paramReal){
+    parametrosInvocacionPar.push(new Pair<String,String>(paramForaml,paramReal));
+}
+
+public void addDireccionParametroReferencia(String idProc) {
+    HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
+    while (!parametrosInvocacionPar.empty()) {
+        Pair<String, String> pair = parametrosInvocacionPar.pop();
+        String paramFormal = pair.getValue0();
+        String paramReal = pair.getValue1();
+        String lex_mangling = nameMangling(paramFormal) + "@" + idProc;
+        if (ts.containsKey(lex_mangling) && ts.get(lex_mangling).get("Pasaje").equals("REFERENCIA")) {
+            ArrayList<String> ambitoCopia = new ArrayList<>(ambito);
+            String direccion = null;
+            for(int i = ambitoCopia.size(); i > 0; i--) {
+                String newVar = paramReal + listToString(ambitoCopia);
+                if (ts.containsKey(newVar)) {
+                    direccion = &ts.get(newVar);
+                    break;
+                }
+                ambitoCopia.remove(ambitoCopia.size()-1);
+            }
+            if (direccion != null) {
+                ts.get(lex_mangling).put("DIR " + paramReal, direccion);
+            }
+            HashMap<String,Object> atributos = *direccion; 
+            System.out.println("IMPRIMO LOS ATRIBUTOS : " + atributos);
+        }
+    }
+}
+
+public boolean checkInvocacionProcedimiento(String lexema){
+    HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
+    String lex_mangling = nameMangling(lexema);
+    boolean seCumple = parametrosInvocacion.size() == ((ListParameters) ts.get(lex_mangling).get("Parametros")).getCantidad();
+    parametrosInvocacion.clear();
+    return seCumple;
+}
 
 public void addParametrosProcedimiento(String lexema){
     HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();

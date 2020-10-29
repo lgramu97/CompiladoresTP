@@ -22,3 +22,5 @@ b(); %% FALTA CONTROLAR EL TEMA DE LOS PARAMETROS.
 FLOAT s;
 
 b(a:s);
+
+%%Testear casos parametros por referencia y casos invocaciones.
