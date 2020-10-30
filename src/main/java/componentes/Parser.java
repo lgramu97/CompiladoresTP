@@ -651,11 +651,11 @@ public void addDireccionParametroReferencia(String idProc) {
         String lex_mangling = nameMangling(paramFormal) + "@" + idProc;
         if (ts.containsKey(lex_mangling) && ts.get(lex_mangling).get("Pasaje").equals("REFERENCIA")) {
             ArrayList<String> ambitoCopia = new ArrayList<>(ambito);
-            String direccion = null;
+            HashMap<String, Object> direccion = null;
             for(int i = ambitoCopia.size(); i > 0; i--) {
                 String newVar = paramReal + listToString(ambitoCopia);
                 if (ts.containsKey(newVar)) {
-                    direccion = &ts.get(newVar);
+                    direccion = ts.get(newVar);
                     break;
                 }
                 ambitoCopia.remove(ambitoCopia.size()-1);
@@ -663,7 +663,7 @@ public void addDireccionParametroReferencia(String idProc) {
             if (direccion != null) {
                 ts.get(lex_mangling).put("DIR " + paramReal, direccion);
             }
-            HashMap<String,Object> atributos = *direccion; 
+            HashMap<String,Object> atributos = direccion; 
             System.out.println("IMPRIMO LOS ATRIBUTOS : " + atributos);
         }
     }
