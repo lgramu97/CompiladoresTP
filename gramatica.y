@@ -270,7 +270,6 @@ invocacion_procedimiento : inicio_inv_proc lista_parametros_invocacion ')' ';'
                             if (checkInvocacionProcedimiento($1.sval)){
                                 addDireccionParametroReferencia($1.sval);
                                 estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento con parametros.");
-
                             } else {
                                 erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " Error en la invocacion del procedimiento." );
                             }
@@ -327,6 +326,7 @@ invocacion_procedimiento : inicio_inv_proc lista_parametros_invocacion ')' ';'
 
 inicio_inv_proc: ID '('
                 {
+                    idProcActual = null;
                     checkIDNoDeclarado($1.sval);//VER CASO EN EL QUE LA INVOCACION SE HACE DENTRO DEL PROCEDIMIENTO.
                     idProcActual = $1.sval;
                     addSimbolo("PROC");
@@ -514,6 +514,7 @@ asignacion : ID '=' expresion ';'
                 estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia asignacion variable.");
                 addSimbolo($1.sval);
                 addSimbolo("=");
+                idProcActual = null;
                 checkIDNoDeclarado($1.sval);
             }
             | ID '=' error ';'
@@ -551,6 +552,7 @@ termino : termino '*' factor
 factor : ID
         {
             addSimbolo($1.sval);
+	    idProcActual = null;
             checkIDNoDeclarado($1.sval);
         }
         | cte
@@ -626,8 +628,14 @@ public boolean checkInvocacionProcedimiento(String lexema){
     String lex_mangling = nameMangling(lexema);
     boolean seCumple = false;
     if (ts.containsKey(lex_mangling)) {
-        ListParameters parameters = ((ListParameters) ts.get(lex_mangling).get("Parametros"));
-        seCumple = parametrosInvocacion.size() == parameters.getCantidad();
+    	if ((Integer)ts.get(lex_mangling).get("Invocaciones") > (Integer)ts.get(lex_mangling).get("Llamadas")){
+        	ListParameters parameters = ((ListParameters) ts.get(lex_mangling).get("Parametros"));
+        	seCumple = parametrosInvocacion.size() == parameters.getCantidad();
+        	if(seCumple)
+        	    ts.get(lex_mangling).put("Llamadas",(Integer) ts.get(lex_mangling).get("Llamadas")+1);
+    	}else
+    		erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " Maximo numero de invocaciones alcanzada." );
+
     }
     parametrosInvocacion.clear();
     return seCumple;
@@ -659,7 +667,8 @@ public boolean checkTipoCte(String cte){
 public void checkIDNoDeclarado(String variable) {
     HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
     ArrayList<String> ambitoCopia = new ArrayList<>(ambito);
-    ambitoCopia.add(idProcActual);
+    if (idProcActual != null)
+    	ambitoCopia.add("@"+idProcActual);
     /* 
     proc(FLOAT x, FLOAT y) {} // x@main@proc && y@main@proc
     FLOAT a, b; // a@main && b@main
@@ -680,7 +689,6 @@ public void checkIDNoDeclarado(String variable) {
     if (ts.containsKey(variable)) {
         ts.remove(variable);
     }
-    idProcActual = null;
 }
 
 public void checkIDReDeclarado(String variable) {
