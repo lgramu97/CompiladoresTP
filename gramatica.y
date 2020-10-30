@@ -328,6 +328,7 @@ invocacion_procedimiento : inicio_inv_proc lista_parametros_invocacion ')' ';'
 inicio_inv_proc: ID '('
                 {
                     checkIDNoDeclarado($1.sval);//VER CASO EN EL QUE LA INVOCACION SE HACE DENTRO DEL PROCEDIMIENTO.
+                    idProcActual = $1.sval;
                     addSimbolo("PROC");
                     addSimbolo($1.sval);
                     $$ =  new ParserVal($1.sval);
@@ -587,6 +588,7 @@ Stack<String> ids = new Stack<>();
 Stack<ListParameters> parametros = new Stack<ListParameters>();
 ArrayList<String> parametrosInvocacion = new ArrayList<>();
 Stack<Pair<String,String>> parametrosInvocacionPar = new Stack<>();
+String idProcActual = null;
 
 public void addPair(String paramForaml, String paramReal){
     parametrosInvocacionPar.push(new Pair<String,String>(paramForaml,paramReal));
@@ -601,11 +603,11 @@ public void addDireccionParametroReferencia(String idProc) {
         String lex_mangling = nameMangling(paramFormal) + "@" + idProc;
         if (ts.containsKey(lex_mangling) && ts.get(lex_mangling).get("Pasaje").equals("REFERENCIA")) {
             ArrayList<String> ambitoCopia = new ArrayList<>(ambito);
-            String direccion = null;
+            HashMap<String, Object> direccion = null;
             for(int i = ambitoCopia.size(); i > 0; i--) {
                 String newVar = paramReal + listToString(ambitoCopia);
                 if (ts.containsKey(newVar)) {
-                    direccion = &ts.get(newVar);
+                    direccion = ts.get(newVar);
                     break;
                 }
                 ambitoCopia.remove(ambitoCopia.size()-1);
@@ -613,7 +615,7 @@ public void addDireccionParametroReferencia(String idProc) {
             if (direccion != null) {
                 ts.get(lex_mangling).put("DIR " + paramReal, direccion);
             }
-            HashMap<String,Object> atributos = *direccion;
+            HashMap<String,Object> atributos = direccion;
             System.out.println("IMPRIMO LOS ATRIBUTOS : " + atributos);
         }
     }
@@ -622,7 +624,11 @@ public void addDireccionParametroReferencia(String idProc) {
 public boolean checkInvocacionProcedimiento(String lexema){
     HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
     String lex_mangling = nameMangling(lexema);
-    boolean seCumple = parametrosInvocacion.size() == ((ListParameters) ts.get(lex_mangling).get("Parametros")).getCantidad();
+    boolean seCumple = false;
+    if (ts.containsKey(lex_mangling)) {
+        ListParameters parameters = ((ListParameters) ts.get(lex_mangling).get("Parametros"));
+        seCumple = parametrosInvocacion.size() == parameters.getCantidad();
+    }
     parametrosInvocacion.clear();
     return seCumple;
 }
@@ -653,6 +659,14 @@ public boolean checkTipoCte(String cte){
 public void checkIDNoDeclarado(String variable) {
     HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
     ArrayList<String> ambitoCopia = new ArrayList<>(ambito);
+    ambitoCopia.add(idProcActual);
+    /* 
+    proc(FLOAT x, FLOAT y) {} // x@main@proc && y@main@proc
+    FLOAT a, b; // a@main && b@main
+    proc(x:a, y:b); // a@main && b@main
+                    // x@main (pero lo tendria que buscar en x@main@proc)
+                    // y@main (pero lo tendria que buscar en y@main@proc)
+    */
     for(int i = ambitoCopia.size(); i > 0; i--) {
         String newVar = variable + listToString(ambitoCopia);
         if (ts.containsKey(newVar)) {
@@ -666,6 +680,7 @@ public void checkIDNoDeclarado(String variable) {
     if (ts.containsKey(variable)) {
         ts.remove(variable);
     }
+    idProcActual = null;
 }
 
 public void checkIDReDeclarado(String variable) {
