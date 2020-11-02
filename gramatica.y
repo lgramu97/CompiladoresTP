@@ -73,39 +73,40 @@ condicion_accion: condicion
                     */
                 ;
 
-clausula_while : incio_while '(' condicion_accion ')' LOOP '{' bloque_sentencias_control '}'';'
+clausula_while : inicio_while '(' condicion_accion ')' LOOP '{' bloque_sentencias_control '}'';'
                 {
                     estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia WHILE LOOP.");
                 }
-                | incio_while '(' error ')' LOOP '{' bloque_sentencias_control '}'';'
+                | inicio_while '(' error ')' LOOP '{' bloque_sentencias_control '}'';'
                 {
                     addErrorSintactico("Error en la condicion del WHILE.");
                 }
-                | incio_while '(' error LOOP '{' bloque_sentencias_control '}'';'
+                | inicio_while '(' error LOOP '{' bloque_sentencias_control '}'';'
                 {
                     addErrorSintactico("Error en la definicion del WHILE: falta el )");
                 }
-                | incio_while error condicion_accion ')' LOOP '{' bloque_sentencias_control '}'';'
+                | inicio_while error condicion_accion ')' LOOP '{' bloque_sentencias_control '}'';'
                 {
                     addErrorSintactico("Error en la condicion del WHILE: falta el (.");
                 }
-                | incio_while '(' condicion_accion ')' error '{' bloque_sentencias_control'}' ';'
+                | inicio_while '(' condicion_accion ')' error '{' bloque_sentencias_control'}' ';'
                 {
                     addErrorSintactico("Error en la condicion del WHILE: falta LOOP luego del ).");
                 }
-                | incio_while '(' '(' error condicion_accion  ')' LOOP '{' bloque_sentencias_control'}'';'
+                | inicio_while '(' '(' error condicion_accion  ')' LOOP '{' bloque_sentencias_control'}'';'
                 {
                     addErrorSintactico("Error en la condicion del WHILE: hay uno o mas ( de mas del lado izquierdo.");
                 }
-                | incio_while '(' condicion_accion ')' ')' error LOOP '{' bloque_sentencias_control'}'';'
+                | inicio_while '(' condicion_accion ')' ')' error LOOP '{' bloque_sentencias_control'}'';'
                 {
                     addErrorSintactico("Error en la condicion del WHILE: hay uno o mas ) de mas del lado derecho.");
                 }
                 ;
 
-incio_while : WHILE
+inicio_while : WHILE
             {
                 apilarPasoActual();
+                addSimbolo("L"+listaReglas.size());
             }
             ;
 
@@ -171,6 +172,7 @@ bloque_then: bloque_sentencias_control
             {
                 completarPasoIncompleto(false);
                 apilarPasoIncompleto(SimboloPolaca.BI);
+                addSimbolo("L"+listaReglas.size());
             }
                 /* PASO 2
                     #_paso_incomp = desapilar_paso(); //Desapila dirección incompleta.
@@ -191,11 +193,12 @@ bloque_sentencias_control :  sentencias_ejecutables
 sentencias_declarativas : sentencia_declaracion_datos
                         | sentencia_declaracion_procedimiento
                         ;
-
+        
 sentencias_ejecutables : asignacion
                     | clausula_seleccion
                     {
                         completarPasoIncompleto(true);
+                        addSimbolo("L"+listaReglas.size());
                     }
                     // PASO 3
                     // #_paso_incomp = desapilar_paso(); //Desapila dirección incompleta.
@@ -203,7 +206,9 @@ sentencias_ejecutables : asignacion
                     // BI.
                     | clausula_while
                     {
-                        completarPasoIncompleto(false);generarBIinicio();
+                        completarPasoIncompleto(false);
+                        generarBIinicio();
+                        addSimbolo("L"+listaReglas.size());
                     }
                     | sentencia_salida
                     | invocacion_procedimiento
@@ -215,6 +220,7 @@ sentencias_ejecutables : asignacion
                         addErrorSintactico("Syntax error");
                     }
                     ;
+
 
 sentencia_salida : OUT '(' CADENA ')' ';'
                 {
@@ -552,7 +558,7 @@ termino : termino '*' factor
 factor : ID
         {
             addSimbolo($1.sval);
-	    idProcActual = null;
+	        idProcActual = null;
             checkIDNoDeclarado($1.sval);
         }
         | cte
@@ -618,7 +624,6 @@ public void addDireccionParametroReferencia(String idProc) {
                 ts.get(lex_mangling).put("DIR " + paramReal, direccion);
             }
             HashMap<String,Object> atributos = direccion;
-            System.out.println("IMPRIMO LOS ATRIBUTOS : " + atributos);
         }
     }
 }

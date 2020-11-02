@@ -129,7 +129,77 @@ Lexema: a
 	Atributo: Tipo   Valor: LONGINT
 	Atributo: Cantidad   Valor: 1
 Lexema: b
+	Atributo: Tipo   Val
+
+
+Contenido de la tabla de simbolos:
+Lexema: x1@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: x@main@procedimiento
+	Atributo: Uso   Valor: PARAMETRO
 	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+	Atributo: Pasaje   Valor: COPIA-VALOR
+Lexema: w@main@procedimiento
+	Atributo: Uso   Valor: PARAMETRO
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+	Atributo: Pasaje   Valor: REFERENCIA
+	Atributo: DIR a   Valor: {Uso=VARIABLE, Tipo=LONGINT, Cantidad=1}
+Lexema: b@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: a@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: x2@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: z@main@procedimiento
+	Atributo: Uso   Valor: PARAMETRO
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+	Atributo: DIR x1   Valor: {Uso=VARIABLE, Tipo=FLOAT, Cantidad=1}
+	Atributo: Pasaje   Valor: REFERENCIA
+Lexema: 3
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: x1@main@procedimiento
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: x3@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: procedimiento@main
+	Atributo: Uso   Valor: PROC
+	Atributo: Invocaciones   Valor: 3
+	Atributo: Tipo   Valor: PROC
+	Atributo: Parametros   Valor: [w, x, z]
+	Atributo: Cantidad   Valor: 1
+	Atributo: Llamadas   Valor: 3
+Lexema: x3@main@procedimiento
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: x2@main@procedimiento
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: c@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+
+
+Desea guardar la salida en un documento de texto? Y/N
+or: LONGINT
 	Atributo: Cantidad   Valor: 1
 Lexema: 3
 	Atributo: Tipo   Valor: LONGINT
@@ -371,3 +441,38 @@ PROC a(LONGINT c, LONGINT c) NI = 3_l {
 Errores Semanticos: 
 	Numero de linea: 1 Variable 'c' re-declarada
 	Numero de linea: 3 Variable 'c' re-declarada
+
+
+	LONGINT a,b,c;
+FLOAT x1, x2 , x3;
+PROC procedimiento (REF LONGINT w, LONGINT x, REF FLOAT z) NI = 3_l {
+	 FLOAT x1,x2,x3;
+	 x2 = x3;
+};
+
+
+procedimiento(w:a,x:b); %%Falta parametro
+
+procedimiento(w:a,w:a,x:b); %%Redeclaracion parametro.
+
+procedimiento(); %% Faltan parametros.
+
+procedimiento(z:x1, w:a, x:b); %%Correcta invocacion.
+
+procedimiento(w:a,x:a,z:x1); %%Correcta invocacion.
+
+procedimiento(w:a,x:a,z:x1); %%Correcta invocacion.
+
+procedimiento(w:a,x:b,z:c); %%Correcta invocacion
+
+
+Errores Lexicos:
+
+Errores Sintacticos:
+
+Errores Semanticos:
+	Numero de linea: 9 Error en la invocacion del procedimiento.
+	Numero de linea: 11 Error en la invocacion del procedimiento.
+	Numero de linea: 13 Error en la invocacion del procedimiento.
+	Numero de linea: 21 Maximo numero de invocaciones alcanzada.
+	Numero de linea: 21 Error en la invocacion del procedimiento.

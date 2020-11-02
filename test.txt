@@ -1,110 +1,73 @@
-LONGINT a,b,c;
-FLOAT x1, x2 , x3;
-PROC procedimiento (REF LONGINT w, LONGINT x, REF FLOAT z) NI = 3_l {
-	 FLOAT x1,x2,x3;
-	 x2 = x3;
+WHILE ( a + b <= c - d ) LOOP {
+	a = b + c;
+	c = d - 3.0;
+};
+LONGINT a;
+IF ( a - b > c + 1.0 ) {
+	a = b + c;
+}ELSE{
+	a = b - c;
+}END_IF;
+
+
+
+IF ( a - b > c + 1.0 ) {
+	a  = b;
+} END_IF ;
+
+%%0  a 
+%%1  b 
+%%2  - 
+%%3  c 
+%%4  1.0 
+%%5  + 
+%%6  > 
+%%7  (14) 
+%%8  BF 
+%%9  b   
+%%10 a  
+%%11 =  
+%%12 (14) 
+%%13 BI  
+%%14 ...
+
+IF ( a - b > c + 1.0 ) {
+	a  = b + c;
+} ELSE { 
+	a = b - c;
+} END_IF ;
+
+%%0  a
+%%1  b
+%%2  -
+%%3  c
+%%4  1.0
+%%5  +
+%%6  >
+%%7  (16)
+%%8  BF
+%%9  b
+%%10 c
+%%11 +
+%%12 a
+%%13 =
+%%14 (21)
+%%15 BI
+%%16 b
+%%17 c
+%%18 -
+%%19 a
+%%20 =
+%%21 ...
+
+WHILE (a>b) LOOP {
+	x = 3_l;
 };
 
-
-procedimiento(w:a,x:b); %%Falta parametro
-
-procedimiento(w:a,w:a,x:b); %%Redeclaracion parametro.
-
-procedimiento(); %% Faltan parametros.
-
-procedimiento(z:x1, w:a, x:b); %%Correcta invocacion.
-
-procedimiento(w:a,x:a,z:x1); %%Correcta invocacion.
-
-procedimiento(w:a,x:a,z:x1); %%Correcta invocacion.
-
-procedimiento(w:a,x:b,z:c); %%Correcta invocacion
-
-/home/lautaro/.jdks/liberica-14.0.2/bin/java -javaagent:/home/lautaro/ideaIC-2020.2.3/idea-IC-202.7660.26/lib/idea_rt.jar=34425:/home/lautaro/ideaIC-2020.2.3/idea-IC-202.7660.26/bin -Dfile.encoding=UTF-8 -classpath /home/lautaro/Escritorio/Sistemas/4TO SISTEMAS/Compiladores/CompiladoresTP/target/classes:/home/lautaro/.m2/repository/org/javatuples/javatuples/1.2/javatuples-1.2.jar componentes.Parser
-IMPRIMO LOS ATRIBUTOS : {Uso=VARIABLE, Tipo=LONGINT, Cantidad=1}
-IMPRIMO LOS ATRIBUTOS : {Uso=VARIABLE, Tipo=FLOAT, Cantidad=1}
-IMPRIMO LOS ATRIBUTOS : {Uso=VARIABLE, Tipo=LONGINT, Cantidad=1}
-IMPRIMO LOS ATRIBUTOS : {Uso=VARIABLE, Tipo=LONGINT, Cantidad=1}
-IMPRIMO LOS ATRIBUTOS : {Uso=VARIABLE, Tipo=FLOAT, Cantidad=1}
-IMPRIMO LOS ATRIBUTOS : {Uso=VARIABLE, Tipo=LONGINT, Cantidad=1}
-IMPRIMO LOS ATRIBUTOS : {Uso=VARIABLE, Tipo=FLOAT, Cantidad=1}
-IMPRIMO LOS ATRIBUTOS : {Uso=VARIABLE, Tipo=LONGINT, Cantidad=1}
-Errores Lexicos:
-
-Errores Sintacticos:
-
-Errores Semanticos:
-	Numero de linea: 9 Error en la invocacion del procedimiento.
-	Numero de linea: 11 Error en la invocacion del procedimiento.
-	Numero de linea: 13 Error en la invocacion del procedimiento.
-	Numero de linea: 21 Maximo numero de invocaciones alcanzada.
-	Numero de linea: 21 Error en la invocacion del procedimiento.
-
-
-Contenido de la tabla de simbolos:
-Lexema: x1@main
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-Lexema: x@main@procedimiento
-	Atributo: Uso   Valor: PARAMETRO
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
-	Atributo: Pasaje   Valor: COPIA-VALOR
-Lexema: w@main@procedimiento
-	Atributo: Uso   Valor: PARAMETRO
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
-	Atributo: Pasaje   Valor: REFERENCIA
-	Atributo: DIR a   Valor: {Uso=VARIABLE, Tipo=LONGINT, Cantidad=1}
-Lexema: b@main
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
-Lexema: a@main
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
-Lexema: x2@main
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-Lexema: z@main@procedimiento
-	Atributo: Uso   Valor: PARAMETRO
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-	Atributo: DIR x1   Valor: {Uso=VARIABLE, Tipo=FLOAT, Cantidad=1}
-	Atributo: Pasaje   Valor: REFERENCIA
-Lexema: 3
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
-Lexema: x1@main@procedimiento
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-Lexema: x3@main
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-Lexema: procedimiento@main
-	Atributo: Uso   Valor: PROC
-	Atributo: Invocaciones   Valor: 3
-	Atributo: Tipo   Valor: PROC
-	Atributo: Parametros   Valor: [w, x, z]
-	Atributo: Cantidad   Valor: 1
-	Atributo: Llamadas   Valor: 3
-Lexema: x3@main@procedimiento
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-Lexema: x2@main@procedimiento
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-Lexema: c@main
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
-
-
-Desea guardar la salida en un documento de texto? Y/N
+WHILE (a>b) LOOP {
+	IF (a==b){
+		print(s:f);
+	} ELSE {
+		hola = 3.;
+	} END_IF;
+};
