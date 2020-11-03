@@ -38,6 +38,13 @@ public class AnalizadorLexico {
     private ArrayList<String> lineas;
     private ArrayList<String> errores = new ArrayList<>();
     private StringBuilder lexema;
+    public static final String VARIABLE = "VARIABLE";
+    public static final String LONGINT = "LONGINT";
+    public static final String FLOAT = "FLOAT";
+    public static final String USO = "Uso";
+    public static final String TIPO = "Tipo";
+    public static final String CADENA = "CADENA";
+    public static final String PARAMETRO = "PARAMETRO";
     
     private int columna; //Ultimo caracter leido.
     private int fila_leida; // Linea de codigo actual.
