@@ -68,7 +68,7 @@ public class Compilador {
 
   private void addCadena(HashMap<String, String> cadenaVar, String key) {
     String var = "_Cadena" + cadenaVar.size();
-    assembler.add(var + " db " + key);
+    assembler.add(var + " db " + key + ", 0");
     cadenaVar.put(key, var);
   }
 
