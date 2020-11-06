@@ -71,3 +71,118 @@ WHILE (a>b) LOOP {
 		hola = 3.;
 	} END_IF;
 };
+
+
+LONGINT a,b,c;
+FLOAT x1, x2 , x3;
+PROC procedimiento (REF LONGINT w, LONGINT x, REF FLOAT z) NI = 3_l {
+	 FLOAT x1,x2,x3;
+	 x1 = x2 - 3.0;
+	 PROC p() NI = 2_l{
+		procedimiento(w:a,x:x1,z:x2);
+		LONGINT w;
+		w = 3_l;
+	 };
+	 p();
+	 x2 = x3;
+};
+a = b;
+x1 = b + c ;
+
+%%procedimiento(w:a,x:b); %%Falta parametro
+
+%%procedimiento(w:a,w:a,x:b); %%Redeclaracion parametro.
+
+%%procedimiento(); %% Faltan parametros.
+
+procedimiento(z:x1, w:a, x:b); %%Correcta invocacion.
+
+procedimiento(w:a,x:a,z:x1); %%Correcta invocacion.
+
+procedimiento(w:a,x:a,z:x1); %%Correcta invocacion.
+
+%%procedimiento(w:a,x:b,z:c); %%Correcta invocacion
+
+
+Cantidad de estructuras de la lista de simbolos: 3
+
+VALOR POLACA [0]: b@main
+VALOR POLACA [1]: a@main
+VALOR POLACA [2]: =
+VALOR POLACA [3]: b@main
+VALOR POLACA [4]: c@main
+VALOR POLACA [5]: +
+VALOR POLACA [6]: x1@main
+VALOR POLACA [7]: =
+VALOR POLACA [8]: PROC
+VALOR POLACA [9]: procedimiento@main
+VALOR POLACA [10]: z
+VALOR POLACA [11]: x1@main
+VALOR POLACA [12]: :
+VALOR POLACA [13]: w
+VALOR POLACA [14]: a@main
+VALOR POLACA [15]: :
+VALOR POLACA [16]: x
+VALOR POLACA [17]: b@main
+VALOR POLACA [18]: :
+VALOR POLACA [19]: INV
+VALOR POLACA [20]: PROC
+VALOR POLACA [21]: procedimiento@main
+VALOR POLACA [22]: w
+VALOR POLACA [23]: a@main
+VALOR POLACA [24]: :
+VALOR POLACA [25]: x
+VALOR POLACA [26]: a@main
+VALOR POLACA [27]: :
+VALOR POLACA [28]: z
+VALOR POLACA [29]: x1@main
+VALOR POLACA [30]: :
+VALOR POLACA [31]: INV
+VALOR POLACA [32]: PROC
+VALOR POLACA [33]: procedimiento@main
+VALOR POLACA [34]: w
+VALOR POLACA [35]: a@main
+VALOR POLACA [36]: :
+VALOR POLACA [37]: x
+VALOR POLACA [38]: a@main
+VALOR POLACA [39]: :
+VALOR POLACA [40]: z
+VALOR POLACA [41]: x1@main
+VALOR POLACA [42]: :
+VALOR POLACA [43]: INV
+
+VALOR POLACA [44]: p@main@procedimiento
+VALOR POLACA [45]: PROC
+VALOR POLACA [46]: procedimiento@main
+VALOR POLACA [47]: w
+VALOR POLACA [48]: a@main
+VALOR POLACA [49]: :
+VALOR POLACA [50]: x
+VALOR POLACA [51]: x1@main@procedimiento
+VALOR POLACA [52]: :
+VALOR POLACA [53]: z
+VALOR POLACA [54]: x2@main@procedimiento
+VALOR POLACA [55]: :
+VALOR POLACA [56]: INV
+VALOR POLACA [57]: 3
+VALOR POLACA [58]: w@main@procedimiento@p
+VALOR POLACA [59]: =
+VALOR POLACA [60]: END_PROC
+
+VALOR POLACA [61]: procedimiento@main
+VALOR POLACA [62]: x2@main@procedimiento
+VALOR POLACA [63]: 3.0
+VALOR POLACA [64]: -
+VALOR POLACA [65]: x1@main@procedimiento
+VALOR POLACA [66]: =
+VALOR POLACA [67]: PROC
+VALOR POLACA [68]: p@main@procedimiento
+VALOR POLACA [69]: INV
+VALOR POLACA [70]: x3@main@procedimiento
+VALOR POLACA [71]: x2@main@procedimiento
+VALOR POLACA [72]: =
+VALOR POLACA [73]: END_PROC
+
+Process finished with exit code 0
+
+
