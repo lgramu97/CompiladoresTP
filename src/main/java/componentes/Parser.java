@@ -623,7 +623,8 @@ final static String yyrule[] = {
 
 //#line 584 "/home/guido/Documents/Facultad/Compiladores/CompiladoresTP/gramatica.y"
 
-ArrayList<SimboloPolaca> listaReglas = new ArrayList<>();
+ArrayList<SimboloPolaca> listaReglasActual = new ArrayList<>();
+ArrayList<ArrayList<SimboloPolaca>> listaReglas = new ArrayList<>();
 Stack<Integer> pasosIncompletos = new Stack<>();
 AnalizadorLexico analizadorLexico = new AnalizadorLexico();
 ArrayList<String> erroresSintacticos = new ArrayList<>();
@@ -780,8 +781,8 @@ public void addTipoListaVariables(String tipo, String uso){
   lista_variables.clear();
 }
 
-public void addSimbolo(String simbolo) {
-	listaReglas.add(new SimboloPolaca(simbolo));
+public void addSimbolo(String simbol) {
+	listaReglasActual.add(new SimboloPolaca(simbolo));
 }
 
 public void apilarPasoIncompleto(String nombre) {
@@ -792,8 +793,8 @@ public void apilarPasoIncompleto(String nombre) {
 
 public void completarPasoIncompleto(boolean fin) {
 	int posIncompleto = pasosIncompletos.pop();
-	SimboloPolaca simbolo = listaReglas.get(posIncompleto);
-    int pos = listaReglas.size();
+	SimboloPolaca simbolo = listaReglasActual.get(posIncompleto);
+    int pos = listaReglasActual.size();
     if (!fin) {
         pos += 2;
     }
@@ -807,7 +808,7 @@ public void generarBIinicio(){
 }
 
 public void apilarPasoActual() {
-	pasosIncompletos.push(listaReglas.size());
+	pasosIncompletos.push(listaReglasActual.size());
 }
 
 
@@ -833,7 +834,7 @@ public ArrayList<String> getEstructuras(){
 }
 
 public ArrayList<SimboloPolaca> getListaSimboloPolaca(){
-    return this.listaReglas;
+    return this.listaReglasActual;
 }
 
 public void addErrorSintactico(String error){

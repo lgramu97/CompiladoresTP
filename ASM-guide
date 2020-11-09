@@ -1,0 +1,88 @@
+Intrucciones:
+  .CODE
+  START:
+    - Declaracion de procedimientos.
+      {
+        etiqueta:
+          ... ; codigo
+          END
+      }
+      
+    - Print.
+      {
+        Generar instruccion invocacion por pantalla.
+        INVOKE MessageBox, NULL, addr __cadena__, addr __cadena__, MB_OK
+      }
+    - Asignaciones.
+      {
+        chequear si necesita conversion implicita.
+        MOV EAX, _var
+        MOV _var2, EAX
+      }
+    - Invocaciones.
+      {
+        CALL __etiqueta__
+      }
+    - BF.
+      {
+        generar asm condicion por falso.
+        realizar comparacion y guardar para que en el bf decidir por que saltar
+        {
+            MOV __reg__, _var
+            CMP __reg__, _var2 ; Operación: dest - src (sólo afecta flags).
+        }
+        {
+          "JNGE": "salta si es menor",
+          "JNG": "salta es menor o igual",
+          "JE": "salta si es igual",
+          "JNE": "salta si es distinto",
+          "JGE": "salta si es mayor o igual",
+          "JG": "salta si es mayor",
+        }
+      }
+    - BI.
+      {
+        JMP __label__
+      }
+    - Expresiones.
+      {
+        IMUL EAX, {__reg__, __mem__} ; EDX: EAX <- EAX * {reg32|mem32|inmed}
+        IDIV {__reg__, __mem__} ; El dividendo debe estar en EDX:EAX
+                                ; Cociente en EAX. Resto en EDX.
+        CDQ ; Extiende el signo de EAX en EDX:EAX. No se afectan flags.
+        ADD {__reg__, __mem__}, {__reg__, __mem__, __inmed__} ; Operación: dest <- dest + src
+        SUB {__reg__, __mem__}, {__reg__, __mem__, __inmed__} ; Operación: dest <- dest - src.
+      }
+    - flags
+      {
+        * CF - Carry flag.
+          Se setea si una operación arimética genera carry. Indica overflow para aritmética de enteros sin signo.
+        * PF - Parity flag.
+          Se setea si el byte menos significativo del resultado contiene un número par de bits 1.
+        * ZF - Zero flag.
+          Se setea si el resultado es cero.
+        * SF - Sign flag.
+          Se setea igual al bit más significativo del resultado, que es el bit de signo de un entero con signo (0 indica un valor positivo y 1 indica un valor negativo).
+        * OF - Overflow flag. 
+          Se setea si un entero es demasiado grande para números positivos o demasiado pequeño para números negativos (excluyendo el bit de signo) para entrar en el operando destino. Indica una condición de overflow para aritmética de enteros con signo
+      }
+  INVOKE ExitProcess, 0 
+  __etiquetaErrorOverflow__:
+        invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr ERROR_OVERFLOW_SUMA, MB_OK
+        INVOKE ExitProcess, 0 
+  __etiquetaErrorDivCero__:
+        invoke MessageBox, NULL, addr ERROR_DIVISION_CERO, addr ERROR_DIVISION_CERO, MB_OK
+        INVOKE ExitProcess, 0
+
+  END START
+  
+
+  conversionImplicita: -> si es suma/multiplicacion/resta/div pasar (FLOAT,LONGINT)
+    tipo.IZQ != tipo.DER
+        if tipo.IZQ == FLOAT
+          FILD D4
+        else
+          erroresSemanticos.add("Conversion de Float a entero no permitido");
+
+    MOV EAX, EBX
+    CDQ
