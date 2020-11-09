@@ -106,7 +106,7 @@ clausula_while : inicio_while '(' condicion_accion ')' LOOP '{' bloque_sentencia
 inicio_while : WHILE
             {
                 apilarPasoActual();
-                addSimbolo("L"+listaReglasActual.size());
+                addSimbolo("L"+listaReglas.size());
             }
             ;
 
@@ -172,7 +172,7 @@ bloque_then: bloque_sentencias_control
             {
                 completarPasoIncompleto(false);
                 apilarPasoIncompleto(SimboloPolaca.BI);
-                addSimbolo("L"+listaReglasActual.size());
+                addSimbolo("L"+listaReglas.size());
             }
                 /* PASO 2
                     #_paso_incomp = desapilar_paso(); //Desapila dirección incompleta.
@@ -192,18 +192,13 @@ bloque_sentencias_control :  sentencias_ejecutables
 
 sentencias_declarativas : sentencia_declaracion_datos
                         | sentencia_declaracion_procedimiento
-                        {
-                            addSimbolo("END_PROC");
-                            listaReglas.add(pilaProcs.pop());
-                            listaReglasActual = pilaProcs.peek();
-                        }
                         ;
-
+        
 sentencias_ejecutables : asignacion
                     | clausula_seleccion
                     {
                         completarPasoIncompleto(true);
-                        addSimbolo("L"+listaReglasActual.size());
+                        addSimbolo("L"+listaReglas.size());
                     }
                     // PASO 3
                     // #_paso_incomp = desapilar_paso(); //Desapila dirección incompleta.
@@ -213,7 +208,7 @@ sentencias_ejecutables : asignacion
                     {
                         completarPasoIncompleto(false);
                         generarBIinicio();
-                        addSimbolo("L"+listaReglasActual.size());
+                        addSimbolo("L"+listaReglas.size());
                     }
                     | sentencia_salida
                     | invocacion_procedimiento
@@ -278,7 +273,7 @@ sentencia_declaracion_datos : tipo lista_variables ';'
 
 invocacion_procedimiento : inicio_inv_proc lista_parametros_invocacion ')' ';'
                         {
-                            if (checkInvocacionProcedimiento($1.sval, true)){
+                            if (checkInvocacionProcedimiento($1.sval)){
                                 addDireccionParametroReferencia($1.sval);
                                 estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento con parametros.");
                             } else {
@@ -287,7 +282,7 @@ invocacion_procedimiento : inicio_inv_proc lista_parametros_invocacion ')' ';'
                         }
                         | inicio_inv_proc ')' ';'
                         {
-                            if (checkInvocacionProcedimiento($1.sval, false)){
+                            if (checkInvocacionProcedimiento($1.sval)){
                                 estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Invocacion a procedimiento sin parametros.");
                             } else {
                                 erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " Error en la invocacion del procedimiento." );
@@ -341,7 +336,7 @@ inicio_inv_proc: ID '('
                     checkIDNoDeclarado($1.sval);//VER CASO EN EL QUE LA INVOCACION SE HACE DENTRO DEL PROCEDIMIENTO.
                     idProcActual = $1.sval;
                     addSimbolo("PROC");
-                    addSimbolo(findLexema($1.sval));
+                    addSimbolo($1.sval);
                     $$ =  new ParserVal($1.sval);
                 }
                 ;
@@ -435,12 +430,6 @@ inicio_proc: PROC ID
             	checkIDReDeclarado($2.sval);//Check que exista el id.
                 modificarLexema($2.sval);
                 addTipoListaVariables("PROC","PROC");
-                if (pilaProcs.empty()) {
-                    pilaProcs.push(listaReglasActual);
-                }
-                listaReglasActual = new ArrayList<>();
-                pilaProcs.push(listaReglasActual);
-                addSimbolo(nameMangling($2.sval));
                 addAmbito($2.sval);
                 ids.push($2.sval);
                 // Agregar para el procedimiento, nombre de los parametros.
@@ -513,7 +502,7 @@ parametro_invocacion: ID ':' ID
                             addPair($1.sval,$3.sval);
                         }
                         addSimbolo($1.sval);
-                        addSimbolo(findLexema($3.sval));
+                        addSimbolo($3.sval);
                         addSimbolo(":");
                     }
                     | ID ':' error
@@ -529,7 +518,7 @@ parametro_invocacion: ID ':' ID
 asignacion : ID '=' expresion ';'
             {
                 estructuras.add("Linea numero: "+(analizadorLexico.getFilaActual()+1) + " --Sentencia asignacion variable.");
-                addSimbolo(findLexema($1.sval));
+                addSimbolo($1.sval);
                 addSimbolo("=");
                 idProcActual = null;
                 checkIDNoDeclarado($1.sval);
@@ -568,8 +557,7 @@ termino : termino '*' factor
 
 factor : ID
         {
-            $$ = new ParserVal($1.sval);
-            addSimbolo(findLexema($1.sval));
+            addSimbolo($1.sval);
 	        idProcActual = null;
             checkIDNoDeclarado($1.sval);
         }
@@ -593,13 +581,8 @@ cte : CTE
     }
     ;
 %%
-ArrayList<SimboloPolaca> listaReglasActual = new ArrayList<>();
-ArrayList<ArrayList<SimboloPolaca>> listaReglas = new ArrayList<ArrayList<SimboloPolaca>>() {
-    {
-        add(listaReglasActual);
-    }
-};
-Stack<ArrayList<SimboloPolaca>> pilaProcs = new Stack<>();
+
+ArrayList<SimboloPolaca> listaReglas = new ArrayList<>();
 Stack<Integer> pasosIncompletos = new Stack<>();
 AnalizadorLexico analizadorLexico = new AnalizadorLexico();
 ArrayList<String> erroresSintacticos = new ArrayList<>();
@@ -615,22 +598,8 @@ ArrayList<String> parametrosInvocacion = new ArrayList<>();
 Stack<Pair<String,String>> parametrosInvocacionPar = new Stack<>();
 String idProcActual = null;
 
-public void addPair(String paramFormal, String paramReal){
-    parametrosInvocacionPar.push(new Pair<String,String>(paramFormal,paramReal));
-}
-
-public String findLexema(String lexema){
-    // Busca desde el ambito actual hacia atras.
-    HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
-    ArrayList<String> ambitoCopia = new ArrayList<>(ambito);
-    for(int i = ambitoCopia.size(); i > 0; i--) {
-        String newVar = lexema + listToString(ambitoCopia);
-        if (ts.containsKey(newVar)) {
-            return newVar;
-        }
-        ambitoCopia.remove(ambitoCopia.size()-1);
-    }
-    return lexema;
+public void addPair(String paramForaml, String paramReal){
+    parametrosInvocacionPar.push(new Pair<String,String>(paramForaml,paramReal));
 }
 
 public void addDireccionParametroReferencia(String idProc) {
@@ -659,19 +628,16 @@ public void addDireccionParametroReferencia(String idProc) {
     }
 }
 
-public boolean checkInvocacionProcedimiento(String lexema, boolean params){
+public boolean checkInvocacionProcedimiento(String lexema){
     HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
     String lex_mangling = nameMangling(lexema);
-    boolean seCumple = true;
+    boolean seCumple = false;
     if (ts.containsKey(lex_mangling)) {
     	if ((Integer)ts.get(lex_mangling).get("Invocaciones") > (Integer)ts.get(lex_mangling).get("Llamadas")){
-        	if (params){
-                ListParameters parameters = ((ListParameters) ts.get(lex_mangling).get("Parametros"));
-                seCumple = parametrosInvocacion.size() == parameters.getCantidad();
-            }
-        	if(seCumple) {
+        	ListParameters parameters = ((ListParameters) ts.get(lex_mangling).get("Parametros"));
+        	seCumple = parametrosInvocacion.size() == parameters.getCantidad();
+        	if(seCumple)
         	    ts.get(lex_mangling).put("Llamadas",(Integer) ts.get(lex_mangling).get("Llamadas")+1);
-            }
     	}else
     		erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " Maximo numero de invocaciones alcanzada." );
 
@@ -708,7 +674,7 @@ public void checkIDNoDeclarado(String variable) {
     ArrayList<String> ambitoCopia = new ArrayList<>(ambito);
     if (idProcActual != null)
     	ambitoCopia.add("@"+idProcActual);
-    /*
+    /* 
     proc(FLOAT x, FLOAT y) {} // x@main@proc && y@main@proc
     FLOAT a, b; // a@main && b@main
     proc(x:a, y:b); // a@main && b@main
@@ -774,7 +740,7 @@ public void addTipoListaVariables(String tipo, String uso){
 }
 
 public void addSimbolo(String simbolo) {
-	listaReglasActual.add(new SimboloPolaca(simbolo));
+	listaReglas.add(new SimboloPolaca(simbolo));
 }
 
 public void apilarPasoIncompleto(String nombre) {
@@ -785,8 +751,8 @@ public void apilarPasoIncompleto(String nombre) {
 
 public void completarPasoIncompleto(boolean fin) {
 	int posIncompleto = pasosIncompletos.pop();
-	SimboloPolaca simbolo = listaReglasActual.get(posIncompleto);
-    int pos = listaReglasActual.size();
+	SimboloPolaca simbolo = listaReglas.get(posIncompleto);
+    int pos = listaReglas.size();
     if (!fin) {
         pos += 2;
     }
@@ -800,7 +766,7 @@ public void generarBIinicio(){
 }
 
 public void apilarPasoActual() {
-	pasosIncompletos.push(listaReglasActual.size());
+	pasosIncompletos.push(listaReglas.size());
 }
 
 
@@ -825,7 +791,7 @@ public ArrayList<String> getEstructuras(){
 	return this.estructuras;
 }
 
-public ArrayList<ArrayList<SimboloPolaca>> getListaSimboloPolaca(){
+public ArrayList<SimboloPolaca> getListaSimboloPolaca(){
     return this.listaReglas;
 }
 
@@ -928,7 +894,7 @@ public static void main(String[] args){
 	System.out.println();
 	System.out.println("Contenido de la tabla de simbolos: ");
 	System.out.println(parser.getAnalizadorLexico().getDatosTabla_simbolos());
-
+	
 	System.out.println();
 	Scanner in = new Scanner(System.in);
 	System.out.println("Desea guardar la salida en un documento de texto? Y/N");
@@ -938,17 +904,12 @@ public static void main(String[] args){
 	in.close();
 
 
-    ArrayList<ArrayList<SimboloPolaca>> lista = parser.getListaSimboloPolaca();
-    System.out.println("Cantidad de estructuras de la lista de simbolos: " + lista.size());
-    int c = 0;
-    for (int i=0, sizeEstructuras = lista.size(); i<sizeEstructuras; i++){
-        ArrayList<SimboloPolaca> listaActual = lista.get(i);
-        System.out.println();
-        for (int j = 0, listaSize = listaActual.size(); j < listaSize; j++) {
-            SimboloPolaca simboloPolaca = listaActual.get(j);
-            System.out.println("VALOR POLACA [" + c + "]: " + simboloPolaca.getSimbolo());
-            c++;
-        }
+    ArrayList<SimboloPolaca> lista = parser.getListaSimboloPolaca();
+    System.out.println("Tamaño de la lista de simbolos: " + lista.size());
+    for (int i = 0, listaSize = lista.size(); i < listaSize; i++) {
+        SimboloPolaca simboloPolaca = lista.get(i);
+        System.out.println("VALOR POLACA [" + i + "]: " + simboloPolaca.getSimbolo());
     }
+    System.out.println("VALOR POLACA [" + lista.size() +  "]: ...");
 
 }
