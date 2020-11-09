@@ -142,7 +142,7 @@ Lexema: x@main@procedimiento
 	Atributo: Tipo   Valor: LONGINT
 	Atributo: Cantidad   Valor: 1
 	Atributo: Pasaje   Valor: COPIA-VALOR
-Lexema: w@main@procedimiento
+Lexema: ()w@main@procedimiento
 	Atributo: Uso   Valor: PARAMETRO
 	Atributo: Tipo   Valor: LONGINT
 	Atributo: Cantidad   Valor: 1
