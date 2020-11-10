@@ -18,11 +18,15 @@ public class Compilador {
   private ArrayList<String> assembler;
   private ArrayList<String> procsAsm;
   private HashMap<String, HashMap<String, Object>> tablaSimbolos;
+  private int EAX = 0;
+  private int EBX = 1;
+  private int ECX = 2;
+  private int EDX = 3;
+  private boolean[] registrosOcupados = {false, false, false, false};
   public static final String ERROR_DIVISION_CERO = "ERROR_DIVISION_CERO";
   public static final String ERROR_OVERFLOW_SUMA = "ERROR_OVERFLOW_SUMA";
   public static final String INV = "INV";
   public static final String PARAMETROS = "Parametros";
-
 
   public Compilador(HashMap<String, HashMap<String, Object>> tablaSimbolos, ArrayList<ArrayList<SimboloPolaca>> polaca) {
     this.tablaSimbolos = tablaSimbolos;
@@ -97,6 +101,128 @@ public class Compilador {
   // ProgramText db "Hello World!", 0
   // _bad: invoke StdOut, addr ProgramText
 
+  public boolean checkTipos(String op1, String op2) {
+    HashMap<String, Object> attrsOp1 = tablaSimbolos.get(op1);
+    HashMap<String, Object> attrsOp2 = tablaSimbolos.get(op2);
+    if (!attrsOp1.get(TIPO).equals(attrsOp2.get(TIPO))) {
+      // Conversiones implicita o error
+      if (!attrsOp1.get(TIPO).equals(FLOAT)) { // Convercion sobre parametro real.
+        throw new Error('Conversion implicita no valida!');
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public String getReg(int i) {
+    switch (i) {
+      case 0:
+        return "EAX";
+      case 1:
+        return "EBX";
+      case 2:
+        return "ECX";
+      case 3:
+        return "EDX";
+      default:
+        return null;
+    }
+  }
+
+  public String getRegLibre(String operacion) {
+    if (operacion.equals("ADD") || operacion.equals("SUB")) {
+      for (int i = 0; i < registrosOcupados.length(); i++) {
+        if (!registrosOcupados[i]) {
+          registrosOcupados[i] = true;
+          return getReg(i);
+        }
+      }
+    } else {
+      if (operacion.equals("IMUL")) {
+        if (!registrosOcupados[0]) {
+          registrosOcupados[0] = true;
+          return getReg(0);
+        } else {
+          
+        }
+      }
+    }
+  }
+
+  public void freeReg(SimboloPolaca op) {
+    int reg = op.getReg();
+    if (reg != -1) {
+      op.freeReg();
+      registrosOcupados[reg] = false;
+    }
+  }
+
+  public void generateCodeSUB(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
+    //TODO:
+  }
+
+  public void generateCodeDIV(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
+    //TODO:
+  }
+  
+  public void generateCodeADD(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
+    // ADD {__reg__, __mem__}, {__reg__, __mem__, __inmed__} ; Operación: dest <- dest + src
+    if (checkTipos(op1, op2)) {
+      conversionImplicita(op2);
+      //TODO: Aca generamos instrucciones para FLOAT
+    } else {
+      // Aca generamos instrucciones para LONGINT
+      String reg;
+      if (!op1.isReg()) { // op1 es vble
+        if (!op2.isReg()) {// Situacion 1: vble1 vble2 OP
+          reg = getRegLibre();
+          asm.add("MOV " + reg + ", " + op1.getSimbolo());
+          asm.add("ADD " + reg + ", " + op2.getSimbolo());
+          op1.setReg(reg);
+        } else { // Situacion 4.a: vble reg +
+          String reg2 = getReg(op2.getReg());
+          asm.add("ADD " + reg2 + ", " + op1.getSimbolo());
+        }
+      } else { // op1 es reg
+        reg = getReg(op1.getReg());
+        if (!op2.isReg()) { // Situcacion 2: reg vble OP
+          asm.add("ADD " + reg + ", " + op2.getSimbolo()); 
+        } else { // Situacion 3: reg1 reg2 OP
+          String reg2 = getReg(op2.getReg());
+          asm.add("ADD " + reg + ", " + reg2);
+          freeReg(op2);
+        }
+      }
+      asm.add("JO "+ ERROR_OVERFLOW_SUMA); // Chequear.
+    }
+  }
+
+  public void generateCodeOPConmutativas() {
+
+  }
+
+  public void generateCodeMUL(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
+    // IMUL EAX, {__reg__, __mem__} ; EDX: EAX <- EAX * {reg32|mem32|inmed}
+    if(checkTipos(op1, op2)) {
+      conversionImplicita(op2);
+      //TODO: instrucciones FLOAT. 
+    }
+    String reg;
+    if (!op1.isReg()) { // op1 es vble 
+      if (!op2.isReg()) {// Situacion 1: vble1 vble2 OP
+        reg = getRegLibre();
+        asm.add("MOV " + reg + ", " + op1.getSimbolo())
+        asm.add("IMUL " + reg + ", " + op2.getSimbolo());
+        op1.setReg(reg);
+      } else { // Situacion 4.a: vble reg +
+        String reg2 = getReg(op2.getReg());
+        asm.add("IMUL " + reg2 + ", " + op1.getSimbolo());
+      }
+    }
+  }
+
+  public void generateCodeResta()
+                                                                
   public void generateCode() {
     assembler.add(".code");
     assembler.add("START:");
@@ -133,16 +259,16 @@ public class Compilador {
     }
     assembler.add("invoke ExitProcess, 0"); 
     assembler.add("__etiquetaErrorOverflow__:");
-    assembler.add("invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr ERROR_OVERFLOW_SUMA, MB_OK");
+    assembler.add("invoke MessageBox, NULL, addr " + ERROR_OVERFLOW_SUMA + ", addr  " + ERROR_OVERFLOW_SUMA + ", MB_OK");
     assembler.add("invoke ExitProcess, 0"); 
     assembler.add("__etiquetaErrorDivCero__:");
-    assembler.add("invoke MessageBox, NULL, addr ERROR_DIVISION_CERO, addr ERROR_DIVISION_CERO, MB_OK");
+    assembler.add("invoke MessageBox, NULL, addr " + ERROR_DIVISION_CERO +  ", addr " + ERROR_DIVISION_CERO +  ", MB_OK");
     assembler.add("invoke ExitProcess, 0");
     assembler.add("END START");
   }
 
   public ArrayList<String> getParametrosReales(ArrayList<SimboloPolaca> invocacion) {
-    //retorno todos los parametros reales del procedimiento.
+    //devulve todos los parametros reales del procedimiento.
     String simboloActual;
     ArrayList<String> out = new ArrayList<>();
     for (int i = 0; i < invocacion; i++) {
@@ -176,24 +302,19 @@ public class Compilador {
     ArrayList<String> paramsReales = getParametrosReales(invocacion);
     for (int i = 0; i < paramsFormales.size(); i++) {
       String paramFormal  = paramsFormales.get(i) + nameMangling(invocacion);
-      HashMap<String, Object> atrsParamFormal = tablaSimbolos.get(paramFormal);
-      HashMap<String, Object> atrsParamReal = tablaSimbolos.get(paramsReales.get(i));
-      if (!atrsParamFormal.get(TIPO).equals(atrsParamReal.get(TIPO))) {
-        // Conversiones implicita o error
-        if (atrsParamFormal.get(TIPO).equals(FLOAT)) { // Convercion sobre parametro real.
-          conversionImplicita(paramsReales.get(i)); //TODO
-        } else {
-          throw new Error('Conversion implicita no valida!');
-          return false;
-        }
+      if (checkTipos(paramFormal, paramsReales.get(i))) {
+          conversionImplicita(paramsReales.get(i));
       }
-      // comparo tipos de parametros
-      // tengo que buscar a la tabla de simbolos
-    }
-    return true;
+  }
+
+  public void conversionImplicita(String paramReal) {
+    // TODO: conversion implicita
   }
 
   public void declararProc(ArrayList<SimboloPolaca> polacaProc) {
-    
+    procsAsm.add(polacaProc.get(0) + ":");
+    for (int i = 1; i < polacaProc; i++) {
+      // TODO: generar instrucciones
+    }
   }
 }
