@@ -18,11 +18,11 @@ public class Compilador {
   private ArrayList<String> assembler;
   private ArrayList<String> procsAsm;
   private HashMap<String, HashMap<String, Object>> tablaSimbolos;
-  private int EAX = 0;
-  private int EBX = 1;
-  private int ECX = 2;
-  private int EDX = 3;
-  private boolean[] registrosOcupados = {false, false, false, false};
+  private final int EAX = 0;
+  private final int EBX = 1;
+  private final int ECX = 2;
+  private final int EDX = 3;
+  private SimboloPolaca[] regs = {null, null, null, null};
   public static final String ERROR_DIVISION_CERO = "ERROR_DIVISION_CERO";
   public static final String ERROR_OVERFLOW_SUMA = "ERROR_OVERFLOW_SUMA";
   public static final String INV = "INV";
@@ -129,40 +129,158 @@ public class Compilador {
     }
   }
 
-  public String getRegLibre(String operacion) {
+  public boolean itsBusy(int numReg) {
+    return regs[numReg] != null;
+  }
+
+  public String getRegLibre(String operacion, SimboloPolaca op, int numOperando) {
     if (operacion.equals("ADD") || operacion.equals("SUB")) {
-      for (int i = 0; i < registrosOcupados.length(); i++) {
-        if (!registrosOcupados[i]) {
-          registrosOcupados[i] = true;
+      for (int i = 0; i < regs.length; i++) {
+        if (!itsBusy(i)) {
+          regs[i] = op;
+          op.setReg(i);
           return getReg(i);
         }
       }
-    } else {
-      if (operacion.equals("IMUL")) {
-        if (!registrosOcupados[0]) {
-          registrosOcupados[0] = true;
-          return getReg(0);
-        } else {
-          
+    } else if (operacion.equals("IMUL")) {
+      // FIXME: arreglar esto para multiplicacion
+      if (!itsBusy(EAX)) {
+        regs[EAX] = op;
+        op.setReg(EAX);
+        return getReg(EAX);
+      } else {
+        // TODO: crear var aux
+      }
+    } else if (operacion.equals("IDIV")) {
+      if (itsBusy(EAX)) {
+        swapRegLibre(EAX);
+      }
+      if (itsBusy(EDX)) {
+        swapRegLibre(EDX);
+      }
+      if (numOperando == 1) {
+        regs[EAX] = op;
+        op.setReg(EAX);
+        return getReg(EAX);  // "EAX"
+      } else if (numOperando == 2) {
+        for (int i = 0; i < regs.length; i++) {
+          if (i != EAX && i != EDX && !itsBusy(i)) {
+            regs[i] = op;
+            op.setReg(i);
+            return getReg(i); // "EBX" || "ECX"
+          }
         }
       }
     }
+  }
+
+  public void swapRegLibre(int reg) {
+    if (regs[reg] != null) {
+      for (int i = 1; i < regs.length; i++) {
+        if (regs[i] == null) {
+          regs[i] = regs[reg];
+          regs[i].setReg(i);
+          regs[reg] = null;
+        }
+      }
+    } 
   }
 
   public void freeReg(SimboloPolaca op) {
     int reg = op.getReg();
     if (reg != -1) {
       op.freeReg();
-      registrosOcupados[reg] = false;
+      regs[reg] = null;
     }
   }
 
   public void generateCodeSUB(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
-    //TODO:
+    //SUB {__reg__, __mem__}, {__reg__, __mem__, __inmed__} ; Operación: dest <- dest - src.
+    if (checkTipos(op1, op2)) {
+      conversionImplicita(op2);
+      //TODO: Aca generamos instrucciones para FLOAT
+    } else {
+      String reg;
+      if (op1.isVble()) { // op1 es vble
+        reg = getRegLibre("SUB", op1);
+        if (op2.isVble()) {// Situacion 1: vble1 vble2 OP
+          asm.add("MOV " + reg + ", " + op1.getSimbolo());
+          asm.add("SUB " + reg + ", " + op2.getSimbolo());
+        } else { // Situacion 4.b: vble reg -
+          String reg2 = getReg(op2.getReg());
+          asm.add("MOV " + reg + ", " + op1.getSimbolo());
+          asm.add("SUB " + reg + ", " + reg2);
+          freeReg(op2);
+        }
+      } else { // op1 es reg
+        reg = getReg(op1.getReg());
+        if (op2.isVble()) { // Situcacion 2: reg vble OP
+          asm.add("SUB " + reg + ", " + op2.getSimbolo()); 
+        } else { // Situacion 3: reg1 reg2 OP
+          String reg2 = getReg(op2.getReg());
+          asm.add("SUB " + reg + ", " + reg2);
+          freeReg(op2);
+        }
+      }
+    }
   }
 
+
+  /* 
+  primero muevo el dividendo a EAX
+  tengo que extender el dato a 32 bits.
+  si el dato es negativo, tiene que contener todos 1., si no todos 0.
+  en lugar de hacerlo a mano ->  CDQ extiendo de EAX a el par EAX:EDX.
+  b/a -> EAX : b , CDQ , DIV.
+  b a / 
+   */
   public void generateCodeDIV(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
-    //TODO:
+    if (checkTipos(op1, op2)) {
+      conversionImplicita(op2);
+      //TODO: Aca generamos instrucciones para FLOAT
+    } else {
+      String reg, reg2;
+      if (op1.isVble()) { // op1 es vble
+        reg = getRegLibre("IDIV",op1, 1);// Asigno EAX.
+        if (op2.isVble()) {// Situacion 1: vble1 vble2 OP
+          reg2 = getRegLibre("IDIV", op2, 2);
+          asm.add("MOV " + reg2 + ", " + op2.getSimbolo());
+        } else { // Situacion 4.b: vble reg
+          reg2 = getReg(op2.getReg()); // Nunca va a ser EAX ni EDX porque ya lo movio getRegLibre
+        }
+        asm.add("MOV " + reg + ", " + op1.getSimbolo());
+        freeReg(op2);
+      } else { // op1 es reg
+        if (op1.getReg() != EAX) {
+          swapRegLibre(EAX); //Libero EAX.
+          regs[EAX] = op1;
+          op1.setReg(EAX);
+        }
+        reg = getReg(op1.getReg()); // op1 ya es EAX
+        if (itsBusy(EDX)) { // libero EDX si esta ocupado.
+          swapRegLibre(EDX);
+        }
+        if (op2.isVble()) { // Situcacion 2: reg vble OP
+          for (int i = 0; i < regs.length; i++) {
+            if (i != EAX && i != EDX && !itsBusy(i)) {
+              regs[i] = op2;
+              op2.setReg(i);
+              reg2 = getReg(op2.getReg()); // "EBX" || "ECX"
+            }
+          }
+          asm.add("MOV " + reg2 + ", " + op2.getSimbolo());
+        } else { // Situacion 3: reg1 reg2 OP
+          // op1 ya es EAX
+          // EDX ya esta libre
+          reg2 = getReg(op2.getReg()); // "EBX" || "ECX"
+        }
+        freeReg(op2);
+      }
+      asm.add("CDQ");
+      asm.add("CMP "+  reg2 + " , 0");
+      asm.add("JE ERROR_DIVISION_CERO");
+      asm.add("IDIV " + reg2);
+    }
   }
   
   public void generateCodeADD(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
@@ -173,19 +291,18 @@ public class Compilador {
     } else {
       // Aca generamos instrucciones para LONGINT
       String reg;
-      if (!op1.isReg()) { // op1 es vble
-        if (!op2.isReg()) {// Situacion 1: vble1 vble2 OP
-          reg = getRegLibre();
+      if (op1.isVble()) { // op1 es vble
+        if (op2.isVble()) {// Situacion 1: vble1 vble2 OP
+          reg = getRegLibre("ADD", op1, 1);
           asm.add("MOV " + reg + ", " + op1.getSimbolo());
           asm.add("ADD " + reg + ", " + op2.getSimbolo());
-          op1.setReg(reg);
         } else { // Situacion 4.a: vble reg +
           String reg2 = getReg(op2.getReg());
           asm.add("ADD " + reg2 + ", " + op1.getSimbolo());
         }
       } else { // op1 es reg
         reg = getReg(op1.getReg());
-        if (!op2.isReg()) { // Situcacion 2: reg vble OP
+        if (op2.isVble()) { // Situcacion 2: reg vble OP
           asm.add("ADD " + reg + ", " + op2.getSimbolo()); 
         } else { // Situacion 3: reg1 reg2 OP
           String reg2 = getReg(op2.getReg());
@@ -208,20 +325,32 @@ public class Compilador {
       //TODO: instrucciones FLOAT. 
     }
     String reg;
-    if (!op1.isReg()) { // op1 es vble 
-      if (!op2.isReg()) {// Situacion 1: vble1 vble2 OP
-        reg = getRegLibre();
+    if (op1.isVble()) { // op1 es vble 
+      if (op2.isVble()) {// Situacion 1: vble1 vble2 OP
+        reg = getRegLibre("IMUL", op1, 1); // Devuelve si o si EAX.
         asm.add("MOV " + reg + ", " + op1.getSimbolo())
         asm.add("IMUL " + reg + ", " + op2.getSimbolo());
-        op1.setReg(reg);
-      } else { // Situacion 4.a: vble reg +
+      } else { // Situacion 4.a: vble reg *
+        if (op2.getReg() != EAX) {
+          swapRegLibre(EAX);
+        }
         String reg2 = getReg(op2.getReg());
         asm.add("IMUL " + reg2 + ", " + op1.getSimbolo());
       }
+    } else { // op1 es reg
+      if (op1.getReg() != EAX) {
+        swapRegLibre(EAX);
+      }
+      reg = getReg(op1.getReg());
+      if (op2.isVble()) {  // Situcacion 2: reg vble OP
+        asm.add("IMUL " + reg + ", " + op2.getSimbolo());
+      } else { // Situacion 3: reg1 reg2 OP
+        String reg2 = getReg(op2.getReg());
+        asm.add("IMUL " + reg + ", " + reg2);
+        freeReg(op2);
+      }
     }
   }
-
-  public void generateCodeResta()
                                                                 
   public void generateCode() {
     assembler.add(".code");
@@ -271,7 +400,7 @@ public class Compilador {
     //devulve todos los parametros reales del procedimiento.
     String simboloActual;
     ArrayList<String> out = new ArrayList<>();
-    for (int i = 0; i < invocacion; i++) {
+    for (int i = 0; i < invocacion.length; i++) {
       simboloActual = simbolo.getSimbolo();
       if (simboloActual.equals(":")) {
         out.add(invocacion.get(i-1).getSimbolo());
@@ -307,7 +436,7 @@ public class Compilador {
       }
   }
 
-  public void conversionImplicita(String paramReal) {
+  public void conversionImplicita(SimboloPolaca paramReal) {
     // TODO: conversion implicita
   }
 

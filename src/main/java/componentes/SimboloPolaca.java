@@ -19,12 +19,8 @@ public class SimboloPolaca {
     public void setSimbolo(String simbolo) {
         this.simbolo = simbolo;
     }
-    
-    public String isReg() {
-        return this.getReg() != -1;
-    }
 
-    public String isMem() {
+    public boolean isVble() {
         return this.getReg() == -1;
     }
 
@@ -32,7 +28,7 @@ public class SimboloPolaca {
         this.reg = reg;
     }
 
-    public String getReg() {
+    public int getReg() {
         return this.reg;
     }
 
