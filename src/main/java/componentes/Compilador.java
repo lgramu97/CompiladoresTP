@@ -27,6 +27,7 @@ public class Compilador {
   public static final String ERROR_OVERFLOW_SUMA = "ERROR_OVERFLOW_SUMA";
   public static final String INV = "INV";
   public static final String PARAMETROS = "Parametros";
+  private String condBF;
 
   public Compilador(HashMap<String, HashMap<String, Object>> tablaSimbolos, ArrayList<ArrayList<SimboloPolaca>> polaca) {
     this.tablaSimbolos = tablaSimbolos;
@@ -134,7 +135,7 @@ public class Compilador {
   }
 
   public String getRegLibre(String operacion, SimboloPolaca op, int numOperando) {
-    if (operacion.equals("ADD") || operacion.equals("SUB")) {
+    if (operacion.equals("ADD") || operacion.equals("SUB") || operacion.equals(":=") || operacion.equals("CMP")) {
       for (int i = 0; i < regs.length; i++) {
         if (!itsBusy(i)) {
           regs[i] = op;
@@ -194,6 +195,92 @@ public class Compilador {
     }
   }
 
+/*   
+  BF -> generateSalto(asm,  tope);
+  BI -> generateSalto(asm,  tope); MODIFICAR CONDICION BF ANTES POR "JMP"
+*/
+
+/* 
+VALOR POLACA [0]: a
+VALOR POLACA [1]: b
+VALOR POLACA [2]: -
+VALOR POLACA [3]: c
+VALOR POLACA [4]: 1.0
+VALOR POLACA [5]: +
+VALOR POLACA [6]: >
+VALOR POLACA [7]: 14
+VALOR POLACA [8]: BF
+VALOR POLACA [9]: b
+VALOR POLACA [10]: a
+VALOR POLACA [11]: =
+VALOR POLACA [12]: 15
+VALOR POLACA [13]: BI
+VALOR POLACA [14]: L14
+VALOR POLACA [15]: L15
+
+Process finished with exit code 0
+
+*/
+
+  public void generateTag(ArrayList<String> asm, SimboloPolaca tag) {
+    asm.add(tag.getSimbolo() + ":");
+  }
+
+  public void generateSalto(ArrayList<String> asm, SimboloPolaca tag) {
+    asm.add(condBF + " L" + tag.getSimbolo());
+  }
+
+  public void generateComparacion(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2, String operador) {
+    switch (operador) {
+      case ">":
+        condBF = "JNG"; // <=
+        break;
+      case "<=":
+        condBF = "JNLE"; // >
+        break;
+      case ">=":
+        condBF = "JNGE"; // <
+        break;
+      case "<":
+        condBF = "JNL"; // >=
+        break;
+      case "==":
+        condBF = "JNE"; // !=
+        break;
+      case "!=":
+        condBF = "JE"; // ==
+        break;
+    }
+    reg = getRegLibre("CMP", op1, 1);
+    asm.add("MOV " + reg + " , " + op1.getSimbolo());
+    asm.add("CMP " + reg + " , " + op2.getSimbolo());
+    freeReg(op1);
+  }
+
+/*   
+  a > b + z
+  b z + a >
+  R1 a >
+  IGUAL JE
+  MAYOR JLE 
+*/
+
+  public void generateAsignacion(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
+    if (checkTipos(op1, op2)) {
+      conversionImplicita(op2);
+    }
+    String reg;
+    // op1 siempre es vble
+    if (op2.isVble()) { // op2 es vble
+      reg = getRegLibre(":=", op2, 1);
+      asm.add("MOV " + reg + ", " + op2.getSimbolo());
+    } else { // op2 es reg
+      reg = getReg(op2.getReg());
+    }
+    asm.add("MOV " + op1.setSimbolo() + ", " + reg);
+    freeReg(op2);
+  }
+
   public void generateCodeSUB(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
     //SUB {__reg__, __mem__}, {__reg__, __mem__, __inmed__} ; Operación: dest <- dest - src.
     if (checkTipos(op1, op2)) {
@@ -202,7 +289,7 @@ public class Compilador {
     } else {
       String reg;
       if (op1.isVble()) { // op1 es vble
-        reg = getRegLibre("SUB", op1);
+        reg = getRegLibre("SUB", op1, 1);
         if (op2.isVble()) {// Situacion 1: vble1 vble2 OP
           asm.add("MOV " + reg + ", " + op1.getSimbolo());
           asm.add("SUB " + reg + ", " + op2.getSimbolo());
@@ -438,6 +525,10 @@ public class Compilador {
 
   public void conversionImplicita(SimboloPolaca paramReal) {
     // TODO: conversion implicita
+    /* 
+      setSimbolo(variable auxiliar)
+      setReg(-1) // para decir que no es un registro
+     */
   }
 
   public void declararProc(ArrayList<SimboloPolaca> polacaProc) {
