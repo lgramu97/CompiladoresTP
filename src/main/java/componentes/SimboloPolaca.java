@@ -5,7 +5,6 @@ public class SimboloPolaca {
     public static final String BF = "BF";
     public static final String BI = "BI";
     private String simbolo;
-    private String tipo;
     private int reg;
 
     public SimboloPolaca(String simbolo) {
