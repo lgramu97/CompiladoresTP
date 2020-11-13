@@ -23,12 +23,14 @@ import static componentes.SimboloPolaca.BI;
 
 public class Compilador {
 
-  private ArrayList<String> procsAsm;
   private String condBF;
   private final ArrayList<ArrayList<SimboloPolaca>> polaca;
+  private ArrayList<String> procsAsm;
+  private ArrayList<String> assemblerData;
   private final ArrayList<String> assembler;
   private final HashMap<String, HashMap<String, Object>> tablaSimbolos;
   private final HashMap<String, String> cadenaVar = new HashMap<>();
+  private final HashMap<String, String> numbers = new HashMap<>();
   private final SimboloPolaca[] regs = {null, null, null, null};
   private final int EAX = 0;
   private final int EDX = 3;
@@ -56,34 +58,33 @@ public class Compilador {
   }
 
   private void generateData() {
-    HashMap<String, String> numbers = new HashMap<>();
-    assembler.add(".data");
-    assembler.add(ERROR_DIVISION_CERO + " db " + "Error: no es posible divir por cero.");
-    assembler.add(ERROR_OVERFLOW_SUMA + " db " + "Error: overflow en suma.");
+    assemblerData.add(".data");
+    assemblerData.add(ERROR_DIVISION_CERO + " db " + "Error: no es posible divir por cero.");
+    assemblerData.add(ERROR_OVERFLOW_SUMA + " db " + "Error: overflow en suma.");
     for (String key : tablaSimbolos.keySet()) {
-      addData(cadenaVar, numbers, key);
+      addData(cadenaVar, key);
     }
   }
 
-  private void addData(HashMap<String, String> cadenaVar, HashMap<String, String> numbers, String key) {
+  private void addData(HashMap<String, String> cadenaVar, String key) {
     HashMap<String, Object> atributos = tablaSimbolos.get(key);
     if (atributos.containsKey(USO)) {
       addVariable(key, atributos);
     } else if(atributos.get(TIPO).equals(CADENA)) {
       addCadena(cadenaVar, key);
     } else {
-      addConstante(key, atributos, numbers);
+      addConstante(key, atributos);
     }
     //Ver el caso de constante en codigo. No contiene USO, si se agrega -> addVariable.
   }
 
   // Lexema: 3
 	// Atributo: Tipo   Valor: LONGINT
-  private void addConstante(String key, HashMap<String, Object> atributos, HashMap<String, String> numbers) {
+  private void addConstante(String key, HashMap<String, Object> atributos) {
     String tipo = (String) atributos.get(TIPO);
     if (tipo.equals(LONGINT) || tipo.equals(FLOAT)) { // Caso FLOAT y LONGINT.
       String number = "_Constante" + numbers.size();
-      assembler.add(number + " dd ?");
+      assemblerData.add(number + " dd " + key); // inicializar con el valor de la constante.
       numbers.put(key,number);
       // El signo ? indica que no esta inicializado
     }
@@ -94,7 +95,7 @@ public class Compilador {
     if (uso.equals(VARIABLE) || uso.equals(PARAMETRO)) {
       String tipo = (String) atributos.get(TIPO);
       if (tipo.equals(LONGINT) || tipo.equals(FLOAT)) { // Caso FLOAT y LONGINT.
-        assembler.add("_" + key + " dd ?");
+        assemblerData.add("_" + key + " dd ?");
         // El signo ? indica que no esta inicializado
       }
     }
@@ -102,7 +103,7 @@ public class Compilador {
 
   private void addCadena(HashMap<String, String> cadenaVar, String key) {
     String var = "_Cadena" + cadenaVar.size();
-    assembler.add(var + " db " + key + ", 0");
+    assemblerData.add(var + " db " + key + ", 0");
     cadenaVar.put(key, var);
   }
 
@@ -579,9 +580,39 @@ Process finished with exit code 0
           break;
         default:
           if (simbolo.getSimbolo().charAt(0) == 'L') break;
+          // Apilo la constante -> obtengo variable del hash.
+          if (!isId(simbolo.getSimbolo()) && isCte(polaca, i+1)){
+            // FIXME Chequear que no entre nunca por el caso de ':', creo que lo sacamos ya.
+            // Por el default entra con tags (L), con ids, y con constantes.
+            // En el caso de las constantes puede ser una constante en codigo que debo buscar el valor
+            // o puede ser la direccion de salto previo al BF/BI que lo agrego como tal en la pila
+            // porque en la siguiente instruccion de la polaca genero el tag.
+            String variable = numbers.get(simbolo.getSimbolo());
+            simbolo.setSimbolo(variable);
+          }
           pilaEjecucion.push(simbolo);
       }
     }
+  }
+/*
+  VALOR POLACA [58]: 0.
+  VALOR POLACA [59]: b@main@producto (el siguiente es variable, buscar en hash la cte)
+
+  VALOR POLACA [47]: 6
+  VALOR POLACA [48]: BI/BF (el siguiente es BI o BF, el anterior se agrega sin usar el hash porque es etiqueta luega)
+*/
+  public boolean isCte(ArrayList<SimboloPolaca> polaca, Integer indexOp){
+    // True si es una constante en codigo. False si es direccion de salto (previo a BF/BI)
+    if (indexOp < polaca.size()){
+      String nextOp = polaca.get(indexOp).getSimbolo();
+      return  !(nextOp.equals(BF) || nextOp.equals(BI));
+    }
+    return true;
+  }
+
+  public boolean isId(String op){
+    char c = op.toLowerCase().charAt(0);
+    return c >= 'a' && c <= 'z' ;
   }
 
   public void generateCode() {

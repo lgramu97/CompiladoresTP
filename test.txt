@@ -186,31 +186,190 @@ VALOR POLACA [73]: END_PROC
 Process finished with exit code 0
 
 
-FLOAT a,b,res;
-LONGINT c;
+Errores Lexicos:
 
-PROC suma(FLOAT a, FLOAT b, REF FLOAT res) NI = 4_l{
-	res = a + b;
-};
+Errores Sintacticos:
+	Numero de linea: 1  Syntax error
 
-PROC producto(FLOAT a, FLOAT b, REF FLOAT res) NI = 4.{
-	b=0.-b; %%el negativo de un numero.
-	res = a * b;
-};
+Errores Semanticos:
+	Numero de linea: 12 La constante declarada en el procedimiento no es de tipo LONGINT.
+	Numero de linea: 17 La constante declarada en el procedimiento no es de tipo LONGINT.
+	Numero de linea: 25 Variable 'resta' no declarada
 
-PROC save() NI = 1.{
-	OUT("GUARDANDO resultado-
-	del archivo.");
-};
 
-a=12.;
-b=-13.;
-WHILE (res>c) LOOP {
-	IF (a<=b){
-		suma(a:a,b:b,res:res);
-	}ELSE{
-		resta(a:a,b:b,res:res);
-	}END_IF;
-	OUT("resultado");
-};
-%%save();
+Contenido de la tabla de simbolos:
+Lexema: res@main@suma
+	Atributo: Uso   Valor: PARAMETRO
+	Atributo: DIR res   Valor: {Uso=VARIABLE, Tipo=FLOAT, Cantidad=1}
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+	Atributo: Pasaje   Valor: REFERENCIA
+Lexema: producto@main
+	Atributo: Uso   Valor: PROC
+	Atributo: Tipo   Valor: PROC
+	Atributo: Cantidad   Valor: 1
+Lexema: b@main@suma
+	Atributo: Uso   Valor: PARAMETRO
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+	Atributo: Pasaje   Valor: COPIA-VALOR
+Lexema: b@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: a@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: a@main@suma
+	Atributo: Uso   Valor: PARAMETRO
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+	Atributo: Pasaje   Valor: COPIA-VALOR
+Lexema: b@main@producto
+	Atributo: Uso   Valor: PARAMETRO
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+	Atributo: Pasaje   Valor: COPIA-VALOR
+Lexema: .6
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: res@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: -13.
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: 12.
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: suma@main
+	Atributo: Uso   Valor: PROC
+	Atributo: Invocaciones   Valor: 4
+	Atributo: Tipo   Valor: PROC
+	Atributo: Parametros   Valor: [a, b, res]
+	Atributo: Cantidad   Valor: 1
+	Atributo: Llamadas   Valor: 1
+Lexema: 4
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: res@main@producto
+	Atributo: Uso   Valor: PARAMETRO
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+	Atributo: Pasaje   Valor: REFERENCIA
+Lexema: a@main@producto
+	Atributo: Uso   Valor: PARAMETRO
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+	Atributo: Pasaje   Valor: COPIA-VALOR
+Lexema: 4.
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: "resultado"
+	Atributo: Tipo   Valor: CADENA
+	Atributo: Cantidad   Valor: 1
+Lexema: "GUARDANDO resultado
+	del archivo."
+	Atributo: Tipo   Valor: CADENA
+	Atributo: Cantidad   Valor: 1
+Lexema: save@main
+	Atributo: Uso   Valor: PROC
+	Atributo: Tipo   Valor: PROC
+	Atributo: Cantidad   Valor: 1
+Lexema: 1.
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: c@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: 0.
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+
+
+Desea guardar la salida en un documento de texto? Y/N
+n
+Cantidad de estructuras de la lista de simbolos: 4
+
+VALOR POLACA [0]: 12.
+VALOR POLACA [1]: a@main
+VALOR POLACA [2]: =
+VALOR POLACA [3]: -13.
+VALOR POLACA [4]: b@main
+VALOR POLACA [5]: =
+VALOR POLACA [6]: L6
+VALOR POLACA [7]: res@main
+VALOR POLACA [8]: c@main
+VALOR POLACA [9]: >
+VALOR POLACA [10]: 49
+VALOR POLACA [11]: BF
+VALOR POLACA [12]: a@main
+VALOR POLACA [13]: b@main
+VALOR POLACA [14]: <=
+VALOR POLACA [15]: 31
+VALOR POLACA [16]: BF
+VALOR POLACA [17]: PROC
+VALOR POLACA [18]: suma@main
+VALOR POLACA [19]: a
+VALOR POLACA [20]: a@main
+VALOR POLACA [21]: :
+VALOR POLACA [22]: b
+VALOR POLACA [23]: b@main
+VALOR POLACA [24]: :
+VALOR POLACA [25]: res
+VALOR POLACA [26]: res@main
+VALOR POLACA [27]: :
+VALOR POLACA [28]: INV
+VALOR POLACA [29]: 44
+VALOR POLACA [30]: BI
+VALOR POLACA [31]: L31
+VALOR POLACA [32]: PROC
+VALOR POLACA [33]: resta
+VALOR POLACA [34]: a
+VALOR POLACA [35]: a@main
+VALOR POLACA [36]: :
+VALOR POLACA [37]: b
+VALOR POLACA [38]: b@main
+VALOR POLACA [39]: :
+VALOR POLACA [40]: res
+VALOR POLACA [41]: res@main
+VALOR POLACA [42]: :
+VALOR POLACA [43]: INV
+VALOR POLACA [44]: L44
+VALOR POLACA [45]: "resultado"
+VALOR POLACA [46]: OUT
+VALOR POLACA [47]: 6
+VALOR POLACA [48]: BI
+VALOR POLACA [49]: L49
+
+VALOR POLACA [50]: suma@main
+VALOR POLACA [51]: a@main@suma
+VALOR POLACA [52]: b@main@suma
+VALOR POLACA [53]: +
+VALOR POLACA [54]: res@main@suma
+VALOR POLACA [55]: =
+VALOR POLACA [56]: END_PROC
+
+VALOR POLACA [57]: producto@main
+VALOR POLACA [58]: 0.
+VALOR POLACA [59]: b@main@producto
+VALOR POLACA [60]: -
+VALOR POLACA [61]: b@main@producto
+VALOR POLACA [62]: =
+VALOR POLACA [63]: a@main@producto
+VALOR POLACA [64]: b@main@producto
+VALOR POLACA [65]: *
+VALOR POLACA [66]: res@main@producto
+VALOR POLACA [67]: =
+VALOR POLACA [68]: END_PROC
+
+VALOR POLACA [69]: save@main
+VALOR POLACA [70]: "GUARDANDO resultado
+	del archivo."
+VALOR POLACA [71]: OUT
+VALOR POLACA [72]: END_PROC
+
+Process finished with exit code 0

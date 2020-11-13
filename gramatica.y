@@ -663,7 +663,7 @@ public boolean checkInvocacionProcedimiento(String lexema, boolean params){
     HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
     String lex_mangling = nameMangling(lexema);
     boolean seCumple = true;
-    if (ts.containsKey(lex_mangling)) {
+    if (ts.containsKey(lex_mangling) && ts.get(lex_mangling).containsKey("Llamadas")) { // Si no contiene "Llamadas" es por que el procedimiento esta mal declarado (Error Sintactico).
         String llamadas = ts.get(lex_mangling).get("Llamadas").toString();
         if (llamadas.contains(".")) return false;
         /* 1. .6 -1.2 3.f-5 2.f+34 2.f-1 15. 0. -.6 */
@@ -944,6 +944,7 @@ public static void main(String[] args){
     System.out.println("Cantidad de estructuras de la lista de simbolos: " + lista.size());
     int c = 0;
     for (int i=0, sizeEstructuras = lista.size(); i<sizeEstructuras; i++){
+    	System.out.println();
         ArrayList<SimboloPolaca> listaActual = lista.get(i);
         for (int j = 0, listaSize = listaActual.size(); j < listaSize; j++) {
             SimboloPolaca simboloPolaca = listaActual.get(j);
