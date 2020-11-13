@@ -47,6 +47,7 @@ public class AnalizadorLexico {
     public static final String PARAMETRO = "PARAMETRO";
     public static final String PROC = "PROC";
     public static final String REFERENCIA = "REF";
+    public static final String OUT = "OUT";
     
     private int columna; //Ultimo caracter leido.
     private int fila_leida; // Linea de codigo actual.

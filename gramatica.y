@@ -664,17 +664,19 @@ public boolean checkInvocacionProcedimiento(String lexema, boolean params){
     String lex_mangling = nameMangling(lexema);
     boolean seCumple = true;
     if (ts.containsKey(lex_mangling)) {
-    	if ((Integer)ts.get(lex_mangling).get("Invocaciones") > (Integer)ts.get(lex_mangling).get("Llamadas")){
-        	if (params){
+        String llamadas = ts.get(lex_mangling).get("Llamadas").toString();
+        if (llamadas.contains(".")) return false;
+        /* 1. .6 -1.2 3.f-5 2.f+34 2.f-1 15. 0. -.6 */
+        if ((Integer)ts.get(lex_mangling).get("Invocaciones") > Integer.parseInt(llamadas)){
+            if (params){
                 ListParameters parameters = ((ListParameters) ts.get(lex_mangling).get("Parametros"));
                 seCumple = parametrosInvocacion.size() == parameters.getCantidad();
             }
-        	if(seCumple) {
-        	    ts.get(lex_mangling).put("Llamadas",(Integer) ts.get(lex_mangling).get("Llamadas")+1);
+            if(seCumple) {
+                ts.get(lex_mangling).put("Llamadas",(Integer) ts.get(lex_mangling).get("Llamadas")+1);
             }
-    	}else
-    		erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " Maximo numero de invocaciones alcanzada." );
-
+        } else
+            erroresSemanticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + " Maximo numero de invocaciones alcanzada." );
     }
     parametrosInvocacion.clear();
     return seCumple;

@@ -185,3 +185,32 @@ VALOR POLACA [73]: END_PROC
 
 Process finished with exit code 0
 
+
+FLOAT a,b,res;
+LONGINT c;
+
+PROC suma(FLOAT a, FLOAT b, REF FLOAT res) NI = 4_l{
+	res = a + b;
+};
+
+PROC producto(FLOAT a, FLOAT b, REF FLOAT res) NI = 4.{
+	b=0.-b; %%el negativo de un numero.
+	res = a * b;
+};
+
+PROC save() NI = 1.{
+	OUT("GUARDANDO resultado-
+	del archivo.");
+};
+
+a=12.;
+b=-13.;
+WHILE (res>c) LOOP {
+	IF (a<=b){
+		suma(a:a,b:b,res:res);
+	}ELSE{
+		resta(a:a,b:b,res:res);
+	}END_IF;
+	OUT("resultado");
+};
+%%save();

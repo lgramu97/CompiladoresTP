@@ -2,6 +2,10 @@ package componentes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.Stack;
+
 import org.javatuples.Pair;
 
 import static componentes.AnalizadorLexico.CADENA;
@@ -13,24 +17,25 @@ import static componentes.AnalizadorLexico.USO;
 import static componentes.AnalizadorLexico.VARIABLE;
 import static componentes.AnalizadorLexico.PROC;
 import static componentes.AnalizadorLexico.REFERENCIA;
+import static componentes.AnalizadorLexico.OUT;
+import static componentes.SimboloPolaca.BF;
+import static componentes.SimboloPolaca.BI;
 
 public class Compilador {
 
-  private ArrayList<ArrayList<SimboloPolaca>> polaca;
-  private ArrayList<String> assembler;
   private ArrayList<String> procsAsm;
-  private HashMap<String, HashMap<String, Object>> tablaSimbolos;
+  private String condBF;
+  private final ArrayList<ArrayList<SimboloPolaca>> polaca;
+  private final ArrayList<String> assembler;
+  private final HashMap<String, HashMap<String, Object>> tablaSimbolos;
+  private final HashMap<String, String> cadenaVar = new HashMap<>();
+  private final SimboloPolaca[] regs = {null, null, null, null};
   private final int EAX = 0;
-  private final int EBX = 1;
-  private final int ECX = 2;
   private final int EDX = 3;
-  private SimboloPolaca[] regs = {null, null, null, null};
+  private int countVarsAux = 0;
   public static final String ERROR_DIVISION_CERO = "ERROR_DIVISION_CERO";
   public static final String ERROR_OVERFLOW_SUMA = "ERROR_OVERFLOW_SUMA";
   public static final String INV = "INV";
-  public static final String PARAMETROS = "Parametros";
-  private String condBF;
-  private int countVarsAux = 0;
 
   public Compilador(HashMap<String, HashMap<String, Object>> tablaSimbolos, ArrayList<ArrayList<SimboloPolaca>> polaca) {
     this.tablaSimbolos = tablaSimbolos;
@@ -51,7 +56,6 @@ public class Compilador {
   }
 
   private void generateData() {
-    HashMap<String, String> cadenaVar = new HashMap<>();
     HashMap<String, String> numbers = new HashMap<>();
     assembler.add(".data");
     assembler.add(ERROR_DIVISION_CERO + " db " + "Error: no es posible divir por cero.");
@@ -68,7 +72,7 @@ public class Compilador {
     } else if(atributos.get(TIPO).equals(CADENA)) {
       addCadena(cadenaVar, key);
     } else {
-      addConstante(key, numbers);
+      addConstante(key, atributos, numbers);
     }
     //Ver el caso de constante en codigo. No contiene USO, si se agrega -> addVariable.
   }
@@ -111,8 +115,7 @@ public class Compilador {
     if (!attrsOp1.get(TIPO).equals(attrsOp2.get(TIPO))) {
       // Conversiones implicita o error
       if (!attrsOp1.get(TIPO).equals(FLOAT)) { // Convercion sobre parametro real.
-        throw new Error('Conversion implicita no valida!');
-        return false;
+        throw new Error("Conversion implicita no valida!");
       }
     }
     return true;
@@ -138,42 +141,49 @@ public class Compilador {
   }
 
   public String getRegLibre(String operacion, SimboloPolaca op, int numOperando) {
-    if (operacion.equals("ADD") || operacion.equals("SUB") || operacion.equals(":=") || operacion.equals("CMP")) {
-      for (int i = 0; i < regs.length; i++) {
-        if (!itsBusy(i)) {
-          regs[i] = op;
-          op.setReg(i);
-          return getReg(i);
+    switch (operacion) {
+      case "ADD":
+      case "SUB":
+      case ":=":
+      case "CMP":
+        for (int i = 0; i < regs.length; i++) {
+          if (!itsBusy(i)) {
+            regs[i] = op;
+            op.setReg(i);
+            return getReg(i);
+          }
         }
-      }
-    } else if (operacion.equals("IMUL")) {
-      if (itsBusy(EAX)) {
-        swapRegLibre(EAX);
-      }
-      regs[EAX] = op;
-      op.setReg(EAX);
-      return getReg(EAX);
-    } else if (operacion.equals("IDIV")) {
-      if (itsBusy(EDX)) {
-        swapRegLibre(EDX);
-      }
-      if (numOperando == 1) {
+        break;
+      case "IMUL":
         if (itsBusy(EAX)) {
           swapRegLibre(EAX);
         }
         regs[EAX] = op;
         op.setReg(EAX);
-        return getReg(EAX);  // "EAX"
-      } else if (numOperando == 2) {
-        for (int i = 0; i < regs.length; i++) {
-          if (i != EAX && i != EDX && !itsBusy(i)) {
-            regs[i] = op;
-            op.setReg(i);
-            return getReg(i); // "EBX" || "ECX"
+        return getReg(EAX);
+      case "IDIV":
+        if (itsBusy(EDX)) {
+          swapRegLibre(EDX);
+        }
+        if (numOperando == 1) {
+          if (itsBusy(EAX)) {
+            swapRegLibre(EAX);
+          }
+          regs[EAX] = op;
+          op.setReg(EAX);
+          return getReg(EAX);  // "EAX"
+        } else if (numOperando == 2) {
+          for (int i = 0; i < regs.length; i++) {
+            if (i != EAX && i != EDX && !itsBusy(i)) {
+              regs[i] = op;
+              op.setReg(i);
+              return getReg(i); // "EBX" || "ECX"
+            }
           }
         }
-      }
+        break;
     }
+    return null;
   }
 
   public void swapRegLibre(int reg) {
@@ -252,7 +262,7 @@ Process finished with exit code 0
         condBF = "JE"; // ==
         break;
     }
-    reg = getRegLibre("CMP", op1, 1);
+    String reg = getRegLibre("CMP", op1, 1);
     asm.add("MOV " + reg + " , " + op1.getSimbolo());
     asm.add("CMP " + reg + " , " + op2.getSimbolo());
     freeReg(op1);
@@ -268,7 +278,7 @@ Process finished with exit code 0
 
   public void generateAsignacion(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2, boolean ref) {
     if (checkTipos(op1, op2)) {
-      conversionImplicita(op2);
+      conversionImplicita(asm, op2);
     }
     String reg;
     // op1 siempre es vble
@@ -281,15 +291,15 @@ Process finished with exit code 0
     } else { // op2 es reg
       reg = getReg(op2.getReg());
     }
-    asm.add("MOV " + op1.setSimbolo() + ", " + reg);
+    asm.add("MOV " + op1.getSimbolo() + ", " + reg);
     freeReg(op2);
   }
 
   public void generateCodeSUB(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
     //SUB {__reg__, __mem__}, {__reg__, __mem__, __inmed__} ; Operación: dest <- dest - src.
     if (checkTipos(op1, op2)) {
-      conversionImplicita(op2);
-      //TODO: Aca generamos instrucciones para FLOAT
+      conversionImplicita(asm, op2);
+      //TODO: instrucciones FLOAT.
     } else {
       String reg;
       if (op1.isVble()) { // op1 es vble
@@ -327,10 +337,10 @@ Process finished with exit code 0
    */
   public void generateCodeDIV(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
     if (checkTipos(op1, op2)) {
-      conversionImplicita(op2);
-      //TODO: Aca generamos instrucciones para FLOAT
+      conversionImplicita(asm, op2);
+      //TODO: instrucciones FLOAT.
     } else {
-      String reg, reg2;
+      String reg, reg2 = null;
       if (op1.isVble()) { // op1 es vble
         reg = getRegLibre("IDIV",op1, 1);// Asigno EAX.
         if (op2.isVble()) {// Situacion 1: vble1 vble2 OP
@@ -349,7 +359,6 @@ Process finished with exit code 0
           regs[EAX] = op1;
           op1.setReg(EAX);
         }
-        reg = getReg(EAX); // op1 ya es EAX
         if (itsBusy(EDX)) { // libero EDX si esta ocupado.
           swapRegLibre(EDX);
         }
@@ -373,15 +382,15 @@ Process finished with exit code 0
       asm.add("CMP "+  reg2 + " , 0");
       asm.add("JE ERROR_DIVISION_CERO");
       asm.add("IDIV " + reg2);
-      // Agregar a la pila SimboloPolaca EAX.
+     // TODO: Agregar simbolo polaca.
     }
   }
   
   public void generateCodeADD(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
     // ADD {__reg__, __mem__}, {__reg__, __mem__, __inmed__} ; Operación: dest <- dest + src
     if (checkTipos(op1, op2)) {
-      conversionImplicita(op2);
-      //TODO: Aca generamos instrucciones para FLOAT
+      conversionImplicita(asm, op2);
+      //TODO: instrucciones FLOAT.
     } else {
       // Aca generamos instrucciones para LONGINT
       String reg;
@@ -404,8 +413,9 @@ Process finished with exit code 0
           freeReg(op2);
         }
       }
-      asm.add("JO "+ ERROR_OVERFLOW_SUMA); // Chequear.
+      asm.add("JO "+ ERROR_OVERFLOW_SUMA);
     }
+    // TODO: Agregar simbolo polaca.
   }
 
   public void generateCodeOPConmutativas() {
@@ -415,14 +425,14 @@ Process finished with exit code 0
   public void generateCodeMUL(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
     // IMUL EAX, {__reg__, __mem__} ; EDX: EAX <- EAX * {reg32|mem32|inmed}
     if (checkTipos(op1, op2)) {
-      conversionImplicita(op2);
+      conversionImplicita(asm, op2);
       //TODO: instrucciones FLOAT. 
     }
     String reg;
     if (op1.isVble()) { // op1 es vble 
       if (op2.isVble()) {// Situacion 1: vble1 vble2 OP
         reg = getRegLibre("IMUL", op1, 1); // Devuelve si o si EAX.
-        asm.add("MOV " + reg + ", " + op1.getSimbolo())
+        asm.add("MOV " + reg + ", " + op1.getSimbolo());
         asm.add("IMUL " + reg + ", " + op2.getSimbolo());
       } else { // Situacion 4.a: vble reg *
         String reg2;
@@ -431,7 +441,7 @@ Process finished with exit code 0
             swapRegLibre(EAX);
           }
           regs[EAX] = op2;
-          op2.setReg();
+          op2.setReg(EAX);
         }
         reg2 = getReg(EAX); // en este punto op2 es si o si EAX
         asm.add("IMUL " + reg2 + ", " + op1.getSimbolo());
@@ -442,7 +452,7 @@ Process finished with exit code 0
           swapRegLibre(EAX);
         }
         regs[EAX] = op1;
-        op1.setReg();
+        op1.setReg(EAX);
       }
       reg = getReg(EAX);
       if (op2.isVble()) {  // Situcacion 2: reg vble OP
@@ -453,55 +463,124 @@ Process finished with exit code 0
         freeReg(op2);
       }
     }
-    // Apilar nuevo simbolo Polaca con el nombre EAX
+    // TODO: Apilar nuevo simbolo Polaca con el nombre EAX
   }
 
-  public void declararProc(ArrayList<SimboloPolaca> polacaProc) {
+  public void declararProc(ArrayList<SimboloPolaca> polacaProc, Set<String> procsDeclarados) {
     generateTag(procsAsm, polacaProc.get(0));
-    for (int i = 1; i < polacaProc; i++) {
-      // TODO: abstraer funcionalidad del main
-    }
+    generarInstruccionesAsm(procsAsm, polacaProc, procsDeclarados);
     procsAsm.add("ret");
   }
 
   public ArrayList<SimboloPolaca> findProc(String name) {
     for (int i = 1; i < polaca.size(); i++) {
       ArrayList<SimboloPolaca> proc = polaca.get(i);
-      if (proc.get(0).equals(name)) {
+      if (proc.get(0).getSimbolo().equals(name)) {
         return new ArrayList<>(proc);
       }
     }
+    return null;
   }
 
   public ArrayList<Pair<SimboloPolaca, SimboloPolaca>> getParams(Integer i, ArrayList<SimboloPolaca> main, String nameProc) {
     ArrayList<Pair<SimboloPolaca, SimboloPolaca>> params = new ArrayList<>();
     while (!main.get(i).getSimbolo().equals(INV)) {
       i++; // la primera vez estoy sobre el nombre del proc y en cada vuelta sobre los ":"
-      SimboloPolaca paramFormal = main.get(i) + nameMangling(nameProc);
+      SimboloPolaca paramFormal = new SimboloPolaca(main.get(i).getSimbolo() + nameMangling(nameProc));
       i++; // aumento para tomar el paramReal
       SimboloPolaca paramReal = main.get(i);
       i++; // aumento para ir a los ":"
-      params.add(new Pair<SimboloPolaca, SimboloPolaca>(paramFormal, paramReal));
+      params.add(new Pair<>(paramFormal, paramReal));
     }
     return params;
   }
 
   public void generateCodeInvocacion(ArrayList<String> asm, Integer i, ArrayList<SimboloPolaca> main, Set<String> procsDeclarados) {
     i++;
-    simbolo = main.get(i);
+    SimboloPolaca simbolo = main.get(i);
     String nameProc = simbolo.getSimbolo();  // obtengo el nombre del proc
     if (!procsDeclarados.contains(nameProc)) { // si el proc no esta declarado
       ArrayList<SimboloPolaca> procActual = findProc(nameProc);
       procsDeclarados.add(nameProc);
-      declararProc(procActual);
+      declararProc(procActual, procsDeclarados);
     }
     ArrayList<Pair<SimboloPolaca, SimboloPolaca>> params = getParams(i, main, nameProc); 
     for (Pair<SimboloPolaca, SimboloPolaca> pair : params) {
       SimboloPolaca paramFormal = pair.getValue0();
       SimboloPolaca paramReal = pair.getValue1();
-      HashMap<String, Object> attrs = tablaSimbolos.get(paramFormal);
+      HashMap<String, Object> attrs = tablaSimbolos.get(paramFormal.getSimbolo());
       boolean ref = attrs.get(TIPO).equals(REFERENCIA);
       generateAsignacion(asm, paramFormal, paramReal, ref);
+    }
+  }
+
+  public void generateCodeOperacion(char operacion, ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
+    switch (operacion) {
+      case '+':
+        generateCodeADD(asm, op1, op2);
+        break;
+      case '-':
+        generateCodeSUB(asm, op1, op2);
+        break;
+      case '/':
+        generateCodeDIV(asm, op1, op2);
+        break;
+      case '*':
+        generateCodeMUL(asm, op1, op2);
+        break;
+    }
+  }
+
+  @SuppressWarnings("WrapperTypeMayBePrimitive")
+  public void generarInstruccionesAsm(ArrayList<String> asm, ArrayList<SimboloPolaca> polaca, Set<String> procsDeclarados) {
+    Stack<SimboloPolaca> pilaEjecucion = new Stack<>();
+    for (Integer i = 0; i < polaca.size(); i++) {
+      SimboloPolaca simbolo = polaca.get(i);
+      SimboloPolaca op1, op2, op;
+      switch (simbolo.getSimbolo()) {
+        case PROC:
+          generateCodeInvocacion(asm, i, polaca, procsDeclarados);
+          break;
+        case "-":
+        case "+":
+        case "/":
+        case "*":
+          op2 = pilaEjecucion.pop();
+          op1 = pilaEjecucion.pop();
+          generateCodeOperacion(simbolo.getSimbolo().charAt(0), asm, op1, op2);
+          break;
+        case ":=":
+          op2 = pilaEjecucion.pop();
+          op1 = pilaEjecucion.pop();
+          generateAsignacion(asm, op1, op2, false);
+          break;
+        case OUT:
+          op = pilaEjecucion.pop();
+          generateCodeOUT(asm, op);
+          break;
+        case BF:
+          op = pilaEjecucion.pop();
+          generateSalto(asm, op);
+          break;
+        case BI:
+          condBF = "JMP";
+          op = pilaEjecucion.pop();
+          generateSalto(asm, op);
+          break;
+        case ">":
+        case "<":
+        case "==":
+        case ">=":
+        case "<=":
+        case "!=":
+          op2 = pilaEjecucion.pop();
+          op1 = pilaEjecucion.pop();
+          generateComparacion(asm, op1, op2, simbolo.getSimbolo());
+          break;
+        default:
+          if (simbolo.getSimbolo().charAt(0) == 'L') break;
+          pilaEjecucion.push(simbolo);
+      }
     }
   }
 
@@ -510,31 +589,27 @@ Process finished with exit code 0
     assembler.add("START:");
     ArrayList<SimboloPolaca> main = polaca.get(0);
     Set<String> procsDeclarados = new HashSet<>();
-    for (Integer i = 0; i < main.size(); i++) {
-      SimboloPolaca simbolo = main.get(i);
-      ArrayList<SimboloPolaca> invProcActual;
-      if (simbolo.getSimbolo().equals(PROC)) {
-        generateCodeInvocacion(assembler, i, main, procsDeclarados);
-      } else {
-
-      }
-    }
+    generarInstruccionesAsm(assembler, main, procsDeclarados);
     assembler.add("invoke ExitProcess, 0"); 
+    generateCodeError();
+    assembler.add("invoke ExitProcess, 0");
+    assembler.add("END START");
+  }
+  
+  public void generateCodeError() {
     assembler.add("__etiquetaErrorOverflow__:");
     assembler.add("invoke MessageBox, NULL, addr " + ERROR_OVERFLOW_SUMA + ", addr  " + ERROR_OVERFLOW_SUMA + ", MB_OK");
     assembler.add("invoke ExitProcess, 0"); 
     assembler.add("__etiquetaErrorDivCero__:");
     assembler.add("invoke MessageBox, NULL, addr " + ERROR_DIVISION_CERO +  ", addr " + ERROR_DIVISION_CERO +  ", MB_OK");
-    assembler.add("invoke ExitProcess, 0");
-    assembler.add("END START");
   }
 
-  public ArrayList<String> getParametrosReales(ArrayList<SimboloPolaca> invocacion) {
+/*  public ArrayList<String> getParametrosReales(ArrayList<SimboloPolaca> invocacion) {
     // DELETEME
     //devulve todos los parametros reales del procedimiento.
     String simboloActual;
     ArrayList<String> out = new ArrayList<>();
-    for (int i = 0; i < invocacion.length; i++) {
+    for (int i = 0; i < invocacion.size(); i++) {
       simboloActual = simbolo.getSimbolo();
       if (simboloActual.equals(":")) {
         out.add(invocacion.get(i-1).getSimbolo());
@@ -552,14 +627,14 @@ Process finished with exit code 0
       // VALOR POLACA [30]: :
       // VALOR POLACA [31]: INV}
       return out;
-  }
+  }*/
 
   public String nameMangling(String proc) {
     // Busca desde el ambito actual hacia atra s.
-    return proc.substring(proc.indexOf('@'),proc.length());
+    return proc.substring(proc.indexOf('@'));
   }
 
-  public boolean checkParams(ArrayList<SimboloPolaca> declaracion, ArrayList<SimboloPolaca> invocacion) {
+/*  public boolean checkParams(ArrayList<SimboloPolaca> declaracion, ArrayList<SimboloPolaca> invocacion) {
     // DELETEME
     HashMap<String, Object> atributos = tablaSimbolos.get(invocacion.get(0));
     ArrayList<String> paramsFormales = atributos.get(PARAMETROS);
@@ -570,23 +645,27 @@ Process finished with exit code 0
           conversionImplicita(paramsReales.get(i));
       }
     }
-  }
+  }*/
 
-  public void conversionImplicita(SimboloPolaca operando) {
-    // TODO: conversion implicita
-    // setSimbolo(variable auxiliar)
-    // setReg(-1) // para decir que no es un registro
+  public void conversionImplicita(ArrayList<String> asm, SimboloPolaca operando) {
     String nameVarAux = "@aux" + countVarsAux;
     countVarsAux++;
     SimboloPolaca varAux = new SimboloPolaca(nameVarAux);
     HashMap<String, Object> attrs = new HashMap<>();
-    attrs.push(TIPO, FLOAT);
-    tablaSimbolos.push(varAux.getSimbolo(), attrs);
-    operando.setSimbolo(varAux.getSimbolo());
+    attrs.put(TIPO, FLOAT);
+    tablaSimbolos.put(varAux.getSimbolo(), attrs);
     operando.setReg(-1); // es una vble
+    String reg;
     if (!operando.isVble()) { // operando es un reg
-      // TODO: mover el contenido del registro a la variable auxiliar
+      reg = getReg(operando.getReg());
+    } else {
+      reg = getRegLibre(":=", operando, 1);
+      asm.add("MOV " + reg + ", " + operando.getSimbolo());
     }
+    asm.add("MOV " + varAux.getSimbolo() + ", " + reg);
+    asm.add("FILD " + varAux.getSimbolo());
+    asm.add("FSTP " + varAux.getSimbolo());
+    operando.setSimbolo(varAux.getSimbolo());
 
     /*
       procemiento(a:b);
@@ -597,7 +676,7 @@ Process finished with exit code 0
       a   
     */
 
-    z := a + b * c
+/*     z := a + b * c
     a, z FLOAT
     b, c LONGINT
     polaca: a b c * + z :=
@@ -613,6 +692,13 @@ Process finished with exit code 0
     if (!op.isVble()) {
       getReg(op.getReg()); // EAX
       op.getSimbolo()
-    }
+    } */
+  }
+
+  // "hjola", _Cadena1
+  public void generateCodeOUT(ArrayList<String> asm, SimboloPolaca op) {
+    String titulo = cadenaVar.get(op.getSimbolo());
+    // titulo, contenido
+    asm.add("invoke MessageBox, NULL, addr " + titulo + ", addr  " + titulo + ", MB_OK");
   }
 }
