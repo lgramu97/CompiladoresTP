@@ -1,16 +1,15 @@
 %{
-	package componentes;
-    import java.io.File;
-    import java.io.FileWriter;
-    import java.io.IOException;
-    import java.util.ArrayList;
-    import java.util.HashMap;
-	import java.util.Scanner;
-	import javax.swing.JFileChooser;
-    import java.util.Stack;
-    import org.javatuples.Pair;
-
-
+package componentes;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+import javax.swing.JFileChooser;
+import java.util.Stack;
+import org.javatuples.Pair;
 %}
 
 %token IF THEN END_IF OUT FUNC RETURN ELSE LONGINT FLOAT WHILE LOOP PROC NI ID REF DISTINTO IGUAL MAYOR_IGUAL MENOR_IGUAL CTE CADENA ERROR
@@ -593,36 +592,32 @@ cte : CTE
     }
     ;
 %%
-ArrayList<SimboloPolaca> listaReglasActual = new ArrayList<>();
-ArrayList<ArrayList<SimboloPolaca>> listaReglas = new ArrayList<ArrayList<SimboloPolaca>>() {
-    {
-        add(listaReglasActual);
-    }
-};
-Stack<ArrayList<SimboloPolaca>> pilaProcs = new Stack<>();
-Stack<Integer> pasosIncompletos = new Stack<>();
 AnalizadorLexico analizadorLexico = new AnalizadorLexico();
-ArrayList<String> erroresSintacticos = new ArrayList<>();
-ArrayList<String> erroresSemanticos = new ArrayList<>();
+ArrayList<SimboloPolaca> listaReglasActual = new ArrayList<>();
+ArrayList<ArrayList<SimboloPolaca>> listaReglas = new ArrayList<ArrayList<SimboloPolaca>>() { { add(listaReglasActual); } };
+ArrayList<String> ambito = new ArrayList<String>() { { add("@main"); } };
 ArrayList<String> erroresParser = new ArrayList<>();
-ArrayList<String> tokens = new ArrayList<>();
+ArrayList<String> erroresSemanticos = new ArrayList<>();
+ArrayList<String> erroresSintacticos = new ArrayList<>();
 ArrayList<String> estructuras = new ArrayList<>();
 ArrayList<String> lista_variables = new ArrayList<>();
-ArrayList<String> ambito = new ArrayList<String>() { { add("@main"); } };
-Stack<String> ids = new Stack<>();
-Stack<ListParameters> parametros = new Stack<ListParameters>();
 ArrayList<String> parametrosInvocacion = new ArrayList<>();
+ArrayList<String> tokens = new ArrayList<>();
+Stack<ArrayList<SimboloPolaca>> pilaProcs = new Stack<>();
+Stack<Integer> pasosIncompletos = new Stack<>();
+Stack<ListParameters> parametros = new Stack<>();
 Stack<Pair<String,String>> parametrosInvocacionPar = new Stack<>();
+Stack<String> ids = new Stack<>();
 String idProcActual = null;
 
 
 public void addPair(String paramFormal, String paramReal){
-    parametrosInvocacionPar.push(new Pair<String,String>(paramFormal,paramReal));
+    parametrosInvocacionPar.push(new Pair<>(paramFormal,paramReal));
 }
 
 public String findLexema(String lexema){
     // Busca desde el ambito actual hacia atras.
-    HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();    
+    HashMap<String, HashMap<String,Object>> ts = analizadorLexico.getTabla_simbolos();
     ArrayList<String> ambitoCopia = new ArrayList<>(ambito);
     for(int i = ambitoCopia.size(); i > 0; i--) {
         String newVar = lexema + listToString(ambitoCopia);
@@ -870,7 +865,7 @@ public String getErrores(){
 }
 
 public boolean esCompilable() {
-  return this.erroresSemanticos.size() == 0 && 
+  return this.erroresSemanticos.size() == 0 &&
          this.erroresSintacticos.size() == 0 &&
          this.erroresParser.size() == 0;
 }
@@ -904,7 +899,7 @@ public void saveFile() {
 			salida.write("\n"+"Contenido de la tabla de simbolos: " + "\n");
 			salida.write(this.getAnalizadorLexico().getDatosTabla_simbolos());
 
-            ArrayList<ArrayList<SimboloPolaca>> lista = parser.getListaSimboloPolaca();
+            ArrayList<ArrayList<SimboloPolaca>> lista = this.getListaSimboloPolaca();
             salida.write("Cantidad de estructuras de la lista de simbolos: " + lista.size() + "\n");
             int c = 0;
             for (ArrayList<SimboloPolaca> simboloPolacas : lista) {
@@ -940,9 +935,9 @@ public void mostrar_estructuras(){
     }
 }
 
-public void AssemblerToTXT(ArrayList<String> asm) {
+public static void AssemblerToTXT(ArrayList<String> asm) {
   FileWriter fichero = null;
-  PrintWriter pw = null;
+  PrintWriter pw;
   try {
     File workingDirectory = new File(System.getProperty("user.dir"));
     fichero = new FileWriter(workingDirectory + "/programa.asm");
@@ -962,18 +957,17 @@ public void AssemblerToTXT(ArrayList<String> asm) {
 }
 
 
-public static void main(String[] args){
+public static void main(String[] args) {
   Parser parser = new Parser();
   Compilador compilador = new Compilador(parser);
 	parser.yyparse();
 	System.out.println(parser.getErrores());
-  ArrayList<String> codigoAssembler;
+  ArrayList<String> codigoAssembler = null;
   if (parser.esCompilable()){
     codigoAssembler = compilador.getAssembler();
   }
   //Puede que se agreguen nuevos errores semanticos en la generacion del codigo.
-  if (parser.esCompilable()){
-    //TODO: copiar salida a TXT - > Assembler Valido.
+  if (parser.esCompilable()) {
     System.out.println();
     System.out.println("Contenido de la tabla de simbolos: ");
     System.out.println(parser.getAnalizadorLexico().getDatosTabla_simbolos());
@@ -988,7 +982,7 @@ public static void main(String[] args){
         c++;
       }
     }
-    
+
     System.out.println();
     Scanner in = new Scanner(System.in);
     System.out.println("Desea guardar la salida en un documento de texto? Y/N");
@@ -996,8 +990,9 @@ public static void main(String[] args){
     if (rta.equals("Y") || rta.equals("y"))
       parser.saveFile();
     in.close();
-    //parser.mostrar_tokens();
-	//parser.mostrar_estructuras();
+//  parser.mostrar_tokens();
+//  parser.mostrar_estructuras();
+    AssemblerToTXT(codigoAssembler);
   } else{
     System.out.println("No se pudo generar codigo maquina. El codigo contiene errores");
   }

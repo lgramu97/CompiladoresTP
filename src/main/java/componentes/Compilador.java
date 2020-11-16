@@ -58,7 +58,6 @@ public class Compilador {
   }
 
   public ArrayList<String> getAssembler(){
-    //TODO: juntar listas y retornar.
     generateHeader();
     generateCode();
     generateData();
@@ -472,11 +471,10 @@ Process finished with exit code 0
   public void generateCodeMUL(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
     // IMUL EAX, {__reg__, __mem__} ; EDX: EAX <- EAX * {reg32|mem32|inmed}
     if (isFloat(op1) && isFloat(op2)) {
-      //TODO: instrucciones FLOAT.
       asm.add("FLD " + op1.getSimbolo()); // Cargo op1 ST(1)
       asm.add("FLD " + op2.getSimbolo()); // Cargo op2 ST(0)
       asm.add("FMUL "); // Multiplico ST(1) * ST(0) y resultado en ST(0)
-      // Tambien prodira ser FMUL op2.getSimbolo();
+      // Tambien podria ser FMUL op2.getSimbolo();
       asm.add("FSTP " + crearVarAux());  
     } else {
       String reg;
