@@ -484,26 +484,10 @@ Process finished with exit code 0
           asm.add("MOV " + reg + ", " + op1.getSimbolo());
           asm.add("IMUL " + reg + ", " + op2.getSimbolo());
         } else { // Situacion 4.a: vble reg *
-          String reg2;
-          if (op2.getReg() != EAX) {
-            if (itsBusy(EAX)) {
-              swapRegLibre(EAX);
-            }
-            regs[EAX] = op2;
-            op2.setReg(EAX);
-          }
-          reg2 = getReg(EAX); // en este punto op2 es si o si EAX
-          asm.add("IMUL " + reg2 + ", " + op1.getSimbolo());
+          asm.add("IMUL " + getRegLibreEAX(op2) + ", " + op1.getSimbolo());
         }
       } else { // op1 es reg
-        if (op1.getReg() != EAX) {
-          if (itsBusy(EAX)) {
-            swapRegLibre(EAX);
-          }
-          regs[EAX] = op1;
-          op1.setReg(EAX);
-        }
-        reg = getReg(EAX);
+        reg = getRegLibreEAX(op1);
         if (op2.isVble()) {  // Situcacion 2: reg vble OP
           asm.add("IMUL " + reg + ", " + op2.getSimbolo());
         } else { // Situacion 3: reg1 reg2 OP
