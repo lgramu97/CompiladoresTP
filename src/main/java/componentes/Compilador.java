@@ -39,6 +39,7 @@ public class Compilador {
   private int countVarsAux = 0;
   public static final String ERROR_DIVISION_CERO = "ERROR_DIVISION_CERO";
   public static final String ERROR_OVERFLOW_SUMA = "ERROR_OVERFLOW_SUMA";
+  public static final String ETIQUETA_OVERFLOW = "__etiquetaErrorOverflow__";
   public static final String FLOAT_CERO = "FLOAT_CERO";
   public static final String MINIMO_POSITIVO = "1.17549435e-38";
   public static final String MINIMO_NEGATIVO = "-" + MINIMO_POSITIVO;
@@ -51,6 +52,10 @@ public class Compilador {
   public Compilador(HashMap<String, HashMap<String, Object>> tablaSimbolos, ArrayList<ArrayList<SimboloPolaca>> polaca) {
     this.tablaSimbolos = tablaSimbolos;
     this.polaca = polaca;
+  }
+
+  public ArrayList<String> getAssembler(){
+    //TODO: juntar listas y retornar.
   }
 
   private void generateHeader() {
@@ -79,6 +84,32 @@ public class Compilador {
     for (String key : tablaSimbolos.keySet()) {
       addData(cadenaVar, key);
     }
+  }
+  
+  public void checkOverflowADD(String extremo, String salto, String etiqueta) {
+    procsAsm.add("FINIT"); // Resetea control y estado en cada comparacion.
+    procsAsm.add("FLD " + AUX); // Cargo a ST(0) el valor de AUX.
+    procsAsm.add("FCOM " + extremo); // Comparo con el extremo
+    procsAsm.add("FSTSW AX");// palabra de estado a mem.
+    procsAsm.add("SAHF"); // copia indicadores.
+    procsAsm.add(salto + " " + etiqueta); //Salto si condicion
+  }
+
+  private void addDeclaracionOverflowADD() {
+    /* Generacion de llamadas para chequear overflow en float (suma)*/
+    procsAsm.add("FLOAT_VALIDO:");
+    procsAsm.add("RET");
+
+    procsAsm.add("OVERFLOW_FLOAT:")
+    checkOverflowADD(MAXIMO_POSITIVO, "JA", ETIQUETA_OVERFLOW) //Comparo max positivo / salto si es mayor.
+    checkOverflowADD(MINIMO_POSITIVO, "JA", "FLOAT_VALIDO");//Comparo min positivo / salto si es mayor.
+    // Retorno al CALL porque estoy entre un valor valido positivo.
+    checkOverflowADD(MAXIMO_NEGATIVO, "JB", ETIQUETA_OVERFLOW);// Comparo mas neg / salto si es menor. 
+    checkOverflowADD(MINIMO_NEGATIVO, "JB", "FLOAT_VALIDO");// Comparo min neg / salto si es menor.  
+    // Retorno al CALL porque estoy entre un valor valido negativo.
+    checkOverflowADD(FLOAT_CERO, "JE", "FLOAT_VALIDO");// Comparo cero / salto si es igual.
+    // Retorno al CALL porque es cero.
+    procsAsm.add("JMP " + ETIQUETA_OVERFLOW);// FLOAT INVALIDO.    
   }
 
   private void addData(HashMap<String, String> cadenaVar, String key) {
@@ -406,67 +437,16 @@ Process finished with exit code 0
     }
   }
   
-  public void checkOverflowADD(ArrayList<String> asm, String extremo, String salto) {
-    asm.add("FINIT"); // Resetea control y estado en cada comparacion.
-    asm.add("FLD " + AUX); // Cargo a ST(0) el valor de AUX.
-    asm.add("FCOM " + extremo); // Comparo con el max positivo.
-    asm.add("FSTSW AX");// palabra de estado a mem.
-    asm.add("SAHF");// copia indicadores.
-    asm.add(salto + " __etiquetaErrorOverflow__"); //Salto si es mayor
-  }
-  
   public void generateCodeADD(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
     // ADD {__reg__, __mem__}, {__reg__, __mem__, __inmed__} ; Operación: dest <- dest + src
     if (checkTipos(op1, op2)) {
       conversionImplicita(asm, op2);
     } 
     if (isFloat(op1) && isFloat(op2)) {
-      asm.add("FLD " + op1.getSimbolo()); // Cargo op1 ST(2)
+      asm.add("FLD " + op1.getSimbolo()); // Cargo op1 ST(1)
       asm.add("FADD " + op2.getSimbolo());
       asm.add("FST " + AUX); // Cargo en aux el valor de la pila.
-
-      // Verifico overflow
-
-      asm.add("FINIT"); // Resetea control y estado en cada comparacion.
-      asm.add("FLD " + AUX); // Cargo a ST(0) el valor de AUX.
-      asm.add("FCOM " + MAXIMO_POSITIVO); // Comparo con el max positivo.
-      asm.add("FSTSW AX");// palabra de estado a mem.
-      asm.add("SAHF");// copia indicadores.
-      asm.add("JA __etiquetaErrorOverflow__"); //Salto si es mayor
-
-      asm.add("FINIT"); // Resetea control y estado en cada comparacion.
-      asm.add("FLD " + AUX); // Cargo a ST(0) el valor de AUX.
-      asm.add("FCOM " + MINIMO_POSITIVO); // Comparo con el max positivo.
-      asm.add("FSTSW AX");// palabra de estado a mem.
-      asm.add("SAHF");// copia indicadores.
-      asm.add("JA "); //Salto si es mayor
-
-      //TODO: agregar a un CALL todo el OVERFLOW, y llamar aca al CALL. 
-      //TODO: Agregar a lista procsAsm. Agregar en los que falta saltar una etiqueta que haga RET.
-      // Crearia una funcion para chequear si es mayor al MINIMO_NEGATIVO, y entonces llamo a otra funcion que chequea si es distinto de cero y en ese caso, llamo a otra funcion que cheque si es menor al MINIMO_POSITIVO sino RET
-      
-      asm.add("FINIT"); // Resetea control y estado en cada comparacion.
-      asm.add("FLD " + AUX); // Cargo a ST(0) el valor de AUX.
-      asm.add("FCOM " + FLOAT_CERO); // Comparo con el cero.
-      asm.add("FSTSW AX");// palabra de estado a mem.
-      asm.add("SAHF");// copia indicadores.
-      asm.add("JE "); //Salto si es igual
-    
-      asm.add("FINIT"); // Resetea control y estado en cada comparacion.
-      asm.add("FLD " + AUX); // Cargo a ST(0) el valor de AUX.
-      asm.add("FCOM " + MAXIMO_NEGATIVO); // Comparo con el maximo negativo.
-      asm.add("FSTSW AX");// palabra de estado a mem.
-      asm.add("SAHF");// copia indicadores.
-      asm.add("JB __etiquetaErrorOverflow__"); //Salto si es menor
-
-      //TODO: 
-      asm.add("FINIT"); // Resetea control y estado en cada comparacion.
-      asm.add("FLD " + AUX); // Cargo a ST(0) el valor de AUX.
-      asm.add("FCOM " + MINIMO_NEGATIVO); // Comparo con el maximo negativo.
-      asm.add("FSTSW AX");// palabra de estado a mem.
-      asm.add("SAHF");// copia indicadores.
-      asm.add("JB "); //Salto si es menor
-
+      asm.add("CALL OVERFLOW_FLOAT");
       asm.add("FSTP " + crearVarAux());  
     } else {
       // Aca generamos instrucciones para LONGINT
@@ -505,7 +485,11 @@ Process finished with exit code 0
     }
     if (isFloat(op1) && isFloat(op2)) {
       //TODO: instrucciones FLOAT.
-      
+      asm.add("FLD " + op1.getSimbolo()); // Cargo op1 ST(1)
+      asm.add("FLD " + op2.getSimbolo()); // Cargo op2 ST(0)
+      asm.add("FMUL "); // Multiplico ST(1) * ST(0) y resultado en ST(0)
+      // Tambien prodira ser FMUL op2.getSimbolo();
+      asm.add("FSTP " + crearVarAux());  
     } else {
       String reg;
       if (op1.isVble()) { // op1 es vble 
@@ -583,6 +567,7 @@ Process finished with exit code 0
       procsDeclarados.add(nameProc);
       declararProc(procActual, procsDeclarados);
     }
+    asm.add("CALL " + nameProc);
 //    ArrayList<Pair<SimboloPolaca, SimboloPolaca>> params = getParams(i, main, nameProc);
     ArrayList<Pair<SimboloPolaca, SimboloPolaca>> params = getParams(invocacion, nameProc);
     for (Pair<SimboloPolaca, SimboloPolaca> pair : params) {
@@ -716,7 +701,7 @@ Process finished with exit code 0
   }
   
   public void generateCodeError() {
-    assembler.add("__etiquetaErrorOverflow__:");
+    assembler.add(ETIQUETA_OVERFLOW + ":");
     assembler.add("invoke MessageBox, NULL, addr " + ERROR_OVERFLOW_SUMA + ", addr  " + ERROR_OVERFLOW_SUMA + ", MB_OK");
     assembler.add("invoke ExitProcess, 0"); 
     assembler.add("__etiquetaErrorDivCero__:");
