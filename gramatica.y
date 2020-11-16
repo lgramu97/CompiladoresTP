@@ -615,6 +615,7 @@ ArrayList<String> parametrosInvocacion = new ArrayList<>();
 Stack<Pair<String,String>> parametrosInvocacionPar = new Stack<>();
 String idProcActual = null;
 
+
 public void addPair(String paramFormal, String paramReal){
     parametrosInvocacionPar.push(new Pair<String,String>(paramFormal,paramReal));
 }
@@ -831,6 +832,10 @@ public ArrayList<ArrayList<SimboloPolaca>> getListaSimboloPolaca(){
     return this.listaReglas;
 }
 
+public void addErrorSemantico(String error){
+  erroresSemanticos.add(error);
+}
+
 public void addErrorSintactico(String error){
     erroresSintacticos.add("Numero de linea: "+ (analizadorLexico.getFilaActual()+1) + "  " + error);
 }
@@ -864,6 +869,12 @@ public String getErrores(){
             copiarErrores(this.erroresSemanticos);
 }
 
+public boolean esCompilable() {
+  return this.erroresSemanticos.size() == 0 && 
+         this.erroresSintacticos.size() == 0 &&
+         this.erroresParser.size() == 0;
+}
+
 public void saveFile() {
 	 JFileChooser jchooser=new JFileChooser();
 	 File workingDirectory = new File(System.getProperty("user.dir"));
@@ -874,7 +885,7 @@ public void saveFile() {
 	 if (jchooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 		File out = jchooser.getSelectedFile();
 
-	    try {
+    try {
 			FileWriter salida = new FileWriter(out+"/out.txt");
 
 			salida.write(this.getErrores() + "\n");
@@ -893,10 +904,20 @@ public void saveFile() {
 			salida.write("\n"+"Contenido de la tabla de simbolos: " + "\n");
 			salida.write(this.getAnalizadorLexico().getDatosTabla_simbolos());
 
+            ArrayList<ArrayList<SimboloPolaca>> lista = parser.getListaSimboloPolaca();
+            salida.write("Cantidad de estructuras de la lista de simbolos: " + lista.size() + "\n");
+            int c = 0;
+            for (ArrayList<SimboloPolaca> simboloPolacas : lista) {
+                salida.write("\n");
+                for (SimboloPolaca simboloPolaca : simboloPolacas) {
+                    salida.write("VALOR POLACA [" + c + "]: " + simboloPolaca.getSimbolo()+ "\n");
+                    c++;
+                }
+            }
+
 			salida.close();
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -919,38 +940,65 @@ public void mostrar_estructuras(){
     }
 }
 
+public void AssemblerToTXT(ArrayList<String> asm) {
+  FileWriter fichero = null;
+  PrintWriter pw = null;
+  try {
+    File workingDirectory = new File(System.getProperty("user.dir"));
+    fichero = new FileWriter(workingDirectory + "/programa.asm");
+    pw = new PrintWriter(fichero);
+    for (String line : asm) {
+      pw.println(line);
+    }
+  } catch (Exception e) {
+    try {
+      if (null != fichero) {
+        fichero.close();
+      }
+    } catch (Exception e2) {
+      e2.printStackTrace();
+    }
+  }
+}
+
+
 public static void main(String[] args){
-	Parser parser = new Parser();
+  Parser parser = new Parser();
+  Compilador compilador = new Compilador(parser);
 	parser.yyparse();
 	System.out.println(parser.getErrores());
-
-	//parser.mostrar_tokens();
-	//parser.mostrar_estructuras();
-
-	System.out.println();
-	System.out.println("Contenido de la tabla de simbolos: ");
-	System.out.println(parser.getAnalizadorLexico().getDatosTabla_simbolos());
-
-	System.out.println();
-	Scanner in = new Scanner(System.in);
-	System.out.println("Desea guardar la salida en un documento de texto? Y/N");
-	String rta = in.nextLine();
-	if (rta.equals("Y") || rta.equals("y"))
-		parser.saveFile();
-	in.close();
-
+  ArrayList<String> codigoAssembler;
+  if (parser.esCompilable()){
+    codigoAssembler = compilador.getAssembler();
+  }
+  //Puede que se agreguen nuevos errores semanticos en la generacion del codigo.
+  if (parser.esCompilable()){
+    //TODO: copiar salida a TXT - > Assembler Valido.
+    System.out.println();
+    System.out.println("Contenido de la tabla de simbolos: ");
+    System.out.println(parser.getAnalizadorLexico().getDatosTabla_simbolos());
 
     ArrayList<ArrayList<SimboloPolaca>> lista = parser.getListaSimboloPolaca();
     System.out.println("Cantidad de estructuras de la lista de simbolos: " + lista.size());
     int c = 0;
-    for (int i=0, sizeEstructuras = lista.size(); i<sizeEstructuras; i++){
-    	System.out.println();
-        ArrayList<SimboloPolaca> listaActual = lista.get(i);
-        for (int j = 0, listaSize = listaActual.size(); j < listaSize; j++) {
-            SimboloPolaca simboloPolaca = listaActual.get(j);
-            System.out.println("VALOR POLACA [" + c + "]: " + simboloPolaca.getSimbolo());
-            c++;
-        }
+    for (ArrayList<SimboloPolaca> simboloPolacas : lista) {
+      System.out.println();
+      for (SimboloPolaca simboloPolaca : simboloPolacas) {
+        System.out.println("VALOR POLACA [" + c + "]: " + simboloPolaca.getSimbolo());
+        c++;
+      }
     }
-
+    
+    System.out.println();
+    Scanner in = new Scanner(System.in);
+    System.out.println("Desea guardar la salida en un documento de texto? Y/N");
+    String rta = in.nextLine();
+    if (rta.equals("Y") || rta.equals("y"))
+      parser.saveFile();
+    in.close();
+    //parser.mostrar_tokens();
+	//parser.mostrar_estructuras();
+  } else{
+    System.out.println("No se pudo generar codigo maquina. El codigo contiene errores");
+  }
 }
