@@ -935,26 +935,28 @@ public void mostrar_estructuras(){
     }
 }
 
-public static void AssemblerToTXT(ArrayList<String> asm) {
-  FileWriter fichero = null;
-  PrintWriter pw;
-  try {
-    File workingDirectory = new File(System.getProperty("user.dir"));
-    fichero = new FileWriter(workingDirectory + "/programa.asm");
-    pw = new PrintWriter(fichero);
-    for (String line : asm) {
-      pw.println(line);
-    }
-  } catch (Exception e) {
+  public static void AssemblerToTXT(ArrayList<String> asm) {
+    FileWriter fichero = null;
+    PrintWriter pw;
     try {
-      if (null != fichero) {
-        fichero.close();
+      File workingDirectory = new File(System.getProperty("user.dir"));
+      fichero = new FileWriter(workingDirectory + "/programa.asm");
+      pw = new PrintWriter(fichero);
+      for (String line : asm) {
+        pw.println(line);
       }
-    } catch (Exception e2) {
-      e2.printStackTrace();
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        if (null != fichero) {
+          fichero.close();
+        }
+      } catch (Exception e2) {
+        e2.printStackTrace();
+      }
     }
   }
-}
 
 
 public static void main(String[] args) {
@@ -962,16 +964,9 @@ public static void main(String[] args) {
   Compilador compilador = new Compilador(parser);
 	parser.yyparse();
 	System.out.println(parser.getErrores());
+
   ArrayList<String> codigoAssembler = null;
   if (parser.esCompilable()){
-    codigoAssembler = compilador.getAssembler();
-  }
-  //Puede que se agreguen nuevos errores semanticos en la generacion del codigo.
-  if (parser.esCompilable()) {
-    System.out.println();
-    System.out.println("Contenido de la tabla de simbolos: ");
-    System.out.println(parser.getAnalizadorLexico().getDatosTabla_simbolos());
-
     ArrayList<ArrayList<SimboloPolaca>> lista = parser.getListaSimboloPolaca();
     System.out.println("Cantidad de estructuras de la lista de simbolos: " + lista.size());
     int c = 0;
@@ -982,17 +977,25 @@ public static void main(String[] args) {
         c++;
       }
     }
+    codigoAssembler = compilador.getAssembler();
+  }
+  //Puede que se agreguen nuevos errores semanticos en la generacion del codigo.
+  if (parser.esCompilable()) {
+    AssemblerToTXT(codigoAssembler);
+    System.out.println();
+    System.out.println("Contenido de la tabla de simbolos: ");
+    System.out.println(parser.getAnalizadorLexico().getDatosTabla_simbolos());
 
     System.out.println();
     Scanner in = new Scanner(System.in);
     System.out.println("Desea guardar la salida en un documento de texto? Y/N");
     String rta = in.nextLine();
-    if (rta.equals("Y") || rta.equals("y"))
+    if (rta.equals("Y") || rta.equals("y")) {
       parser.saveFile();
+    }
     in.close();
 //  parser.mostrar_tokens();
 //  parser.mostrar_estructuras();
-    AssemblerToTXT(codigoAssembler);
   } else{
     System.out.println("No se pudo generar codigo maquina. El codigo contiene errores");
   }
