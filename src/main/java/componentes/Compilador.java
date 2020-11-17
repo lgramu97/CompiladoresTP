@@ -333,10 +333,11 @@ Process finished with exit code 0
     // op1 siempre es vble
     if (op2.isVble()) { // op2 es vble
       reg = getRegLibreGral(op2);
+      String var = op2.getSimbolo();
       if (ref) {
-        op2.setSimbolo("[" + op2.getSimbolo() + "]");
+        var = "[" + op2.getSimbolo() + "]";
       }
-      asm.add("MOV " + reg + ", " + op2.getSimbolo());
+      asm.add("MOV " + reg + ", " + var);
     } else { // op2 es reg
       reg = getReg(op2.getReg());
     }
