@@ -9,10 +9,20 @@ public class SimboloPolaca {
 
     public SimboloPolaca(String simbolo) {
         this.simbolo = simbolo;
+        this.reg = -1;
+    }
+
+    public SimboloPolaca(String simbolo, int reg) {
+        this.simbolo = simbolo;
+        this.reg = reg;
     }
 
     public String getSimbolo() {
         return simbolo;
+    }
+
+    public String getSimboloASM() {
+        return "_" + simbolo;
     }
 
     public void setSimbolo(String simbolo) {

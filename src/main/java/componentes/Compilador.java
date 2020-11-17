@@ -49,6 +49,7 @@ public class Compilador {
   public static final String MAXIMO_NEGATIVO = "-" + MAXIMO_POSITIVO;
   public static final String MINIMO_POSITIVO = "1.17549435e-38";
   public static final String MINIMO_NEGATIVO = "-" + MINIMO_POSITIVO;
+  public static final String AUXILIAR = "AUXILIAR";
 
 
   public Compilador(Parser parser) {
@@ -65,6 +66,7 @@ public class Compilador {
     asm.addAll(assemblerHeader);
     asm.addAll(assemblerData);
     asm.addAll(assembler);
+    asm.addAll(procsAsm);
     return asm;
   }
 
@@ -82,14 +84,14 @@ public class Compilador {
 
   private void generateData() {
     assemblerData.add(".data");
-    assemblerData.add(ERROR_DIVISION_CERO + " db " + "Error: no es posible divir por cero.");
-    assemblerData.add(ERROR_OVERFLOW_SUMA + " db " + "Error: overflow en suma.");
+    assemblerData.add(ERROR_DIVISION_CERO + " db " + "\"Error: no es posible divir por cero.\"");
+    assemblerData.add(ERROR_OVERFLOW_SUMA + " db " + "\"Error: overflow en suma.\"");
     // variables overflow 
     assemblerData.add(FLOAT_CERO + " DQ 0.0");
-    assemblerData.add(MINIMO_POSITIVO + " DQ " + MINIMO_POSITIVO);
-    assemblerData.add(MINIMO_NEGATIVO + " DQ " + MINIMO_NEGATIVO);
-    assemblerData.add(MAXIMO_POSITIVO + " DQ " + MAXIMO_POSITIVO);
-    assemblerData.add(MINIMO_NEGATIVO + " DQ " + MINIMO_NEGATIVO);
+    assemblerData.add("MINIMO_POSITIVO DQ " + MINIMO_POSITIVO);
+    assemblerData.add("MINIMO_NEGATIVO DQ " + MINIMO_NEGATIVO);
+    assemblerData.add("MAXIMO_POSITIVO DQ " + MAXIMO_POSITIVO);
+    assemblerData.add("MAXIMO_NEGATIVO DQ " + MAXIMO_NEGATIVO);
     assemblerData.add(AUX + " DQ ?");
     for (String key : tablaSimbolos.keySet()) {
       addData(cadenaVar, key);
@@ -111,11 +113,11 @@ public class Compilador {
     procsAsm.add("RET");
 
     procsAsm.add("OVERFLOW_FLOAT:");
-    checkOverflowADD(MAXIMO_POSITIVO, "JA", ETIQUETA_OVERFLOW); //Comparo max positivo / salto si es mayor.
-    checkOverflowADD(MINIMO_POSITIVO, "JA", "FLOAT_VALIDO");//Comparo min positivo / salto si es mayor.
+    checkOverflowADD("MAXIMO_POSITIVO", "JA", ETIQUETA_OVERFLOW); //Comparo max positivo / salto si es mayor.
+    checkOverflowADD("MINIMO_POSITIVO", "JA", "FLOAT_VALIDO");//Comparo min positivo / salto si es mayor.
     // Retorno al CALL porque estoy entre un valor valido positivo.
-    checkOverflowADD(MAXIMO_NEGATIVO, "JB", ETIQUETA_OVERFLOW);// Comparo mas neg / salto si es menor. 
-    checkOverflowADD(MINIMO_NEGATIVO, "JB", "FLOAT_VALIDO");// Comparo min neg / salto si es menor.  
+    checkOverflowADD("MAXIMO_NEGATIVO", "JB", ETIQUETA_OVERFLOW);// Comparo mas neg / salto si es menor. 
+    checkOverflowADD("MINIMO_NEGATIVO", "JB", "FLOAT_VALIDO");// Comparo min neg / salto si es menor.  
     // Retorno al CALL porque estoy entre un valor valido negativo.
     checkOverflowADD(FLOAT_CERO, "JE", "FLOAT_VALIDO");// Comparo cero / salto si es igual.
     // Retorno al CALL porque es cero.
@@ -148,7 +150,7 @@ public class Compilador {
 
   private void addVariable(String key, HashMap<String, Object> atributos) {
     String uso = (String) atributos.get(USO);
-    if (uso.equals(VARIABLE) || uso.equals(PARAMETRO)) {
+    if (uso.equals(VARIABLE) || uso.equals(PARAMETRO) || uso.equals(AUXILIAR)) {
       String tipo = (String) atributos.get(TIPO);
       if (tipo.equals(LONGINT) || tipo.equals(FLOAT)) { // Caso FLOAT y LONGINT.
         assemblerData.add("_" + key + " dd ?");
@@ -314,8 +316,8 @@ Process finished with exit code 0
         break;
     }
     String reg = getRegLibreGral(op1);
-    asm.add("MOV " + reg + " , " + op1.getSimbolo());
-    asm.add("CMP " + reg + " , " + op2.getSimbolo());
+    asm.add("MOV " + reg + " , " + op1.getSimboloASM());
+    asm.add("CMP " + reg + " , " + op2.getSimboloASM());
     freeReg(op1);
   }
 
@@ -333,41 +335,43 @@ Process finished with exit code 0
     // op1 siempre es vble
     if (op2.isVble()) { // op2 es vble
       reg = getRegLibreGral(op2);
-      String var = op2.getSimbolo();
+      String var = op2.getSimboloASM();
       if (ref) {
-        var = "[" + op2.getSimbolo() + "]";
+        var = "[" + op2.getSimboloASM() + "]";
       }
       asm.add("MOV " + reg + ", " + var);
     } else { // op2 es reg
       reg = getReg(op2.getReg());
     }
-    asm.add("MOV " + op1.getSimbolo() + ", " + reg);
+    asm.add("MOV " + op1.getSimboloASM() + ", " + reg);
     freeReg(op2);
   }
 
   public void generateCodeSUB(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
     //SUB {__reg__, __mem__}, {__reg__, __mem__, __inmed__} ; Operación: dest <- dest - src.
     if (isFloat(op1) && isFloat(op2)) {
-      asm.add("FLD " + op1.getSimbolo()); // Cargo op1 ST(2)
-      asm.add("SUB " + op2.getSimbolo());
-      asm.add("FSTP " + crearVarAux()); // Copia el valor de la pila a la var auxiliar
+      asm.add("FLD " + op1.getSimboloASM()); // Cargo op1 ST(2)
+      asm.add("SUB " + op2.getSimboloASM());
+      String varAux = crearVarAux();
+      op1.setSimbolo(varAux);
+      asm.add("FSTP " + op1.getSimboloASM()); // Copia el valor de la pila a la var auxiliar
     } else {
       String reg;
       if (op1.isVble()) { // op1 es vble
         reg = getRegLibreGral(op1);
         if (op2.isVble()) {// Situacion 1: vble1 vble2 OP
-          asm.add("MOV " + reg + ", " + op1.getSimbolo());
-          asm.add("SUB " + reg + ", " + op2.getSimbolo());
+          asm.add("MOV " + reg + ", " + op1.getSimboloASM());
+          asm.add("SUB " + reg + ", " + op2.getSimboloASM());
         } else { // Situacion 4.b: vble reg -
           String reg2 = getReg(op2.getReg());
-          asm.add("MOV " + reg + ", " + op1.getSimbolo());
+          asm.add("MOV " + reg + ", " + op1.getSimboloASM());
           asm.add("SUB " + reg + ", " + reg2);
           freeReg(op2);
         }
       } else { // op1 es reg
         reg = getReg(op1.getReg());
         if (op2.isVble()) { // Situcacion 2: reg vble OP
-          asm.add("SUB " + reg + ", " + op2.getSimbolo()); 
+          asm.add("SUB " + reg + ", " + op2.getSimboloASM()); 
         } else { // Situacion 3: reg1 reg2 OP
           String reg2 = getReg(op2.getReg());
           asm.add("SUB " + reg + ", " + reg2);
@@ -387,26 +391,28 @@ Process finished with exit code 0
    */
   public void generateCodeDIV(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
     if (isFloat(op1) && isFloat(op2)) {
-      asm.add("FLD" + op1.getSimbolo()); // Cargo op1 ST(2)
-      asm.add("FLD" + op2.getSimbolo()); // Cargo op2 ST(1)
-      asm.add("FLD" + FLOAT_CERO); // Cargo cero ST(0)
+      asm.add("FLD " + op1.getSimboloASM()); // Cargo op1 ST(2)
+      asm.add("FLD " + op2.getSimboloASM()); // Cargo op2 ST(1)
+      asm.add("FLD " + FLOAT_CERO); // Cargo cero ST(0)
       asm.add("FCOMP"); // Comparo ST(0) con ST(1) y saco ST(0)
       asm.add("FSTSW AX"); // palabra de estado a mem.
       asm.add("SAHF"); // Almacena indicadores.
       asm.add("JE ERROR_DIVISION_CERO");
       asm.add("FDIV");// division
-      asm.add("FSTP " + crearVarAux()); // Copia el valor de la pila a la var auxiliar
+      String varAux = crearVarAux();
+      op1.setSimbolo(varAux);
+      asm.add("FSTP " + op1.getSimboloASM()); // Copia el valor de la pila a la var auxiliar
     } else {
       String reg, reg2;
       if (op1.isVble()) { // op1 es vble
         reg = getRegLibreDIV(op1, 1);// Asigno EAX.
         if (op2.isVble()) {// Situacion 1: vble1 vble2 OP
           reg2 = getRegLibreDIV(op2, 2);
-          asm.add("MOV " + reg2 + ", " + op2.getSimbolo());
+          asm.add("MOV " + reg2 + ", " + op2.getSimboloASM());
         } else { // Situacion 4.b: vble reg
           reg2 = getReg(op2.getReg()); // Nunca va a ser EAX ni EDX porque ya lo movio getRegLibre
         }
-        asm.add("MOV " + reg + ", " + op1.getSimbolo());
+        asm.add("MOV " + reg + ", " + op1.getSimboloASM());
         freeReg(op2);
       } else { // op1 es reg
         if (op1.getReg() != EAX) {
@@ -416,7 +422,7 @@ Process finished with exit code 0
         vacateReg(EDX);
         if (op2.isVble()) { // Situcacion 2: reg vble OP
           reg2 = getRegLibreDIV(op2, 2);
-          asm.add("MOV " + reg2 + ", " + op2.getSimbolo());
+          asm.add("MOV " + reg2 + ", " + op2.getSimboloASM());
         } else { // Situacion 3: reg1 reg2 OP
           // op1 ya es EAX
           // EDX ya esta libre
@@ -434,27 +440,29 @@ Process finished with exit code 0
   public void generateCodeADD(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
     // ADD {__reg__, __mem__}, {__reg__, __mem__, __inmed__} ; Operación: dest <- dest + src
     if (isFloat(op1) && isFloat(op2)) {
-      asm.add("FLD " + op1.getSimbolo()); // Cargo op1 ST(1)
-      asm.add("FADD " + op2.getSimbolo());
+      asm.add("FLD " + op1.getSimboloASM()); // Cargo op1 ST(1)
+      asm.add("FADD " + op2.getSimboloASM());
       asm.add("FST " + AUX); // Cargo en aux el valor de la pila.
       asm.add("CALL OVERFLOW_FLOAT");
-      asm.add("FSTP " + crearVarAux());  
+      String varAux = crearVarAux();
+      op1.setSimbolo(varAux);
+      asm.add("FSTP " + op1.getSimboloASM()); // Copia el valor de la pila a la var auxiliar
     } else {
       // Aca generamos instrucciones para LONGINT
       String reg;
       if (op1.isVble()) { // op1 es vble
         if (op2.isVble()) {// Situacion 1: vble1 vble2 OP
           reg = getRegLibreGral(op1);
-          asm.add("MOV " + reg + ", " + op1.getSimbolo());
-          asm.add("ADD " + reg + ", " + op2.getSimbolo());
+          asm.add("MOV " + reg + ", " + op1.getSimboloASM());
+          asm.add("ADD " + reg + ", " + op2.getSimboloASM());
         } else { // Situacion 4.a: vble reg +
           String reg2 = getReg(op2.getReg());
-          asm.add("ADD " + reg2 + ", " + op1.getSimbolo());
+          asm.add("ADD " + reg2 + ", " + op1.getSimboloASM());
         }
       } else { // op1 es reg
         reg = getReg(op1.getReg());
         if (op2.isVble()) { // Situcacion 2: reg vble OP
-          asm.add("ADD " + reg + ", " + op2.getSimbolo()); 
+          asm.add("ADD " + reg + ", " + op2.getSimboloASM()); 
         } else { // Situacion 3: reg1 reg2 OP
           String reg2 = getReg(op2.getReg());
           asm.add("ADD " + reg + ", " + reg2);
@@ -472,25 +480,27 @@ Process finished with exit code 0
   public void generateCodeMUL(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
     // IMUL EAX, {__reg__, __mem__} ; EDX: EAX <- EAX * {reg32|mem32|inmed}
     if (isFloat(op1) && isFloat(op2)) {
-      asm.add("FLD " + op1.getSimbolo()); // Cargo op1 ST(1)
-      asm.add("FLD " + op2.getSimbolo()); // Cargo op2 ST(0)
+      asm.add("FLD " + op1.getSimboloASM()); // Cargo op1 ST(1)
+      asm.add("FLD " + op2.getSimboloASM()); // Cargo op2 ST(0)
       asm.add("FMUL "); // Multiplico ST(1) * ST(0) y resultado en ST(0)
-      // Tambien podria ser FMUL op2.getSimbolo();
-      asm.add("FSTP " + crearVarAux());  
+      // Tambien podria ser FMUL op2.getSimboloASM();
+      String varAux = crearVarAux();
+      op1.setSimbolo(varAux);
+      asm.add("FSTP " + op1.getSimboloASM()); // Copia el valor de la pila a la var auxiliar
     } else {
       String reg;
       if (op1.isVble()) { // op1 es vble 
         if (op2.isVble()) {// Situacion 1: vble1 vble2 OP
           reg = getRegLibreEAX(op1);
-          asm.add("MOV " + reg + ", " + op1.getSimbolo());
-          asm.add("IMUL " + reg + ", " + op2.getSimbolo());
+          asm.add("MOV " + reg + ", " + op1.getSimboloASM());
+          asm.add("IMUL " + reg + ", " + op2.getSimboloASM());
         } else { // Situacion 4.a: vble reg *
-          asm.add("IMUL " + getRegLibreEAX(op2) + ", " + op1.getSimbolo());
+          asm.add("IMUL " + getRegLibreEAX(op2) + ", " + op1.getSimboloASM());
         }
       } else { // op1 es reg
         reg = getRegLibreEAX(op1);
         if (op2.isVble()) {  // Situcacion 2: reg vble OP
-          asm.add("IMUL " + reg + ", " + op2.getSimbolo());
+          asm.add("IMUL " + reg + ", " + op2.getSimboloASM());
         } else { // Situacion 3: reg1 reg2 OP
           String reg2 = getReg(op2.getReg());
           asm.add("IMUL " + reg + ", " + reg2);
@@ -564,10 +574,14 @@ Process finished with exit code 0
         generateCodeMUL(asm, op1, op2);
         break;
     }
-    if (!op1.isVble()) {
+    if (isFloat(op1) && isFloat(op2)) {
       pilaEjecucion.push(op1);
     } else {
-      pilaEjecucion.push(op2);
+      if (!op1.isVble()) {
+        pilaEjecucion.push(op1);
+      } else {
+        pilaEjecucion.push(op2);
+      }
     }
   }
 
@@ -593,9 +607,9 @@ Process finished with exit code 0
           op1 = pilaEjecucion.pop();
           generateCodeOperacion(pilaEjecucion, simbolo.getSimbolo().charAt(0), asm, op1, op2);
           break;
-        case ":=":
-          op2 = pilaEjecucion.pop();
+        case "=":
           op1 = pilaEjecucion.pop();
+          op2 = pilaEjecucion.pop();
           generateAsignacion(asm, op1, op2, false);
           break;
         case OUT:
@@ -630,7 +644,7 @@ Process finished with exit code 0
             // En el caso de las constantes puede ser una constante en codigo que debo buscar el valor
             // o puede ser la direccion de salto previo al BF/BI que lo agrego como tal en la pila
             // porque en la siguiente instruccion de la polaca genero el tag.
-            String variable = numbers.get(simbolo.getSimbolo());
+            String variable = numbers.get(simbolo.getSimboloASM());
             simbolo.setSimbolo(variable);
           }
           pilaEjecucion.push(simbolo);
@@ -667,7 +681,6 @@ Process finished with exit code 0
     generarInstruccionesAsm(assembler, main, procsDeclarados);
     assembler.add("invoke ExitProcess, 0"); 
     generateCodeError();
-    assembler.add("invoke ExitProcess, 0");
     assembler.add("END START");
   }
   
@@ -687,9 +700,9 @@ Process finished with exit code 0
     String simboloActual;
     ArrayList<String> out = new ArrayList<>();
     for (int i = 0; i < invocacion.size(); i++) {
-      simboloActual = simbolo.getSimbolo();
+      simboloActual = simbolo.getSimboloASM();
       if (simboloActual.equals(":")) {
-        out.add(invocacion.get(i-1).getSimbolo());
+        out.add(invocacion.get(i-1).getSimboloASM());
       }
       // PROC
       // VALOR POLACA [21]: procedimiento@main
@@ -726,7 +739,12 @@ Process finished with exit code 0
 
   public String crearVarAux() {
     String nameVarAux = "@aux" + countVarsAux++;
-    tablaSimbolos.put(nameVarAux, new HashMap<String, Object>(){{ put(TIPO, FLOAT); }});
+    tablaSimbolos.put(nameVarAux, new HashMap<String, Object>(){
+      { 
+        put(TIPO, FLOAT); 
+        put(USO, AUXILIAR); 
+      }
+    });
     return nameVarAux;
   }
 
@@ -736,14 +754,14 @@ Process finished with exit code 0
     String reg;
     if (!operando.isVble()) { // operando es un reg
       reg = getReg(operando.getReg());
-    } else {
+    } else { // operando es una vble
       reg = getRegLibreGral(operando);
-      asm.add("MOV " + reg + ", " + operando.getSimbolo());
+      asm.add("MOV " + reg + ", " + operando.getSimboloASM());
     }
-    asm.add("MOV " + varAux + ", " + reg);
-    asm.add("FILD " + varAux);
-    asm.add("FSTP " + varAux);
     operando.setSimbolo(varAux);
+    asm.add("MOV " + operando.getSimboloASM() + ", " + reg);
+    asm.add("FILD " + operando.getSimboloASM());
+    asm.add("FSTP " + operando.getSimboloASM());
 
     /*
       procemiento(a:b);
@@ -754,13 +772,13 @@ Process finished with exit code 0
       a   
     */
 
-/*     z := a + b * c
+/*     z = a + b * c
     a, z FLOAT
     b, c LONGINT
-    polaca: a b c * + z :=
+    polaca: a b c * + z =
 
     *     
-    c     +   :=
+    c     +   =
     b     b   z   
     a     a   b
     
@@ -769,7 +787,7 @@ Process finished with exit code 0
 
     if (!op.isVble()) {
       getReg(op.getReg()); // EAX
-      op.getSimbolo()
+      op.getSimboloASM()
     } */
   }
 

@@ -975,6 +975,8 @@ public static void AssemblerToTXT(ArrayList<String> asm) {
       pw.println(line);
     }
   } catch (Exception e) {
+      e.printStackTrace();
+  } finally {
     try {
       if (null != fichero) {
         fichero.close();
@@ -997,6 +999,7 @@ public static void main(String[] args) {
   }
   //Puede que se agreguen nuevos errores semanticos en la generacion del codigo.
   if (parser.esCompilable()) {
+    AssemblerToTXT(codigoAssembler);
     System.out.println();
     System.out.println("Contenido de la tabla de simbolos: ");
     System.out.println(parser.getAnalizadorLexico().getDatosTabla_simbolos());
@@ -1021,7 +1024,6 @@ public static void main(String[] args) {
     in.close();
 //  parser.mostrar_tokens();
 //  parser.mostrar_estructuras();
-    AssemblerToTXT(codigoAssembler);
   } else{
     System.out.println("No se pudo generar codigo maquina. El codigo contiene errores");
   }

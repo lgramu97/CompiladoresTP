@@ -1,0 +1,207 @@
+Para los siguientes casos de prueba, se acotó en .data las variables utilizadas al mostrar el ejemplo.
+como asi tambien se acotó la seccion del main y/o procedemientos.
+----------------------------------------------------------
+%% Asignacion LONGINT:
+Caso de prueba: 
+    LONGINT a,b;
+    a = b;
+
+Salida ASM:
+    .data
+    _b@main dd ?
+    _a@main dd ?
+    .code
+    START:
+    START:
+    MOV EAX, _b@main
+    MOV _a@main, EAX
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Asignacion FLOAT:
+Caso de prueba: 
+    FLOAT a,b;
+    a = b;
+
+Salida ASM:
+    .data
+    _b@main dd ?
+    _a@main dd ?
+    .code
+    START:
+    MOV EAX, _b@main
+    MOV _a@main, EAX
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    FLOAT a,b,c;
+    a = b/c;
+
+Salida ASM:
+    .data
+    ERROR_DIVISION_CERO db "Error: no es posible divir por cero."
+    FLOAT_CERO DQ 0.0
+    @aux DQ ?
+    _b@main dd ?
+    _a@main dd ?
+    _c@main dd ?
+    _@aux0 dd ?
+    .code
+    FLD _b@main
+    FLD _c@main
+    FLD FLOAT_CERO
+    FCOMP
+    FSTSW AX
+    SAHF
+    JE ERROR_DIVISION_CERO
+    FDIV
+    FSTP _@aux0
+    MOV EAX, _@aux0
+    MOV _a@main, EAX
+    invoke ExitProcess, 0
+    __etiquetaErrorDivCero__:
+    invoke MessageBox, NULL, addr ERROR_DIVISION_CERO, addr ERROR_DIVISION_CERO, MB_OK
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    LONGINT a,b,c;
+    a = b/c;
+
+Salida ASM:
+    .data
+    ERROR_DIVISION_CERO db "Error: no es posible divir por cero."
+    FLOAT_CERO DQ 0.0
+    _b@main dd ?
+    _a@main dd ?
+    _c@main dd ?
+    .code
+    START:
+    MOV EBX, _c@main
+    MOV EAX, _b@main
+    CDQ
+    CMP EBX , 0
+    JE ERROR_DIVISION_CERO
+    IDIV EBX
+    MOV _a@main, EAX
+    invoke ExitProcess, 0
+    __etiquetaErrorDivCero__:
+    invoke MessageBox, NULL, addr ERROR_DIVISION_CERO, addr ERROR_DIVISION_CERO, MB_OK
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    LONGINT a,b,c;
+    a = b*c;
+    
+Salida ASM:
+    .data
+    _b@main dd ?
+    _a@main dd ?
+    _c@main dd ?
+    .code
+    START:
+    MOV EAX, _b@main
+    IMUL EAX, _c@main
+    MOV _a@main, EAX
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    FLOAT a,b,c;
+    a = b*c;
+
+Salida ASM:
+    .data
+    _b@main dd ?
+    _a@main dd ?
+    _c@main dd ?
+    _@aux0 dd ?
+    .code
+    START:
+    FLD _b@main
+    FLD _c@main
+    FMUL 
+    FSTP _@aux0
+    MOV EAX, _@aux0
+    MOV _a@main, EAX
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    FLOAT a,b,c;
+    a = b + c;
+
+Salida ASM:
+    .data
+    ERROR_OVERFLOW_SUMA db "Error: overflow en suma."
+    MINIMO_POSITIVO DQ 1.17549435e-38
+    MINIMO_NEGATIVO DQ -1.17549435e-38
+    MAXIMO_POSITIVO DQ 3.40282347e38
+    MAXIMO_NEGATIVO DQ -3.40282347e38
+    @aux DQ ?
+    _b@main dd ?
+    _a@main dd ?
+    _c@main dd ?
+    _@aux0 dd ?
+    .code
+    START:
+    FLD _b@main
+    FADD _c@main
+    FST @aux
+    CALL OVERFLOW_FLOAT
+    FSTP _@aux0
+    MOV EAX, _@aux0
+    MOV _a@main, EAX
+    invoke ExitProcess, 0
+    __etiquetaErrorOverflow__:
+    invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
+    invoke ExitProcess, 0
+    END START
+    FLOAT_VALIDO:
+    RET
+    OVERFLOW_FLOAT:
+    FINIT
+    FLD @aux
+    FCOM MAXIMO_POSITIVO
+    FSTSW AX
+    SAHF
+    JA __etiquetaErrorOverflow__
+    FINIT
+    FLD @aux
+    FCOM MINIMO_POSITIVO
+    FSTSW AX
+    SAHF
+    JA FLOAT_VALIDO
+    FINIT
+    FLD @aux
+    FCOM MAXIMO_NEGATIVO
+    FSTSW AX
+    SAHF
+    JB __etiquetaErrorOverflow__
+    FINIT
+    FLD @aux
+    FCOM MINIMO_NEGATIVO
+    FSTSW AX
+    SAHF
+    JB FLOAT_VALIDO
+    FINIT
+    FLD @aux
+    FCOM FLOAT_CERO
+    FSTSW AX
+    SAHF
+    JE FLOAT_VALIDO
+    JMP __etiquetaErrorOverflow__
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    <codigo>
+
+Salida ASM:
+    <codigo>:
