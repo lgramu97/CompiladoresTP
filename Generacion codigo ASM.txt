@@ -550,6 +550,75 @@ Salida ASM:
 ----------------------------------------------------------
 %% Instruccion:
 Caso de prueba:
+    LONGINT a, b, x;
+    WHILE (a > b) LOOP {
+        x = 3_l;
+    };
+Salida ASM:
+    .data
+    _Constante0 dd 3
+    _b@main dd ?
+    _a@main dd ?
+    _x@main dd ?
+    .code
+    START:
+    L0:
+    MOV EAX , _a@main
+    CMP EAX , _b@main
+    JNG L11
+    MOV EAX, _Constante0
+    MOV _x@main, EAX
+    JMP L0
+    L11:
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+   LONGINT a, b;
+    WHILE (a>b) LOOP {
+        IF (a==b){
+            OUT("adentro if");
+        } END_IF;
+    };
+Salida ASM:
+    .data
+    _Cadena0 db "adentro if", 0
+    _b@main dd ?
+    _a@main dd ?
+    .code
+    START:
+    L0:
+    MOV EAX , _a@main
+    CMP EAX , _b@main
+    JNG L19
+    MOV EAX , _a@main
+    CMP EAX , _b@main
+    JNE L15
+    invoke MessageBox, NULL, addr _Cadena0, addr  _Cadena0, MB_OK
+    JMP L16
+    L15:
+    L16:
+    JMP L0
+    L19:
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
     
 Salida ASM:
     
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    
+Salida ASM:
+    
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    
+Salida ASM:
+    
+----------------------------------------------------------
