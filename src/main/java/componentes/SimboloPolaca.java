@@ -6,6 +6,7 @@ public class SimboloPolaca {
     public static final String BI = "BI";
     private String simbolo;
     private int reg;
+    private String cte = null;
 
     public SimboloPolaca(String simbolo) {
         this.simbolo = simbolo;
@@ -22,7 +23,10 @@ public class SimboloPolaca {
     }
 
     public String getSimboloASM() {
-        return "_" + simbolo;
+        if (simbolo.charAt(0) != '_') {
+            return "_" + simbolo;
+        }
+        return simbolo;
     }
 
     public void setSimbolo(String simbolo) {
@@ -43,5 +47,17 @@ public class SimboloPolaca {
 
     public void freeReg() {
         this.setReg(-1);
+    }
+
+    public String getCte(){
+        return this.cte;
+    }
+
+    public void setCte(String cte) {
+        this.cte = cte;
+    }
+
+    public boolean isCte() {
+        return this.cte != null;
     }
 }

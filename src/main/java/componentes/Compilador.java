@@ -54,12 +54,15 @@ public class Compilador {
 
   public Compilador(Parser parser) {
     this.tablaSimbolos = parser.getAnalizadorLexico().getTabla_simbolos();
-    this.polaca = parser.getListaSimboloPolaca();
+    this.polaca = parser.
+        
+    getListaSimboloPolaca();
     this.parser = parser;
   }
 
   public ArrayList<String> getAssembler(){
     generateHeader();
+    cargarEstructuras(false);
     generateCode();
     generateData();
     ArrayList<String> asm =  new ArrayList<>();
@@ -68,6 +71,12 @@ public class Compilador {
     asm.addAll(assembler);
     asm.addAll(procsAsm);
     return asm;
+  }
+
+  public void cargarEstructuras(boolean add) {
+    for (String key : tablaSimbolos.keySet()) {
+      addData(cadenaVar, key, add);
+    }
   }
 
   private void generateHeader() {
@@ -93,9 +102,7 @@ public class Compilador {
     assemblerData.add("MAXIMO_POSITIVO DQ " + MAXIMO_POSITIVO);
     assemblerData.add("MAXIMO_NEGATIVO DQ " + MAXIMO_NEGATIVO);
     assemblerData.add(AUX + " DQ ?");
-    for (String key : tablaSimbolos.keySet()) {
-      addData(cadenaVar, key);
-    }
+    cargarEstructuras(true);
   }
   
   public void checkOverflowADD(String extremo, String salto, String etiqueta) {
@@ -124,34 +131,40 @@ public class Compilador {
     procsAsm.add("JMP " + ETIQUETA_OVERFLOW);// FLOAT INVALIDO.    
   }
 
-  private void addData(HashMap<String, String> cadenaVar, String key) {
+  private void addData(HashMap<String, String> cadenaVar, String key, boolean add) {
     HashMap<String, Object> atributos = tablaSimbolos.get(key);
     if (atributos.containsKey(USO)) {
+      if (!add) return;
       addVariable(key, atributos);
     } else if(atributos.get(TIPO).equals(CADENA)) {
-      addCadena(cadenaVar, key);
+      addCadena(cadenaVar, key, add);
     } else {
-      addConstante(key, atributos);
+      addConstante(key, atributos, add);
     }
-    //Ver el caso de constante en codigo. No contiene USO, si se agrega -> addVariable.
+    //TODO: Ver el caso de constante en codigo. No contiene USO, si se agrega -> addVariable.
   }
 
   // Lexema: 3
 	// Atributo: Tipo   Valor: LONGINT
-  private void addConstante(String key, HashMap<String, Object> atributos) {
-    String tipo = (String) atributos.get(TIPO);
+  private void addConstante(String key, HashMap<String, Object> atributos, boolean add) {
+    String tipo = atributos.get(TIPO).toString();
     if (tipo.equals(LONGINT) || tipo.equals(FLOAT)) { // Caso FLOAT y LONGINT.
-      String number = "_Constante" + numbers.size();
-      assemblerData.add(number + " dd " + key); // inicializar con el valor de la constante.
-      numbers.put(key,number);
+      String number;
+      if (add) {
+        number = numbers.get(key);
+        assemblerData.add(number + " dd " + key); // inicializar con el valor de la constante.
+      } else {
+        number = "_Constante" + numbers.size();
+        numbers.put(key,number);
+      }
       // El signo ? indica que no esta inicializado
     }
   }
 
   private void addVariable(String key, HashMap<String, Object> atributos) {
-    String uso = (String) atributos.get(USO);
+    String uso = atributos.get(USO).toString();
     if (uso.equals(VARIABLE) || uso.equals(PARAMETRO) || uso.equals(AUXILIAR)) {
-      String tipo = (String) atributos.get(TIPO);
+      String tipo = atributos.get(TIPO).toString();
       if (tipo.equals(LONGINT) || tipo.equals(FLOAT)) { // Caso FLOAT y LONGINT.
         assemblerData.add("_" + key + " dd ?");
         // El signo ? indica que no esta inicializado
@@ -159,19 +172,25 @@ public class Compilador {
     }
   }
 
-  private void addCadena(HashMap<String, String> cadenaVar, String key) {
-    String var = "_Cadena" + cadenaVar.size();
-    assemblerData.add(var + " db " + key + ", 0");
-    cadenaVar.put(key, var);
+  private void addCadena(HashMap<String, String> cadenaVar, String key, boolean add) {
+    String var;
+    if (add) {
+      var = cadenaVar.get(key);
+      assemblerData.add(var + " db " + key + ", 0");
+    } else {
+      var = "_Cadena" + cadenaVar.size();
+      cadenaVar.put(key, var); // number, _Cadena#
+    }
   }
-
-  // ProgramText db "Hello World!", 0
-  // _bad: invoke StdOut, addr ProgramText
 
   public String getTipo(SimboloPolaca op) {
     if (!op.isVble()) return LONGINT;
-    HashMap<String, Object> attrs = tablaSimbolos.get(op.getSimbolo());
-    return (String) attrs.get(TIPO);
+    HashMap<String, Object> attrs;
+    if (op.isCte())
+      attrs = tablaSimbolos.get(op.getCte());
+    else
+      attrs = tablaSimbolos.get(op.getSimbolo());
+    return attrs.get(TIPO).toString();
   }
 
   public boolean isFloat(SimboloPolaca op) {
@@ -185,7 +204,7 @@ public class Compilador {
     if (op1IsFloat) return true;
     // error
     parser.addErrorSemantico("Conversion implicita no valida.");
-    throw new Error("Conversion implicita no valida!");
+    return false;
   }
 
   public String getReg(int reg) {
@@ -259,33 +278,6 @@ public class Compilador {
     regs[reg] = null;
   }
 
-/*   
-  BF -> generateSalto(asm,  tope);
-  BI -> generateSalto(asm,  tope); MODIFICAR CONDICION BF ANTES POR "JMP"
-*/
-
-/* 
-VALOR POLACA [0]: a
-VALOR POLACA [1]: b
-VALOR POLACA [2]: -
-VALOR POLACA [3]: c
-VALOR POLACA [4]: 1.0
-VALOR POLACA [5]: +
-VALOR POLACA [6]: >
-VALOR POLACA [7]: 14
-VALOR POLACA [8]: BF
-VALOR POLACA [9]: b
-VALOR POLACA [10]: a
-VALOR POLACA [11]: =
-VALOR POLACA [12]: 15
-VALOR POLACA [13]: BI
-VALOR POLACA [14]: L14
-VALOR POLACA [15]: L15
-
-Process finished with exit code 0
-
-*/
-
   public void generateTag(ArrayList<String> asm, SimboloPolaca tag) {
     asm.add(tag.getSimbolo() + ":");
   }
@@ -320,14 +312,6 @@ Process finished with exit code 0
     asm.add("CMP " + reg + " , " + op2.getSimboloASM());
     freeReg(op1);
   }
-
-/*   
-  a > b + z
-  b z + a >
-  R1 a >
-  IGUAL JE
-  MAYOR JLE 
-*/
 
   public void generateAsignacion(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2, boolean ref) {
     if (checkTipos(op1, op2)) conversionImplicita(asm, op2);
@@ -382,13 +366,13 @@ Process finished with exit code 0
   }
 
   /* 
-  primero muevo el dividendo a EAX
-  tengo que extender el dato a 32 bits.
-  si el dato es negativo, tiene que contener todos 1., si no todos 0.
-  en lugar de hacerlo a mano ->  CDQ extiendo de EAX a el par EAX:EDX.
-  b/a -> EAX : b , CDQ , DIV.
-  b a / 
-   */
+    primero muevo el dividendo a EAX
+    tengo que extender el dato a 32 bits.
+    si el dato es negativo, tiene que contener todos 1., si no todos 0.
+    en lugar de hacerlo a mano ->  CDQ extiendo de EAX a el par EAX:EDX.
+    b/a -> EAX : b , CDQ , DIV.
+    b a / 
+  */
   public void generateCodeDIV(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
     if (isFloat(op1) && isFloat(op2)) {
       asm.add("FLD " + op1.getSimboloASM()); // Cargo op1 ST(2)
@@ -636,28 +620,41 @@ Process finished with exit code 0
           generateComparacion(asm, op1, op2, simbolo.getSimbolo());
           break;
         default:
-          if (simbolo.getSimbolo().charAt(0) == 'L') break;
+          char letter = simbolo.getSimbolo().charAt(0);
+          switch(letter) {
+            case 'L':
+              asm.add(simbolo.getSimbolo() + ":");
+              break;
+            default:
+              if (isCte(letter) && !isAddress(polaca, i+1)) {
+                /*
+                * En el caso de las constantes puede ser una constante en codigo que debo buscar el valor
+                * o puede ser la direccion de salto previo al BF/BI que lo agrego como tal en la pila
+                * porque en la siguiente instruccion de la polaca genero el tag. 
+                */
+                String variable = numbers.get(simbolo.getSimbolo());
+                simbolo.setCte(simbolo.getSimbolo()); // number
+                simbolo.setSimbolo(variable); // _Constante
+              }
+              pilaEjecucion.push(simbolo);
+          }
+/*           if (simbolo.getSimbolo().charAt(0) == 'L') {
+            asm.add(simbolo.getSimbolo() + ":");
+            break;
+          }
           // Apilo la constante -> obtengo variable del hash.
-          if (!isId(simbolo.getSimbolo()) && !isAddress(polaca, i+1)){
+          if (!isId(simbolo.getSimbolo()) && !isAddress(polaca, i+1) && simbolo.getSimbolo().charAt(0) != '"'){
             // FIXME: Chequear que no entre nunca por el caso de ':', creo que lo sacamos ya.
             // Por el default entra con tags (L), con ids, y con constantes.
-            // En el caso de las constantes puede ser una constante en codigo que debo buscar el valor
-            // o puede ser la direccion de salto previo al BF/BI que lo agrego como tal en la pila
-            // porque en la siguiente instruccion de la polaca genero el tag.
-            String variable = numbers.get(simbolo.getSimboloASM());
-            simbolo.setSimbolo(variable);
+            String variable = numbers.get(simbolo.getSimbolo());
+            simbolo.setCte(simbolo.getSimbolo()); // number
+            simbolo.setSimbolo(variable); // _Constante
           }
-          pilaEjecucion.push(simbolo);
+          pilaEjecucion.push(simbolo); */
       }
     }
   }
-/*
-  VALOR POLACA [58]: 0.
-  VALOR POLACA [59]: b@main@producto (el siguiente es variable, buscar en hash la cte)
 
-  VALOR POLACA [47]: 6
-  VALOR POLACA [48]: BI/BF (el siguiente es BI o BF, el anterior se agrega sin usar el hash porque es etiqueta luega)
-*/
   public boolean isAddress(ArrayList<SimboloPolaca> polaca, int indexOp){
     // True si es una constante en codigo. False si es direccion de salto (previo a BF/BI)
     if (indexOp < polaca.size()){
@@ -667,9 +664,8 @@ Process finished with exit code 0
     return false;
   }
 
-  public boolean isId(String op){
-    char c = op.toLowerCase().charAt(0);
-    return c >= 'a' && c <= 'z' ;
+  public boolean isCte(char c) {
+    return (c >= '0' && c <= '9') || c == '.' || c == '-';
   }
 
   public void generateCode() {
@@ -694,48 +690,10 @@ Process finished with exit code 0
 
   }
 
-/*  public ArrayList<String> getParametrosReales(ArrayList<SimboloPolaca> invocacion) {
-    // DELETEME
-    //devulve todos los parametros reales del procedimiento.
-    String simboloActual;
-    ArrayList<String> out = new ArrayList<>();
-    for (int i = 0; i < invocacion.size(); i++) {
-      simboloActual = simbolo.getSimboloASM();
-      if (simboloActual.equals(":")) {
-        out.add(invocacion.get(i-1).getSimboloASM());
-      }
-      // PROC
-      // VALOR POLACA [21]: procedimiento@main
-      // VALOR POLACA [22]: w
-      // VALOR POLACA [23]: a@main
-      // VALOR POLACA [24]: :
-      // VALOR POLACA [25]: x
-      // VALOR POLACA [26]: a@main
-      // VALOR POLACA [27]: :
-      // VALOR POLACA [28]: z
-      // VALOR POLACA [29]: x1@main
-      // VALOR POLACA [30]: :
-      // VALOR POLACA [31]: INV}
-      return out;
-  }*/
-
   public String nameMangling(String proc) {
     // Busca desde el ambito actual hacia atra s.
     return proc.substring(proc.indexOf('@'));
   }
-
-/*  public boolean checkParams(ArrayList<SimboloPolaca> declaracion, ArrayList<SimboloPolaca> invocacion) {
-    // DELETEME
-    HashMap<String, Object> atributos = tablaSimbolos.get(invocacion.get(0));
-    ArrayList<String> paramsFormales = atributos.get(PARAMETROS);
-    ArrayList<String> paramsReales = getParametrosReales(invocacion);
-    for (int i = 0; i < paramsFormales.size(); i++) {
-      String paramFormal  = paramsFormales.get(i) + nameMangling(invocacion);
-      if (checkTipos(paramFormal, paramsReales.get(i))) {
-          conversionImplicita(paramsReales.get(i));
-      }
-    }
-  }*/
 
   public String crearVarAux() {
     String nameVarAux = "@aux" + countVarsAux++;
@@ -762,33 +720,6 @@ Process finished with exit code 0
     asm.add("MOV " + operando.getSimboloASM() + ", " + reg);
     asm.add("FILD " + operando.getSimboloASM());
     asm.add("FSTP " + operando.getSimboloASM());
-
-    /*
-      procemiento(a:b);
-      procedimiento@main a b :
-
-      :
-      b   <---reemplazo--- @aux0 = b
-      a   
-    */
-
-/*     z = a + b * c
-    a, z FLOAT
-    b, c LONGINT
-    polaca: a b c * + z =
-
-    *     
-    c     +   =
-    b     b   z   
-    a     a   b
-    
-
-    op.setReg(EAX);
-
-    if (!op.isVble()) {
-      getReg(op.getReg()); // EAX
-      op.getSimboloASM()
-    } */
   }
 
   // "hjola", _Cadena1

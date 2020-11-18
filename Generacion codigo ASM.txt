@@ -201,7 +201,355 @@ Salida ASM:
 ----------------------------------------------------------
 %% Instruccion:
 Caso de prueba:
-    <codigo>
+    LONGINT a,b,c;
+    a = b + c;
 
 Salida ASM:
-    <codigo>:
+    .data
+    _b@main dd ?
+    _a@main dd ?
+    _c@main dd ?
+    .code
+    START:
+    MOV EAX, _b@main
+    ADD EAX, _c@main
+    JO ERROR_OVERFLOW_SUMA
+    MOV _a@main, EAX
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    LONGINT a,b,c;
+    a = b - c;
+
+Salida ASM:
+   .data
+    _b@main dd ?
+    _a@main dd ?
+    _c@main dd ?
+    .code
+    START:
+    MOV EAX, _b@main
+    SUB EAX, _c@main
+    MOV _a@main, EAX
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+   FLOAT a,b,c;
+   a = b-c;
+
+Salida ASM:
+   .data
+    _b@main dd ?
+    _a@main dd ?
+    _c@main dd ?
+    _@aux0 dd ?
+    .code
+    START:
+    FLD _b@main
+    SUB _c@main
+    FSTP _@aux0
+    MOV EAX, _@aux0
+    MOV _a@main, EAX
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    OUT("cadena a imprimir");
+
+Salida ASM:
+   .data
+_Cadena0 db "cadena a imprimir", 0
+    .code
+    START:
+    invoke MessageBox, NULL, addr _Cadena0, addr  _Cadena0, MB_OK
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    LONGINT a , b ;
+    a = 3_l + b;
+
+Salida ASM:
+   .data
+    _Constante0 dd 3
+    _b@main dd ?
+    _a@main dd ?
+    .code
+    START:
+    MOV EAX, _Constante0
+    ADD EAX, _b@main
+    JO ERROR_OVERFLOW_SUMA
+    MOV _a@main, EAX
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    FLOAT a , b ;
+    a = 3.45f-2 / b;
+
+Salida ASM:
+  .data
+    ERROR_DIVISION_CERO db "Error: no es posible divir por cero."
+    FLOAT_CERO DQ 0.0
+    _b@main dd ?
+    _a@main dd ?
+    _Constante0 dd 3.45f-2
+    _@aux0 dd ?
+    .code
+    START:
+    FLD _Constante0
+    FLD _b@main
+    FLD FLOAT_CERO
+    FCOMP
+    FSTSW AX
+    SAHF
+    JE ERROR_DIVISION_CERO
+    FDIV
+    FSTP _@aux0
+    MOV EAX, _@aux0
+    MOV _a@main, EAX
+    invoke ExitProcess, 0
+    __etiquetaErrorDivCero__:
+    invoke MessageBox, NULL, addr ERROR_DIVISION_CERO, addr ERROR_DIVISION_CERO, MB_OK
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+   FLOAT a , b, c ;
+    IF ( a - b > c + 1.0 ) {
+        a  = b;
+    } END_IF ;
+    OUT("termine de comparar");
+
+Salida ASM: %% ERROR_OVERFLOW_SUMA es igual a los anteriores (solo lo quitamos por comodidad en el txt)
+   .data
+    ERROR_OVERFLOW_SUMA db "Error: overflow en suma."
+    MINIMO_POSITIVO DQ 1.17549435e-38
+    MINIMO_NEGATIVO DQ -1.17549435e-38
+    MAXIMO_POSITIVO DQ 3.40282347e38
+    MAXIMO_NEGATIVO DQ -3.40282347e38
+    @aux DQ ?
+    _Constante0 dd 1.0
+    _b@main dd ?
+    _a@main dd ?
+    _c@main dd ?
+    _Cadena0 db "termine de comparar", 0
+    _@aux1 dd ?
+    _@aux0 dd ?
+    .code
+    START:
+    FLD _a@main
+    SUB _b@main
+    FSTP _@aux0
+    FLD _c@main
+    FADD _Constante0
+    FST @aux
+    CALL OVERFLOW_FLOAT
+    FSTP _@aux1
+    MOV EAX , _@aux0
+    CMP EAX , _@aux1
+    JNG L14
+    MOV EAX, _b@main
+    MOV _a@main, EAX
+    JMP L15
+    L14:
+    L15:
+    invoke MessageBox, NULL, addr _Cadena0, addr  _Cadena0, MB_OK
+    invoke ExitProcess, 0
+    __etiquetaErrorOverflow__:
+    invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    FLOAT a , b, c ;
+    IF ( a - b != c + 1.0 ) {
+        a  = b + c;
+    } ELSE { 
+        a = b - c;
+    } END_IF ;
+
+Salida ASM:
+   .data
+    ERROR_DIVISION_CERO db "Error: no es posible divir por cero."
+    ERROR_OVERFLOW_SUMA db "Error: overflow en suma."
+    FLOAT_CERO DQ 0.0
+    MINIMO_POSITIVO DQ 1.17549435e-38
+    MINIMO_NEGATIVO DQ -1.17549435e-38
+    MAXIMO_POSITIVO DQ 3.40282347e38
+    MAXIMO_NEGATIVO DQ -3.40282347e38
+    @aux DQ ?
+    _x1@main dd ?
+    _b@main dd ?
+    _a@main dd ?
+    _x2@main dd ?
+    _Constante0 dd 2
+    _Constante1 dd 1.0
+    _Constante2 dd 4
+    _x3@main dd ?
+    _@aux3 dd ?
+    _@aux2 dd ?
+    _c@main dd ?
+    _@aux1 dd ?
+    _@aux0 dd ?
+    .code
+    START:
+    FLD _a@main
+    SUB _b@main
+    FSTP _@aux0
+    FLD _c@main
+    FADD _Constante1
+    FST @aux
+    CALL OVERFLOW_FLOAT
+    FSTP _@aux1
+    MOV EAX , _@aux0
+    CMP EAX , _@aux1
+    JE L16
+    FLD _b@main
+    FADD _c@main
+    FST @aux
+    CALL OVERFLOW_FLOAT
+    FSTP _@aux2
+    MOV EAX, _@aux2
+    MOV _a@main, EAX
+    JMP L22
+    L16:
+    FLD _b@main
+    SUB _c@main
+    FSTP _@aux3
+    MOV EAX, _@aux3
+    MOV _a@main, EAX
+    L22:
+    MOV EAX, _Constante2
+    MOV _x1@main, EAX
+    MOV EAX, _Constante0
+    MOV _x2@main, EAX
+    MOV EAX, _x1@main
+    ADD EAX, _x2@main
+    JO ERROR_OVERFLOW_SUMA
+    ADD EAX, _Constante2
+    JO ERROR_OVERFLOW_SUMA
+    MOV _x3@main, EAX
+    invoke ExitProcess, 0
+    __etiquetaErrorOverflow__:
+    invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
+    invoke ExitProcess, 0
+    __etiquetaErrorDivCero__:
+    invoke MessageBox, NULL, addr ERROR_DIVISION_CERO, addr ERROR_DIVISION_CERO, MB_OK
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    LONGINT a, b , c;
+    a = b + 3_l;
+
+    OUT("comienza");
+
+    IF ( a == 0_l ) {
+        a  = b;
+        IF ( b == 0_l ) {	
+            c = 1_l;
+        } END_IF;
+    } END_IF;
+
+OUT("termina");
+Salida ASM:
+   .data
+    _Constante0 dd 0
+    _Constante1 dd 1
+    _Constante2 dd 3
+    _b@main dd ?
+    _a@main dd ?
+    _Cadena0 db "comienza", 0
+    _Cadena1 db "termina", 0
+    _c@main dd ?
+    .code
+    START:
+    MOV EAX, _b@main
+    ADD EAX, _Constante2
+    JO ERROR_OVERFLOW_SUMA
+    MOV _a@main, EAX
+    invoke MessageBox, NULL, addr _Cadena0, addr  _Cadena0, MB_OK
+    MOV EAX , _a@main
+    CMP EAX , _Constante0
+    JNE L29
+    MOV EAX, _b@main
+    MOV _a@main, EAX
+    MOV EAX , _b@main
+    CMP EAX , _Constante0
+    JNE L25
+    MOV EAX, _Constante1
+    MOV _c@main, EAX
+    JMP L26
+    L25:
+    L26:
+    JMP L30
+    L29:
+    L30:
+    invoke MessageBox, NULL, addr _Cadena1, addr  _Cadena1, MB_OK
+    invoke ExitProcess, 0
+    __etiquetaErrorOverflow__:
+    invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+   FLOAT a, b , c;
+    IF ( a - b > c + 1.0 ) {
+        OUT("hola como andas");
+    } END_IF ;
+
+Salida ASM:
+    .data
+    ERROR_OVERFLOW_SUMA db "Error: overflow en suma."
+    MINIMO_POSITIVO DQ 1.17549435e-38
+    MINIMO_NEGATIVO DQ -1.17549435e-38
+    MAXIMO_POSITIVO DQ 3.40282347e38
+    MAXIMO_NEGATIVO DQ -3.40282347e38
+    @aux DQ ?
+    _Cadena0 db "hola como andas", 0
+    _Constante0 dd 1.0
+    _b@main dd ?
+    _a@main dd ?
+    _c@main dd ?
+    _@aux1 dd ?
+    _@aux0 dd ?
+   .code
+    START:
+    FLD _a@main
+    SUB _b@main
+    FSTP _@aux0
+    FLD _c@main
+    FADD _Constante0
+    FST @aux
+    CALL OVERFLOW_FLOAT
+    FSTP _@aux1
+    MOV EAX , _@aux0
+    CMP EAX , _@aux1
+    JNG L13
+    invoke MessageBox, NULL, addr _Cadena0, addr  _Cadena0, MB_OK
+    JMP L14
+    L13:
+    L14:
+    invoke ExitProcess, 0
+    __etiquetaErrorOverflow__:
+    invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    
+Salida ASM:
+    
