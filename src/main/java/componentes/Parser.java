@@ -991,8 +991,7 @@ public void mostrar_estructuras(){
 public static void main(String[] args) {
   Parser parser = new Parser();
   Compilador compilador = new Compilador(parser);
-	parser.yyparse();
-	System.out.println(parser.getErrores());
+  parser.yyparse();
 
   ArrayList<String> codigoAssembler = null;
   if (parser.esCompilable()){
@@ -1007,29 +1006,36 @@ public static void main(String[] args) {
       }
     }
     codigoAssembler = compilador.getAssembler();
-  }
-  //Puede que se agreguen nuevos errores semanticos en la generacion del codigo.
-  if (parser.esCompilable()) {
-    AssemblerToTXT(codigoAssembler);
     System.out.println();
-    System.out.println("Contenido de la tabla de simbolos: ");
-    System.out.println(parser.getAnalizadorLexico().getDatosTabla_simbolos());
-
+    System.out.println(parser.getErrores());
     System.out.println();
-    Scanner in = new Scanner(System.in);
-    System.out.println("Desea guardar la salida en un documento de texto? Y/N");
-    String rta = in.nextLine();
-    if (rta.equals("Y") || rta.equals("y")) {
-      parser.saveFile();
-    }
-    in.close();
+    //Puede que se agreguen nuevos errores semanticos en la generacion del codigo.
+    if (parser.esCompilable()) {
+      AssemblerToTXT(codigoAssembler);
+      System.out.println();
+      System.out.println("Contenido de la tabla de simbolos: ");
+      System.out.println(parser.getAnalizadorLexico().getDatosTabla_simbolos());
+      Scanner in = new Scanner(System.in);
+      System.out.println("Desea guardar la salida en un documento de texto? Y/N");
+      String rta = in.nextLine();
+      if (rta.equals("Y") || rta.equals("y")) {
+        parser.saveFile();
+      }
+      in.close();
 //  parser.mostrar_tokens();
 //  parser.mostrar_estructuras();
-  } else{
+    } else{
+      System.out.println("No se pudo generar codigo maquina. El codigo contiene errores");
+      System.out.println();
+    }
+  }else{
     System.out.println("No se pudo generar codigo maquina. El codigo contiene errores");
+    System.out.println();
+    System.out.println(parser.getErrores());
+    System.out.println();
   }
 }
-//#line 961 "Parser.java"
+//#line 962 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1867,7 +1873,7 @@ case 115:
         yyval = new ParserVal("-"+val_peek(0).sval);
     }
 break;
-//#line 1794 "Parser.java"
+//#line 1795 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

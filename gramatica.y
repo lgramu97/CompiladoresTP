@@ -962,8 +962,8 @@ public void mostrar_estructuras(){
 public static void main(String[] args) {
   Parser parser = new Parser();
   Compilador compilador = new Compilador(parser);
-	parser.yyparse();
-	System.out.println(parser.getErrores());
+  parser.yyparse();
+  System.out.println(parser.getErrores());
 
   ArrayList<String> codigoAssembler = null;
   if (parser.esCompilable()){
@@ -979,6 +979,7 @@ public static void main(String[] args) {
     }
     codigoAssembler = compilador.getAssembler();
   }
+
   //Puede que se agreguen nuevos errores semanticos en la generacion del codigo.
   if (parser.esCompilable()) {
     AssemblerToTXT(codigoAssembler);

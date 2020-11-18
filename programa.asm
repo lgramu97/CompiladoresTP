@@ -16,19 +16,37 @@ MINIMO_NEGATIVO DQ -1.17549435e-38
 MAXIMO_POSITIVO DQ 3.40282347e38
 MAXIMO_NEGATIVO DQ -3.40282347e38
 @aux DQ ?
+_x1@main dd ?
+_Constante0 dd 2
 _b@main dd ?
+_Constante1 dd 4
+_Constante2 dd 5
 _a@main dd ?
+_Constante3 dd -5
+_Cadena0 db "conversion implicita simple", 0
+_x2@main dd ?
+_Constante4 dd -3.0f+23
 _c@main dd ?
 _@aux0 dd ?
 .code
 START:
-FLD _b@main
-FADD _c@main
-FST @aux
-CALL OVERFLOW_FLOAT
-FSTP _@aux0
-MOV EAX, _@aux0
+MOV EAX, _Constante1
 MOV _a@main, EAX
+MOV EAX, _Constante2
+MOV _b@main, EAX
+MOV EAX, _Constante4
+MOV _x2@main, EAX
+MOV EAX, _a@main
+IMUL EAX, _b@main
+ADD EAX, _Constante3
+JO ERROR_OVERFLOW_SUMA
+MOV _c@main, EAX
+invoke MessageBox, NULL, addr _Cadena0, addr  _Cadena0, MB_OK
+MOV EAX, _Constante0
+MOV _@aux0, EAX
+FILD _@aux0
+FSTP _@aux0
+MOV _x1@main, EAX
 invoke ExitProcess, 0
 __etiquetaErrorOverflow__:
 invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK

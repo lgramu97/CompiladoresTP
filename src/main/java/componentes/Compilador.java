@@ -199,6 +199,7 @@ public class Compilador {
 
   public boolean checkTipos(SimboloPolaca op1, SimboloPolaca op2) {
     boolean op1IsFloat = isFloat(op1);
+    System.out.println("OP1: " + op1.getSimbolo() + " FLOAT? " + op1IsFloat + " OP2 : " + op2.getSimbolo() + " FLOAT? " + isFloat(op2));
     if (op1IsFloat == isFloat(op2)) return false;
     // Conversiones implicita: sobre parametro real.
     if (op1IsFloat) return true;
@@ -267,6 +268,7 @@ public class Compilador {
         regs[i] = regs[reg];
         regs[i].setReg(i);
         regs[reg] = null;
+        break; // Si ya hice el swap salgo.
       }
     }
   }
@@ -574,6 +576,7 @@ public class Compilador {
     for (int i = 0; i < polaca.size(); i++) {
       SimboloPolaca simbolo = polaca.get(i);
       SimboloPolaca op1, op2, op;
+      System.out.println("Simbolo leido: " + simbolo.getSimbolo());
       switch (simbolo.getSimbolo()) {
         case PROC:
           ArrayList<SimboloPolaca> invocacion = new ArrayList<>();
