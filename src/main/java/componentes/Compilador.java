@@ -46,9 +46,9 @@ public class Compilador {
   public static final String ETIQUETA_DIVISION_CERO = "__etiquetaErrorDivCero__";
   public static final String FLOAT_CERO = "FLOAT_CERO";
   public static final String INV = "INV";
-  public static final String MAXIMO_POSITIVO = "3.40282347e38";
+  public static final String MAXIMO_POSITIVO = "3.40282347f38";
   public static final String MAXIMO_NEGATIVO = "-" + MAXIMO_POSITIVO;
-  public static final String MINIMO_POSITIVO = "1.17549435e-38";
+  public static final String MINIMO_POSITIVO = "1.17549435f-38";
   public static final String MINIMO_NEGATIVO = "-" + MINIMO_POSITIVO;
   public static final String AUXILIAR = "AUXILIAR";
   public static final String PASAJE = "Pasaje";
@@ -296,8 +296,8 @@ public class Compilador {
 
   public void generateComparacionFloat(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2, String operador) {
     asm.add("FINIT"); // Resetea control y estado en cada comparacion.
-    asm.add("FLD " + op1.getSimbolo()); // Cargo a ST(0) el valor de op1.
-    asm.add("FCOMP " + op2.getSimbolo()); // Comparo con el op2-
+    asm.add("FLD " + op1.getSimboloASM()); // Cargo a ST(0) el valor de op1.
+    asm.add("FCOMP " + op2.getSimboloASM()); // Comparo con el op2- FIXME: si no funciona sacar la P. 
     asm.add("FSTSW AX");// palabra de estado a mem.
     asm.add("SAHF"); // copia indicadores.
     //asm.add(salto + " " + etiqueta); //Salto si condicion
@@ -359,35 +359,41 @@ public class Compilador {
     }
     // O los dos son float o los dos son longint
     if (!isFloat(op1)) {
-      generateComparacionLongint(asm, op1, op2);
+      generateComparacionLongint(asm, op1, op2, operador);
     } else {
-      generateComparacionFloat(asm, op1, op2);
+      generateComparacionFloat(asm, op1, op2, operador);
     }
   }
 
   public void generateAsignacion(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2, boolean ref) {
     if (checkTipos(op1, op2, true)) conversionImplicita(asm, op2);
     String reg;
-    // op1 siempre es vble
-    if (op2.isVble()) { // op2 es vble
-      reg = getRegLibreGral(op2);
-      String var = op2.getSimboloASM();
-      if (ref) {
-        var = "[" + op2.getSimboloASM() + "]";
+    // op1 siempre es vble y ambos son del mismo tipo.
+    if (!isFloat(op1)) {
+      if (op2.isVble()) { // op2 es vble
+        reg = getRegLibreGral(op2);
+        String var = op2.getSimboloASM();
+        if (ref) {
+          var = "[" + op2.getSimboloASM() + "]";
+        }
+        asm.add("MOV " + reg + ", " + var);
+      } else { // op2 es reg
+        reg = getReg(op2.getReg());
       }
-      asm.add("MOV " + reg + ", " + var);
-    } else { // op2 es reg
-      reg = getReg(op2.getReg());
+      asm.add("MOV " + op1.getSimboloASM() + ", " + reg);
+      freeReg(op2);
+    } else {
+      // Asignacion FLOAT.
+        asm.add("FLD " + op2.getSimboloASM()); // cargo op2
+        asm.add("FSTP " + op1.getSimboloASM()); // asigno op2 a op1
     }
-    asm.add("MOV " + op1.getSimboloASM() + ", " + reg);
-    freeReg(op2);
   }
 
   public void generateCodeSUB(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
     //SUB {__reg__, __mem__}, {__reg__, __mem__, __inmed__} ; Operación: dest <- dest - src.
     if (isFloat(op1) && isFloat(op2)) {
       asm.add("FLD " + op1.getSimboloASM()); // Cargo op1 ST(2)
-      asm.add("SUB " + op2.getSimboloASM());
+      asm.add("FSUB " + op2.getSimboloASM());
       String varAux = crearVarAux();
       op1.setSimbolo(varAux);
       asm.add("FSTP " + op1.getSimboloASM()); // Copia el valor de la pila a la var auxiliar
@@ -509,10 +515,6 @@ public class Compilador {
     }
   }
 
-  public void generateCodeOPConmutativas() {
-    // TODO:
-  }
-
   public void generateCodeMUL(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
     // IMUL EAX, {__reg__, __mem__} ; EDX: EAX <- EAX * {reg32|mem32|inmed}
     if (isFloat(op1) && isFloat(op2)) {
@@ -598,10 +600,11 @@ public class Compilador {
 
   public void generateCodeOperacion(Stack<SimboloPolaca> pilaEjecucion, char operacion, ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
     if (checkTipos(op1, op2, false)) {
-      if (!isFloat(op1))
+      if (!isFloat(op1)) {
         conversionImplicita(asm, op1);
-      else
+      } else {
         conversionImplicita(asm, op2);
+      }
     }
     switch (operacion) {
       case '+':
@@ -680,22 +683,20 @@ public class Compilador {
           break;
         default:
           char letter = simbolo.getSimbolo().charAt(0);
-          switch(letter) {
-            case 'L':
-              asm.add(simbolo.getSimbolo() + ":");
-              break;
-            default:
-              if (isCte(letter) && !isAddress(polaca, i+1)) {
-                /*
-                * En el caso de las constantes puede ser una constante en codigo que debo buscar el valor
-                * o puede ser la direccion de salto previo al BF/BI que lo agrego como tal en la pila
-                * porque en la siguiente instruccion de la polaca genero el tag. 
-                */
-                String variable = numbers.get(simbolo.getSimbolo());
-                simbolo.setCte(simbolo.getSimbolo()); // number
-                simbolo.setSimbolo(variable); // _Constante
-              }
-              pilaEjecucion.push(simbolo);
+          if (letter == 'L') {
+            asm.add(simbolo.getSimbolo() + ":");
+          } else {
+            if (isCte(letter) && !isAddress(polaca, i + 1)) {
+              /*
+               * En el caso de las constantes puede ser una constante en codigo que debo buscar el valor
+               * o puede ser la direccion de salto previo al BF/BI que lo agrego como tal en la pila
+               * porque en la siguiente instruccion de la polaca genero el tag.
+               */
+              String variable = numbers.get(simbolo.getSimbolo());
+              simbolo.setCte(simbolo.getSimbolo()); // number
+              simbolo.setSimbolo(variable); // _Constante
+            }
+            pilaEjecucion.push(simbolo);
           }
       }
     }
@@ -767,6 +768,7 @@ public class Compilador {
       asm.add("MOV " + reg + ", " + operando.getSimboloASM());
     }
     operando.setSimbolo(varAux);
+    operando.setCte(null);
     asm.add("MOV " + operando.getSimboloASM() + ", " + reg);
     asm.add("FILD " + operando.getSimboloASM());
     asm.add("FSTP " + operando.getSimboloASM());

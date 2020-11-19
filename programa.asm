@@ -10,59 +10,39 @@ includelib \masm32\lib\user32.lib
 ERROR_DIVISION_CERO db "Error: no es posible divir por cero.", 0
 ERROR_OVERFLOW_SUMA db "Error: overflow en suma.", 0
 FLOAT_CERO DQ 0.0
-MINIMO_POSITIVO DQ 1.17549435e-38
-MINIMO_NEGATIVO DQ -1.17549435e-38
-MAXIMO_POSITIVO DQ 3.40282347e38
-MAXIMO_NEGATIVO DQ -3.40282347e38
+MINIMO_POSITIVO DQ 1.17549435f-38
+MINIMO_NEGATIVO DQ -1.17549435f-38
+MAXIMO_POSITIVO DQ 3.40282347f38
+MAXIMO_NEGATIVO DQ -3.40282347f38
 @aux DQ ?
-_x1@main dd ?
-_x2@main dd ?
-_f2@main dd ?
-_Constante0 dd 0
-_Cadena0 db "iguales", 0
-_Constante1 dd 1
-_Constante2 dd 0.0
-_Constante3 dd 1.0
-_x3@main dd ?
-_Constante4 dd 3.0
-_f3@main dd ?
+_a@main@procedimiento dd ?
+_x@main@procedimiento dd ?
+_b@main dd ?
+_b@main@procedimiento dd ?
+_a@main dd ?
+_z@main@procedimiento dd ?
+_w@main dd ?
+_Constante0 dd 1
+_Constante1 dd 2
+_Constante2 dd 3
+_Constante3 dd 4
+_Constante4 dd 2.0
+_c@main@procedimiento dd ?
 _@aux1 dd ?
-_f1@main dd ?
-_Cadena1 db "no iguales", 0
 _@aux0 dd ?
 .code
 START:
-MOV EAX, _Constante0
-MOV _x1@main, EAX
-MOV EAX, _Constante1
-MOV _x2@main, EAX
-MOV EAX, _Constante0
-MOV _x3@main, EAX
-MOV EAX, _Constante3
-MOV _f1@main, EAX
 MOV EAX, _Constante2
-MOV _f2@main, EAX
-MOV EAX, _Constante4
-MOV _f3@main, EAX
-MOV EAX, _x1@main
-MOV _@aux0, EAX
-FILD _@aux0
-FSTP _@aux0
-FLD _@aux0
-FADD _f1@main
-FST @aux
-CALL OVERFLOW_FLOAT
-FSTP _@aux1
-MOV EAX, _@aux1
-MOV _f2@main, EAX
-MOV EAX , _f2@main
-CMP EAX , _x2@main
-JNE L32
-invoke MessageBox, NULL, addr _Cadena0, addr  _Cadena0, MB_OK
-JMP L35
-L32:
-invoke MessageBox, NULL, addr _Cadena1, addr  _Cadena1, MB_OK
-L35:
+MOV _a@main, EAX
+MOV EAX, _Constante3
+MOV _b@main, EAX
+FLD _Constante4
+FSTP _w@main
+MOV EAX, [_b@main]
+MOV _z@main@procedimiento, EAX
+FLD _w@main
+FSTP _x@main@procedimiento
+CALL procedimiento@main
 invoke ExitProcess, 0
 __etiquetaErrorOverflow__:
 invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
@@ -104,4 +84,28 @@ FSTSW AX
 SAHF
 JE FLOAT_VALIDO
 JMP __etiquetaErrorOverflow__
+procedimiento@main@procedimiento@invocacion:
+MOV EAX, _a@main@procedimiento
+MOV _b@main@procedimiento, EAX
+RET
+invocacion@main@procedimiento:
+MOV EAX, _a@main@procedimiento
+MOV _b@main@procedimiento, EAX
+CALL procedimiento@main@procedimiento@invocacion
+RET
+procedimiento@main:
+MOV EAX, _b@main@procedimiento
+MOV _a@main@procedimiento, EAX
+MOV EAX, _z@main@procedimiento
+MOV _@aux0, EAX
+FILD _@aux0
+FSTP _@aux0
+FLD _x@main@procedimiento
+FLD _@aux0
+FMUL 
+FSTP _@aux1
+FLD _@aux1
+FSTP _c@main@procedimiento
+CALL invocacion@main@procedimiento
+RET
 END START
