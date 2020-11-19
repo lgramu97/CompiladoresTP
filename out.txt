@@ -1,221 +1,134 @@
+Errores.
 Errores Lexicos: 
 
 Errores Sintacticos: 
 
-Tokens detectados en el codigo fuente: 
-	Linea numero: 1 token 264 --LONGINT
-	Linea numero: 1 token 270 --ID
-	Linea numero: 1 token 59 --;
-	Linea numero: 3 token 268 --PROC
-	Linea numero: 3 token 270 --ID
-	Linea numero: 3 token 40 --(
-	Linea numero: 3 token 265 --FLOAT
-	Linea numero: 3 token 270 --ID
-	Linea numero: 3 token 44 --,
-	Linea numero: 3 token 265 --FLOAT
-	Linea numero: 3 token 270 --ID
-	Linea numero: 3 token 44 --,
-	Linea numero: 3 token 271 --REF
-	Linea numero: 3 token 265 --FLOAT
-	Linea numero: 3 token 270 --ID
-	Linea numero: 3 token 41 --)
-	Linea numero: 3 token 269 --NI
-	Linea numero: 3 token 61 --=
-	Linea numero: 3 token 276 --CTE
-	Linea numero: 3 token 123 --
-	Linea numero: 4 token 270 --ID
-	Linea numero: 4 token 61 --=
-	Linea numero: 4 token 270 --ID
-	Linea numero: 4 token 43 --+
-	Linea numero: 4 token 270 --ID
-	Linea numero: 4 token 59 --;
-	Linea numero: 5 token 125 --
-	Linea numero: 5 token 59 --;
-	Linea numero: 7 token 268 --PROC
-	Linea numero: 7 token 270 --ID
-	Linea numero: 7 token 40 --(
-	Linea numero: 7 token 265 --FLOAT
-	Linea numero: 7 token 270 --ID
-	Linea numero: 7 token 44 --,
-	Linea numero: 7 token 265 --FLOAT
-	Linea numero: 7 token 270 --ID
-	Linea numero: 7 token 44 --,
-	Linea numero: 7 token 271 --REF
-	Linea numero: 7 token 265 --FLOAT
-	Linea numero: 7 token 270 --ID
-	Linea numero: 7 token 41 --)
-	Linea numero: 7 token 269 --NI
-	Linea numero: 7 token 61 --=
-	Linea numero: 7 token 276 --CTE
-	Linea numero: 7 token 123 --
-	Linea numero: 8 token 270 --ID
-	Linea numero: 8 token 61 --=
-	Linea numero: 8 token 276 --CTE
-	Linea numero: 8 token 45 ---
-	Linea numero: 8 token 270 --ID
-	Linea numero: 8 token 59 --;
-	Linea numero: 9 token 270 --ID
-	Linea numero: 9 token 61 --=
-	Linea numero: 9 token 270 --ID
-	Linea numero: 9 token 42 --*
-	Linea numero: 9 token 270 --ID
-	Linea numero: 9 token 59 --;
-	Linea numero: 10 token 125 --
-	Linea numero: 10 token 59 --;
-	Linea numero: 12 token 268 --PROC
-	Linea numero: 12 token 270 --ID
-	Linea numero: 12 token 40 --(
-	Linea numero: 12 token 41 --)
-	Linea numero: 12 token 269 --NI
-	Linea numero: 12 token 61 --=
-	Linea numero: 12 token 276 --CTE
-	Linea numero: 12 token 123 --
-	Linea numero: 13 token 260 --OUT
-	Linea numero: 13 token 40 --(
-	Linea numero: 14 token 277 --CADENA
-	Linea numero: 14 token 41 --)
-	Linea numero: 14 token 59 --;
-	Linea numero: 15 token 125 --
-	Linea numero: 15 token 59 --;
-	Linea numero: 17 token 270 --ID
-	Linea numero: 17 token 61 --=
-	Linea numero: 17 token 276 --CTE
-	Linea numero: 17 token 59 --;
-	Linea numero: 18 token 270 --ID
-	Linea numero: 18 token 61 --=
-	Linea numero: 18 token 45 ---
-	Linea numero: 18 token 276 --CTE
-	Linea numero: 18 token 59 --;
-	Linea numero: 19 token 266 --WHILE
-	Linea numero: 19 token 40 --(
-	Linea numero: 19 token 270 --ID
-	Linea numero: 19 token 62 -->
-	Linea numero: 19 token 270 --ID
-	Linea numero: 19 token 41 --)
-	Linea numero: 19 token 267 --LOOP
-	Linea numero: 19 token 123 --
-	Linea numero: 20 token 257 --IF
-	Linea numero: 20 token 40 --(
-	Linea numero: 20 token 270 --ID
-	Linea numero: 20 token 275 --<=
-	Linea numero: 20 token 270 --ID
-	Linea numero: 20 token 41 --)
-	Linea numero: 20 token 123 --
-	Linea numero: 21 token 270 --ID
-	Linea numero: 21 token 40 --(
-	Linea numero: 21 token 270 --ID
-	Linea numero: 21 token 58 --:
-	Linea numero: 21 token 270 --ID
-	Linea numero: 21 token 44 --,
-	Linea numero: 21 token 270 --ID
-	Linea numero: 21 token 58 --:
-	Linea numero: 21 token 270 --ID
-	Linea numero: 21 token 44 --,
-	Linea numero: 21 token 270 --ID
-	Linea numero: 21 token 58 --:
-	Linea numero: 21 token 270 --ID
-	Linea numero: 21 token 41 --)
-	Linea numero: 21 token 59 --;
-	Linea numero: 22 token 125 --
-	Linea numero: 22 token 263 --ELSE
-	Linea numero: 22 token 123 --
-	Linea numero: 23 token 270 --ID
-	Linea numero: 23 token 40 --(
-	Linea numero: 23 token 270 --ID
-	Linea numero: 23 token 58 --:
-	Linea numero: 23 token 270 --ID
-	Linea numero: 23 token 44 --,
-	Linea numero: 23 token 270 --ID
-	Linea numero: 23 token 58 --:
-	Linea numero: 23 token 270 --ID
-	Linea numero: 23 token 44 --,
-	Linea numero: 23 token 270 --ID
-	Linea numero: 23 token 58 --:
-	Linea numero: 23 token 270 --ID
-	Linea numero: 23 token 41 --)
-	Linea numero: 23 token 59 --;
-	Linea numero: 24 token 125 --
-	Linea numero: 24 token 259 --END_IF
-	Linea numero: 24 token 59 --;
-	Linea numero: 25 token 260 --OUT
-	Linea numero: 25 token 40 --(
-	Linea numero: 25 token 277 --CADENA
-	Linea numero: 25 token 41 --)
-	Linea numero: 25 token 59 --;
-	Linea numero: 26 token 125 --
-	Linea numero: 26 token 59 --;
-	Linea numero: 27 token 270 --ID
-	Linea numero: 27 token 40 --(
-	Linea numero: 27 token 41 --)
-	Linea numero: 27 token 59 --;
-	Linea numero: 28 token 0 --FIN DE ARCHIVO
+Errores Semanticos: 
 
-Estructuras detectadas en el codigo fuente: 
-	Linea numero: 1 --Sentencia declaracion variables.
-	Linea numero: 4 --Sentencia asignacion variable.
-	Linea numero: 5 --Sentencia declaracion procedimiento con parametros.
-	Linea numero: 8 --Sentencia asignacion variable.
-	Linea numero: 9 --Sentencia asignacion variable.
-	Linea numero: 10 --Sentencia declaracion procedimiento con parametros.
-	Linea numero: 14 --Sentencia imprimir por pantalla.
-	Linea numero: 15 --Sentencia declaracion procedimiento sin parametros.
-	Linea numero: 17 --Sentencia asignacion variable.
-	Linea numero: 18 --Sentencia asignacion variable.
-	Linea numero: 21 --Invocacion a procedimiento con parametros.
-	Linea numero: 23 --Invocacion a procedimiento con parametros.
-	Linea numero: 24 --Sentencia IF con bloque ELSE.
-	Linea numero: 25 --Sentencia imprimir por pantalla.
-	Linea numero: 26 --Sentencia WHILE LOOP.
-	Linea numero: 27 --Invocacion a procedimiento sin parametros.
-	Linea numero: 28 --Fin de programa.
 
 Contenido de la tabla de simbolos: 
-Lexema: suma
-	Atributo: Tipo   Valor: ID
+Lexema: a@main@procedimiento
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
 	Atributo: Cantidad   Valor: 1
-Lexema: a
-	Atributo: Tipo   Valor: ID
-	Atributo: Cantidad   Valor: 1
-Lexema: res
-	Atributo: Tipo   Valor: ID
-	Atributo: Cantidad   Valor: 1
-Lexema: b
-	Atributo: Tipo   Valor: ID
-	Atributo: Cantidad   Valor: 1
-Lexema: c
-	Atributo: Tipo   Valor: ID
-	Atributo: Cantidad   Valor: 1
-Lexema: save
-	Atributo: Tipo   Valor: ID
-	Atributo: Cantidad   Valor: 1
-Lexema: -13.
+Lexema: x@main@procedimiento
+	Atributo: Uso   Valor: PARAMETRO
 	Atributo: Tipo   Valor: FLOAT
 	Atributo: Cantidad   Valor: 1
-Lexema: producto
-	Atributo: Tipo   Valor: ID
+	Atributo: Pasaje   Valor: COPIA-VALOR
+Lexema: b@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
 	Atributo: Cantidad   Valor: 1
-Lexema: 12.
+Lexema: b@main@procedimiento
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: a@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: z@main@procedimiento
+	Atributo: Uso   Valor: PARAMETRO
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+	Atributo: Pasaje   Valor: REFERENCIA
+	Atributo: DIR b   Valor: {Uso=VARIABLE, Tipo=LONGINT, Cantidad=1}
+Lexema: w@main
+	Atributo: Uso   Valor: VARIABLE
 	Atributo: Tipo   Valor: FLOAT
 	Atributo: Cantidad   Valor: 1
+Lexema: 1
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: 2
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: 3
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 2
 Lexema: 4
 	Atributo: Tipo   Valor: LONGINT
 	Atributo: Cantidad   Valor: 1
-Lexema: 4.
+Lexema: 2.0
 	Atributo: Tipo   Valor: FLOAT
 	Atributo: Cantidad   Valor: 1
-Lexema: "resultado"
-	Atributo: Tipo   Valor: CADENA
+Lexema: procedimiento@main@procedimiento@invocacion
+	Atributo: Uso   Valor: PROC
+	Atributo: Invocaciones   Valor: 1
+	Atributo: Tipo   Valor: PROC
 	Atributo: Cantidad   Valor: 1
-Lexema: resta
-	Atributo: Tipo   Valor: ID
+	Atributo: Llamadas   Valor: 1
+Lexema: procedimiento@main
+	Atributo: Uso   Valor: PROC
+	Atributo: Invocaciones   Valor: 3
+	Atributo: Tipo   Valor: PROC
+	Atributo: Parametros   Valor: [x, z]
 	Atributo: Cantidad   Valor: 1
-Lexema: "GUARDANDO resultado
-	del archivo."
-	Atributo: Tipo   Valor: CADENA
-	Atributo: Cantidad   Valor: 1
-Lexema: 1.
+	Atributo: Llamadas   Valor: 1
+Lexema: c@main@procedimiento
+	Atributo: Uso   Valor: VARIABLE
 	Atributo: Tipo   Valor: FLOAT
 	Atributo: Cantidad   Valor: 1
-Lexema: 0.
-	Atributo: Tipo   Valor: FLOAT
+Lexema: invocacion@main@procedimiento
+	Atributo: Uso   Valor: PROC
+	Atributo: Invocaciones   Valor: 2
+	Atributo: Tipo   Valor: PROC
 	Atributo: Cantidad   Valor: 1
+	Atributo: Llamadas   Valor: 1
+Lexema: @aux1
+	Atributo: Uso   Valor: AUXILIAR
+	Atributo: Tipo   Valor: FLOAT
+Lexema: @aux0
+	Atributo: Uso   Valor: AUXILIAR
+	Atributo: Tipo   Valor: FLOAT
+
+Cantidad de estructuras de la lista de simbolos: 4
+
+VALOR POLACA [0]: 3
+VALOR POLACA [1]: a@main
+VALOR POLACA [2]: =
+VALOR POLACA [3]: 4
+VALOR POLACA [4]: b@main
+VALOR POLACA [5]: =
+VALOR POLACA [6]: 2.0
+VALOR POLACA [7]: w@main
+VALOR POLACA [8]: =
+VALOR POLACA [9]: PROC
+VALOR POLACA [10]: procedimiento@main
+VALOR POLACA [11]: z
+VALOR POLACA [12]: b@main
+VALOR POLACA [13]: :
+VALOR POLACA [14]: x
+VALOR POLACA [15]: w@main
+VALOR POLACA [16]: :
+VALOR POLACA [17]: INV
+
+VALOR POLACA [18]: procedimiento@main@procedimiento@invocacion
+VALOR POLACA [19]: a@main@procedimiento
+VALOR POLACA [20]: b@main@procedimiento
+VALOR POLACA [21]: =
+VALOR POLACA [22]: END_PROC
+
+VALOR POLACA [23]: invocacion@main@procedimiento
+VALOR POLACA [24]: a@main@procedimiento
+VALOR POLACA [25]: b@main@procedimiento
+VALOR POLACA [26]: =
+VALOR POLACA [27]: PROC
+VALOR POLACA [28]: procedimiento@main@procedimiento@invocacion
+VALOR POLACA [29]: INV
+VALOR POLACA [30]: END_PROC
+
+VALOR POLACA [31]: procedimiento@main
+VALOR POLACA [32]: b@main@procedimiento
+VALOR POLACA [33]: a@main@procedimiento
+VALOR POLACA [34]: =
+VALOR POLACA [35]: x@main@procedimiento
+VALOR POLACA [36]: z@main@procedimiento
+VALOR POLACA [37]: *
+VALOR POLACA [38]: c@main@procedimiento
+VALOR POLACA [39]: =
+VALOR POLACA [40]: PROC
+VALOR POLACA [41]: invocacion@main@procedimiento
+VALOR POLACA [42]: INV
+VALOR POLACA [43]: END_PROC

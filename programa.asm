@@ -16,37 +16,34 @@ MINIMO_NEGATIVO DQ -1.17549435e-38
 MAXIMO_POSITIVO DQ 3.40282347e38
 MAXIMO_NEGATIVO DQ -3.40282347e38
 @aux DQ ?
-_x1@main dd ?
-_Constante0 dd 2
+_a@main@procedimiento dd ?
+_x@main@procedimiento dd ?
 _b@main dd ?
-_Constante1 dd 4
-_Constante2 dd 5
+_b@main@procedimiento dd ?
 _a@main dd ?
-_Constante3 dd -5
-_Cadena0 db "conversion implicita simple", 0
-_x2@main dd ?
-_Constante4 dd -3.0f+23
-_c@main dd ?
+_z@main@procedimiento dd ?
+_w@main dd ?
+_Constante0 dd 1
+_Constante1 dd 2
+_Constante2 dd 3
+_Constante3 dd 4
+_Constante4 dd 2.0
+_c@main@procedimiento dd ?
+_@aux1 dd ?
 _@aux0 dd ?
 .code
 START:
-MOV EAX, _Constante1
-MOV _a@main, EAX
 MOV EAX, _Constante2
+MOV _a@main, EAX
+MOV EAX, _Constante3
 MOV _b@main, EAX
 MOV EAX, _Constante4
-MOV _x2@main, EAX
-MOV EAX, _a@main
-IMUL EAX, _b@main
-ADD EAX, _Constante3
-JO ERROR_OVERFLOW_SUMA
-MOV _c@main, EAX
-invoke MessageBox, NULL, addr _Cadena0, addr  _Cadena0, MB_OK
-MOV EAX, _Constante0
-MOV _@aux0, EAX
-FILD _@aux0
-FSTP _@aux0
-MOV _x1@main, EAX
+MOV _w@main, EAX
+MOV EAX, [_b@main]
+MOV _z@main@procedimiento, EAX
+MOV EAX, _w@main
+MOV _x@main@procedimiento, EAX
+CALL procedimiento@main
 invoke ExitProcess, 0
 __etiquetaErrorOverflow__:
 invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
@@ -89,3 +86,27 @@ FSTSW AX
 SAHF
 JE FLOAT_VALIDO
 JMP __etiquetaErrorOverflow__
+procedimiento@main@procedimiento@invocacion:
+MOV EAX, _a@main@procedimiento
+MOV _b@main@procedimiento, EAX
+RET
+invocacion@main@procedimiento:
+MOV EAX, _a@main@procedimiento
+MOV _b@main@procedimiento, EAX
+CALL procedimiento@main@procedimiento@invocacion
+RET
+procedimiento@main:
+MOV EAX, _b@main@procedimiento
+MOV _a@main@procedimiento, EAX
+MOV EAX, _z@main@procedimiento
+MOV _@aux0, EAX
+FILD _@aux0
+FSTP _@aux0
+FLD _x@main@procedimiento
+FLD _@aux0
+FMUL 
+FSTP _@aux1
+MOV EAX, _@aux1
+MOV _c@main@procedimiento, EAX
+CALL invocacion@main@procedimiento
+RET

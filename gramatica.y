@@ -867,7 +867,8 @@ public String getErrores(){
 public boolean esCompilable() {
   return this.erroresSemanticos.size() == 0 &&
          this.erroresSintacticos.size() == 0 &&
-         this.erroresParser.size() == 0;
+         this.erroresParser.size() == 0 &&
+         this.analizadorLexico.getErrores().size() == 0;
 }
 
 public void saveFile() {
@@ -882,7 +883,7 @@ public void saveFile() {
 
     try {
 			FileWriter salida = new FileWriter(out+"/out.txt");
-
+            salida.write("Errores." + "\n");
 			salida.write(this.getErrores() + "\n");
 
 			/*
@@ -963,7 +964,6 @@ public static void main(String[] args) {
   Parser parser = new Parser();
   Compilador compilador = new Compilador(parser);
   parser.yyparse();
-  System.out.println(parser.getErrores());
 
   ArrayList<String> codigoAssembler = null;
   if (parser.esCompilable()){
@@ -978,26 +978,32 @@ public static void main(String[] args) {
       }
     }
     codigoAssembler = compilador.getAssembler();
-  }
-
-  //Puede que se agreguen nuevos errores semanticos en la generacion del codigo.
-  if (parser.esCompilable()) {
-    AssemblerToTXT(codigoAssembler);
     System.out.println();
-    System.out.println("Contenido de la tabla de simbolos: ");
-    System.out.println(parser.getAnalizadorLexico().getDatosTabla_simbolos());
-
+    System.out.println(parser.getErrores());
     System.out.println();
-    Scanner in = new Scanner(System.in);
-    System.out.println("Desea guardar la salida en un documento de texto? Y/N");
-    String rta = in.nextLine();
-    if (rta.equals("Y") || rta.equals("y")) {
-      parser.saveFile();
-    }
-    in.close();
+    //Puede que se agreguen nuevos errores semanticos en la generacion del codigo.
+    if (parser.esCompilable()) {
+      AssemblerToTXT(codigoAssembler);
+      System.out.println();
+      System.out.println("Contenido de la tabla de simbolos: ");
+      System.out.println(parser.getAnalizadorLexico().getDatosTabla_simbolos());
+      Scanner in = new Scanner(System.in);
+      System.out.println("Desea guardar la salida en un documento de texto? Y/N");
+      String rta = in.nextLine();
+      if (rta.equals("Y") || rta.equals("y")) {
+        parser.saveFile();
+      }
+      in.close();
 //  parser.mostrar_tokens();
 //  parser.mostrar_estructuras();
-  } else{
+    } else{
+      System.out.println("No se pudo generar codigo maquina. El codigo contiene errores");
+      System.out.println();
+    }
+  }else{
     System.out.println("No se pudo generar codigo maquina. El codigo contiene errores");
+    System.out.println();
+    System.out.println(parser.getErrores());
+    System.out.println();
   }
 }

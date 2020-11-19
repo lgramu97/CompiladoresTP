@@ -896,10 +896,11 @@ public String getErrores(){
 public boolean esCompilable() {
   return this.erroresSemanticos.size() == 0 &&
          this.erroresSintacticos.size() == 0 &&
-         this.erroresParser.size() == 0;
+         this.erroresParser.size() == 0 &&
+         this.analizadorLexico.getErrores().size() == 0;
 }
 
-public void saveFile() {
+public void saveFile(String polacaInversa) {
 	 JFileChooser jchooser=new JFileChooser();
 	 File workingDirectory = new File(System.getProperty("user.dir"));
 	 jchooser.setCurrentDirectory(workingDirectory);
@@ -911,7 +912,7 @@ public void saveFile() {
 
     try {
 			FileWriter salida = new FileWriter(out+"/out.txt");
-
+            salida.write("Errores." + "\n");
 			salida.write(this.getErrores() + "\n");
 
 			/*
@@ -929,22 +930,15 @@ public void saveFile() {
 			salida.write(this.getAnalizadorLexico().getDatosTabla_simbolos());
 
             ArrayList<ArrayList<SimboloPolaca>> lista = this.getListaSimboloPolaca();
+            salida.write("\n");
             salida.write("Cantidad de estructuras de la lista de simbolos: " + lista.size() + "\n");
-            int c = 0;
-            for (ArrayList<SimboloPolaca> simboloPolacas : lista) {
-                salida.write("\n");
-                for (SimboloPolaca simboloPolaca : simboloPolacas) {
-                    salida.write("VALOR POLACA [" + c + "]: " + simboloPolaca.getSimbolo()+ "\n");
-                    c++;
-                }
-            }
+            salida.write(polacaInversa);
 
 			salida.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	 }
 }
 
@@ -992,6 +986,7 @@ public static void main(String[] args) {
   Parser parser = new Parser();
   Compilador compilador = new Compilador(parser);
   parser.yyparse();
+  StringBuilder polacaInversaTxt = new StringBuilder();
 
   ArrayList<String> codigoAssembler = null;
   if (parser.esCompilable()){
@@ -1000,8 +995,10 @@ public static void main(String[] args) {
     int c = 0;
     for (ArrayList<SimboloPolaca> simboloPolacas : lista) {
       System.out.println();
+      polacaInversaTxt.append("\n");
       for (SimboloPolaca simboloPolaca : simboloPolacas) {
         System.out.println("VALOR POLACA [" + c + "]: " + simboloPolaca.getSimbolo());
+        polacaInversaTxt.append("VALOR POLACA [").append(c).append("]: ").append(simboloPolaca.getSimbolo()).append("\n");
         c++;
       }
     }
@@ -1019,7 +1016,7 @@ public static void main(String[] args) {
       System.out.println("Desea guardar la salida en un documento de texto? Y/N");
       String rta = in.nextLine();
       if (rta.equals("Y") || rta.equals("y")) {
-        parser.saveFile();
+        parser.saveFile(polacaInversaTxt.toString());
       }
       in.close();
 //  parser.mostrar_tokens();
@@ -1035,7 +1032,7 @@ public static void main(String[] args) {
     System.out.println();
   }
 }
-//#line 962 "Parser.java"
+//#line 968 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1873,7 +1870,7 @@ case 115:
         yyval = new ParserVal("-"+val_peek(0).sval);
     }
 break;
-//#line 1795 "Parser.java"
+//#line 1801 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
