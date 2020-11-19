@@ -554,6 +554,7 @@ Caso de prueba:
     WHILE (a > b) LOOP {
         x = 3_l;
     };
+
 Salida ASM:
     .data
     _Constante0 dd 3
@@ -581,6 +582,7 @@ Caso de prueba:
             OUT("adentro if");
         } END_IF;
     };
+
 Salida ASM:
     .data
     _Cadena0 db "adentro if", 0
@@ -606,19 +608,425 @@ Salida ASM:
 ----------------------------------------------------------
 %% Instruccion:
 Caso de prueba:
-    
+    FLOAT x1; 
+    x1 = 2_l; 
+
 Salida ASM:
-    
+    .data
+    _x1@main dd ?
+    _Constante0 dd 2
+    _@aux0 dd ?
+    .code
+    START:
+    MOV EAX, _Constante0
+    MOV _@aux0, EAX
+    FILD _@aux0
+    FSTP _@aux0
+    MOV EAX, _@aux0
+    MOV _x1@main, EAX
+    invoke ExitProcess, 0
+    END START
 ----------------------------------------------------------
 %% Instruccion:
 Caso de prueba:
-    
+    LONGINT c;
+    FLOAT x1, x2 ; 
+    x1 = x2 + c; 
+
 Salida ASM:
-    
+    .data
+    ERROR_OVERFLOW_SUMA db "Error: overflow en suma."
+    MINIMO_POSITIVO DQ 1.17549435e-38
+    MINIMO_NEGATIVO DQ -1.17549435e-38
+    MAXIMO_POSITIVO DQ 3.40282347e38
+    MAXIMO_NEGATIVO DQ -3.40282347e38
+    @aux DQ ?
+    _x1@main dd ?
+    _x2@main dd ?
+    _c@main dd ?
+    _@aux1 dd ?
+    _@aux0 dd ?
+    .code
+    START:
+    MOV EAX, _c@main
+    MOV _@aux0, EAX
+    FILD _@aux0
+    FSTP _@aux0
+    FLD _x2@main
+    FADD _@aux0
+    FST @aux
+    CALL OVERFLOW_FLOAT
+    FSTP _@aux1
+    MOV EAX, _@aux1
+    MOV _x1@main, EAX
+    invoke ExitProcess, 0
+    __etiquetaErrorOverflow__:
+    invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
+    invoke ExitProcess, 0
+   END 
+
 ----------------------------------------------------------
 %% Instruccion:
 Caso de prueba:
+    LONGINT c;
+    FLOAT x1, x2 ; 
+    x1 = c + x2;
+
+Salida ASM:
+    .data
+    ERROR_OVERFLOW_SUMA db "Error: overflow en suma."
+    FLOAT_CERO DQ 0.0
+    MINIMO_POSITIVO DQ 1.17549435e-38
+    MINIMO_NEGATIVO DQ -1.17549435e-38
+    MAXIMO_POSITIVO DQ 3.40282347e38
+    MAXIMO_NEGATIVO DQ -3.40282347e38
+    @aux DQ ?
+    _x1@main dd ?
+    _x2@main dd ?
+    _c@main dd ?
+    _@aux1 dd ?
+    _@aux0 dd ?
+    .code
+    START:
+    MOV EAX, _c@main
+    MOV _@aux0, EAX
+    FILD _@aux0
+    FSTP _@aux0
+    FLD _@aux0
+    FADD _x2@main
+    FST @aux
+    CALL OVERFLOW_FLOAT
+    FSTP _@aux1
+    MOV EAX, _@aux1
+    MOV _x1@main, EAX
+    invoke ExitProcess, 0
+    __etiquetaErrorOverflow__:
+    invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
+    invoke ExitProcess, 0
+    END START
+
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    LONGINT a, b , c;
+    FLOAT x1, x2 ; 
+    a = 4_l;
+    b = 5_l;
+    x2 = -3.0f+23;
+    c = a * b + -5_l;
+
+OUT("conversion implicita longint en suma y division");
+x1 = a / 2.0 + b ;
+OUT("finalizo division"); 
+Salida ASM:
+    .data
+    ERROR_DIVISION_CERO db "Error: no es posible divir por cero."
+    ERROR_OVERFLOW_SUMA db "Error: overflow en suma."
+    FLOAT_CERO DQ 0.0
+    MINIMO_POSITIVO DQ 1.17549435e-38
+    MINIMO_NEGATIVO DQ -1.17549435e-38
+    MAXIMO_POSITIVO DQ 3.40282347e38
+    MAXIMO_NEGATIVO DQ -3.40282347e38
+    @aux DQ ?
+    _x1@main dd ?
+    _b@main dd ?
+    _a@main dd ?
+    _Constante0 dd -5
+    _x2@main dd ?
+    _Cadena0 db "finalizo division", 0
+    _Constante1 dd -3.0f+23
+    _Cadena1 db "conversion implicita longint en suma y division", 0
+    _Constante2 dd 4
+    _Constante3 dd 2.0
+    _Constante4 dd 5
+    _@aux3 dd ?
+    _@aux2 dd ?
+    _c@main dd ?
+    _@aux1 dd ?
+    _@aux0 dd ?
+    .code
+    START:
+    MOV EAX, _Constante2
+    MOV _a@main, EAX
+    MOV EAX, _Constante4
+    MOV _b@main, EAX
+    MOV EAX, _Constante1
+    MOV _x2@main, EAX
+    MOV EAX, _a@main
+    IMUL EAX, _b@main
+    ADD EAX, _Constante0
+    JO ERROR_OVERFLOW_SUMA
+    MOV _c@main, EAX
+    invoke MessageBox, NULL, addr _Cadena1, addr  _Cadena1, MB_OK
+    MOV EAX, _a@main
+    MOV _@aux0, EAX
+    FILD _@aux0
+    FSTP _@aux0
+    FLD _@aux0
+    FLD _Constante3
+    FLD FLOAT_CERO
+    FCOMP
+    FSTSW AX
+    SAHF
+    JE ERROR_DIVISION_CERO
+    FDIV
+    FSTP _@aux1
+    MOV EAX, _b@main
+    MOV _@aux2, EAX
+    FILD _@aux2
+    FSTP _@aux2
+    FLD _@aux1
+    FADD _@aux2
+    FST @aux
+    CALL OVERFLOW_FLOAT
+    FSTP _@aux3
+    MOV EAX, _@aux3
+    MOV _x1@main, EAX
+    invoke MessageBox, NULL, addr _Cadena0, addr  _Cadena0, MB_OK
+    invoke ExitProcess, 0
+    __etiquetaErrorOverflow__:
+    invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
+    invoke ExitProcess, 0
+    __etiquetaErrorDivCero__:
+    invoke MessageBox, NULL, addr ERROR_DIVISION_CERO, addr ERROR_DIVISION_CERO, MB_OK
+    invoke ExitProcess, 0
+    END START
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    LONGINT a,b;
+    a = b; 
+    PROC procedimiento() NI = 3_l {
+        LONGINT a,b;
+        a = b;
+    };
+    procedimiento();
+
+Salida ASM:
+    .data
+    _a@main@procedimiento dd ?
+    _Constante0 dd 3
+    _b@main dd ?
+    _b@main@procedimiento dd ?
+    _a@main dd ?
+    .code
+    START:
+    MOV EAX, _b@main
+    MOV _a@main, EAX
+    CALL procedimiento@main
+    invoke ExitProcess, 0
+    END START
+    procedimiento@main:
+    MOV EAX, _b@main@procedimiento
+    MOV _a@main@procedimiento, EAX
+    RET
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    LONGINT a,b;
+    a = b; 
+    PROC procedimiento() NI = 3_l {
+        LONGINT a,b;
+        a = b;
+        PROC invocacion() NI = 2_l {
+            b = a;	
+            PROC procedimiento() NI = 1_l {
+                b = a;
+            };
+            procedimiento();
+        };
+        invocacion();
+    };
+    procedimiento();
+
+Salida ASM:
+    .data
+    _a@main@procedimiento dd ?
+    _Constante0 dd 1
+    _Constante1 dd 2
+    _Constante2 dd 3
+    _b@main dd ?
+    _b@main@procedimiento dd ?
+    _a@main dd ?
+    .code
+    START:
+    MOV EAX, _b@main
+    MOV _a@main, EAX
+    CALL procedimiento@main
+    invoke ExitProcess, 0
+    END START
+    procedimiento@main@procedimiento@invocacion:
+    MOV EAX, _a@main@procedimiento
+    MOV _b@main@procedimiento, EAX
+    RET
+    invocacion@main@procedimiento:
+    MOV EAX, _a@main@procedimiento
+    MOV _b@main@procedimiento, EAX
+    CALL procedimiento@main@procedimiento@invocacion
+    RET
+    procedimiento@main:
+    MOV EAX, _b@main@procedimiento
+    MOV _a@main@procedimiento, EAX
+    CALL invocacion@main@procedimiento
+    RET
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    LONGINT a,b;
+    a = 3_l; 
+    b = 4_l;
+    FLOAT w;
+    w = 2.0;
+    PROC procedimiento(FLOAT x, LONGINT z) NI = 3_l {
+        LONGINT a,b;
+        FLOAT c;
+        a = b;
+        c = x * z;
+        PROC invocacion() NI = 2_l {
+            b = a;	
+            PROC procedimiento() NI = 1_l {
+                b = a;
+            };
+            procedimiento();
+        };
+        invocacion();
+    };
+procedimiento(z:b,x:w);
+
+Salida ASM:
+    .data
+    _a@main@procedimiento dd ?
+    _x@main@procedimiento dd ?
+    _b@main dd ?
+    _b@main@procedimiento dd ?
+    _a@main dd ?
+    _z@main@procedimiento dd ?
+    _w@main dd ?
+    _Constante0 dd 1
+    _Constante1 dd 2
+    _Constante2 dd 3
+    _Constante3 dd 4
+    _Constante4 dd 2.0
+    _c@main@procedimiento dd ?
+    _@aux1 dd ?
+    _@aux0 dd ?
+    .code
+    START:
+    MOV EAX, _Constante2
+    MOV _a@main, EAX
+    MOV EAX, _Constante3
+    MOV _b@main, EAX
+    MOV EAX, _Constante4
+    MOV _w@main, EAX
+    MOV EAX, _b@main
+    MOV _z@main@procedimiento, EAX
+    MOV EAX, _w@main
+    MOV _x@main@procedimiento, EAX
+    CALL procedimiento@main
+    invoke ExitProcess, 0
+    END START
+    procedimiento@main@procedimiento@invocacion:
+    MOV EAX, _a@main@procedimiento
+    MOV _b@main@procedimiento, EAX
+    RET
+    invocacion@main@procedimiento:
+    MOV EAX, _a@main@procedimiento
+    MOV _b@main@procedimiento, EAX
+    CALL procedimiento@main@procedimiento@invocacion
+    RET
+    procedimiento@main:
+    MOV EAX, _b@main@procedimiento
+    MOV _a@main@procedimiento, EAX
+    MOV EAX, _z@main@procedimiento
+    MOV _@aux0, EAX
+    FILD _@aux0
+    FSTP _@aux0
+    FLD _x@main@procedimiento
+    FLD _@aux0
+    FMUL 
+    FSTP _@aux1
+    MOV EAX, _@aux1
+    MOV _c@main@procedimiento, EAX
+    CALL invocacion@main@procedimiento
+    RET
+----------------------------------------------------------
+%% Instruccion:
+Caso de prueba:
+    LONGINT a,b;
+    a = 3_l; 
+    b = 4_l;
+    FLOAT w;
+    w = 2.0;
+    PROC procedimiento(FLOAT x, REF LONGINT z) NI = 3_l {
+        LONGINT a,b;
+        FLOAT c;
+        a = b;
+        c = x * z;
+        PROC invocacion() NI = 2_l {
+            b = a;	
+            PROC procedimiento() NI = 1_l {
+                b = a;
+            };
+            procedimiento();
+        };
+        invocacion();
+    };
+    procedimiento(z:b,x:w);
     
 Salida ASM:
-    
+    .data
+    _a@main@procedimiento dd ?
+    _x@main@procedimiento dd ?
+    _b@main dd ?
+    _b@main@procedimiento dd ?
+    _a@main dd ?
+    _z@main@procedimiento dd ?
+    _w@main dd ?
+    _Constante0 dd 1
+    _Constante1 dd 2
+    _Constante2 dd 3
+    _Constante3 dd 4
+    _Constante4 dd 2.0
+    _c@main@procedimiento dd ?
+    _@aux1 dd ?
+    _@aux0 dd ?
+    .code
+    START:
+    MOV EAX, _Constante2
+    MOV _a@main, EAX
+    MOV EAX, _Constante3
+    MOV _b@main, EAX
+    MOV EAX, _Constante4
+    MOV _w@main, EAX
+    MOV EAX, [_b@main]
+    MOV _z@main@procedimiento, EAX
+    MOV EAX, _w@main
+    MOV _x@main@procedimiento, EAX
+    CALL procedimiento@main
+    invoke ExitProcess, 0
+    END START
+    procedimiento@main@procedimiento@invocacion:
+    MOV EAX, _a@main@procedimiento
+    MOV _b@main@procedimiento, EAX
+    RET
+    invocacion@main@procedimiento:
+    MOV EAX, _a@main@procedimiento
+    MOV _b@main@procedimiento, EAX
+    CALL procedimiento@main@procedimiento@invocacion
+    RET
+    procedimiento@main:
+    MOV EAX, _b@main@procedimiento
+    MOV _a@main@procedimiento, EAX
+    MOV EAX, _z@main@procedimiento
+    MOV _@aux0, EAX
+    FILD _@aux0
+    FSTP _@aux0
+    FLD _x@main@procedimiento
+    FLD _@aux0
+    FMUL 
+    FSTP _@aux1
+    MOV EAX, _@aux1
+    MOV _c@main@procedimiento, EAX
+    CALL invocacion@main@procedimiento
+    RET
 ----------------------------------------------------------

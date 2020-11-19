@@ -50,6 +50,7 @@ public class Compilador {
   public static final String MINIMO_POSITIVO = "1.17549435e-38";
   public static final String MINIMO_NEGATIVO = "-" + MINIMO_POSITIVO;
   public static final String AUXILIAR = "AUXILIAR";
+  public static final String PASAJE = "Pasaje";
 
 
   public Compilador(Parser parser) {
@@ -197,11 +198,12 @@ public class Compilador {
     return getTipo(op).equals(FLOAT);
   }
 
-  public boolean checkTipos(SimboloPolaca op1, SimboloPolaca op2) {
+  public boolean checkTipos(SimboloPolaca op1, SimboloPolaca op2, boolean asig) {
     boolean op1IsFloat = isFloat(op1);
     System.out.println("OP1: " + op1.getSimbolo() + " FLOAT? " + op1IsFloat + " OP2 : " + op2.getSimbolo() + " FLOAT? " + isFloat(op2));
     if (op1IsFloat == isFloat(op2)) return false;
     // Conversiones implicita: sobre parametro real.
+    if (!asig) return true;
     if (op1IsFloat) return true;
     // error
     parser.addErrorSemantico("Conversion implicita no valida.");
@@ -268,7 +270,7 @@ public class Compilador {
         regs[i] = regs[reg];
         regs[i].setReg(i);
         regs[reg] = null;
-        break; // Si ya hice el swap salgo.
+        return; // Si ya hice el swap salgo.
       }
     }
   }
@@ -316,7 +318,7 @@ public class Compilador {
   }
 
   public void generateAsignacion(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2, boolean ref) {
-    if (checkTipos(op1, op2)) conversionImplicita(asm, op2);
+    if (checkTipos(op1, op2, true)) conversionImplicita(asm, op2);
     String reg;
     // op1 siempre es vble
     if (op2.isVble()) { // op2 es vble
@@ -497,9 +499,11 @@ public class Compilador {
   }
 
   public void declararProc(ArrayList<SimboloPolaca> polacaProc, Set<String> procsDeclarados) {
-    generateTag(procsAsm, polacaProc.get(0));
-    generarInstruccionesAsm(procsAsm, polacaProc, procsDeclarados);
-    procsAsm.add("RET");
+    ArrayList<String> procActual = new ArrayList<>();
+    generateTag(procActual, polacaProc.get(0));
+    generarInstruccionesAsm(procActual, polacaProc, procsDeclarados);
+    procActual.add("RET");
+    procsAsm.addAll(procActual);
   }
 
   public ArrayList<SimboloPolaca> findProc(String name) {
@@ -538,14 +542,19 @@ public class Compilador {
       SimboloPolaca paramFormal = pair.getValue0();
       SimboloPolaca paramReal = pair.getValue1();
       HashMap<String, Object> attrs = tablaSimbolos.get(paramFormal.getSimbolo());
-      boolean ref = attrs.get(TIPO).equals(REFERENCIA);
+      boolean ref = attrs.get(PASAJE).equals(REFERENCIA);
       generateAsignacion(asm, paramFormal, paramReal, ref);
     }
     asm.add("CALL " + nameProc);
   }
 
   public void generateCodeOperacion(Stack<SimboloPolaca> pilaEjecucion, char operacion, ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
-    if (checkTipos(op1, op2)) conversionImplicita(asm, op2);
+    if (checkTipos(op1, op2, false)) {
+      if (!isFloat(op1))
+        conversionImplicita(asm, op1);
+      else
+        conversionImplicita(asm, op2);
+    }
     switch (operacion) {
       case '+':
         generateCodeADD(asm, op1, op2);
@@ -641,19 +650,6 @@ public class Compilador {
               }
               pilaEjecucion.push(simbolo);
           }
-/*           if (simbolo.getSimbolo().charAt(0) == 'L') {
-            asm.add(simbolo.getSimbolo() + ":");
-            break;
-          }
-          // Apilo la constante -> obtengo variable del hash.
-          if (!isId(simbolo.getSimbolo()) && !isAddress(polaca, i+1) && simbolo.getSimbolo().charAt(0) != '"'){
-            // FIXME: Chequear que no entre nunca por el caso de ':', creo que lo sacamos ya.
-            // Por el default entra con tags (L), con ids, y con constantes.
-            String variable = numbers.get(simbolo.getSimbolo());
-            simbolo.setCte(simbolo.getSimbolo()); // number
-            simbolo.setSimbolo(variable); // _Constante
-          }
-          pilaEjecucion.push(simbolo); */
       }
     }
   }
@@ -695,7 +691,13 @@ public class Compilador {
 
   public String nameMangling(String proc) {
     // Busca desde el ambito actual hacia atra s.
-    return proc.substring(proc.indexOf('@'));
+    String[] names = proc.split("@");
+    StringBuilder out = new StringBuilder();
+    for (int i = 1; i < names.length ; i++){
+      out.append("@").append(names[i]);
+    }
+    out.append("@").append(names[0]);
+    return out.toString();
   }
 
   public String crearVarAux() {
@@ -711,7 +713,6 @@ public class Compilador {
 
   public void conversionImplicita(ArrayList<String> asm, SimboloPolaca operando) {
     String varAux = crearVarAux();
-    operando.setReg(-1); // es una vble
     String reg;
     if (!operando.isVble()) { // operando es un reg
       reg = getReg(operando.getReg());
@@ -723,6 +724,7 @@ public class Compilador {
     asm.add("MOV " + operando.getSimboloASM() + ", " + reg);
     asm.add("FILD " + operando.getSimboloASM());
     asm.add("FSTP " + operando.getSimboloASM());
+    freeReg(operando); // es una vble
   }
 
   // "hjola", _Cadena1
