@@ -55,7 +55,7 @@ Salida ASM:
     FCOMP
     FSTSW AX
     SAHF
-    JE ERROR_DIVISION_CERO
+    JE __etiquetaErrorDivCero__
     FDIV
     FSTP _@aux0
     MOV EAX, _@aux0
@@ -84,7 +84,7 @@ Salida ASM:
     MOV EAX, _b@main
     CDQ
     CMP EBX , 0
-    JE ERROR_DIVISION_CERO
+    JE __etiquetaErrorDivCero__
     IDIV EBX
     MOV _a@main, EAX
     invoke ExitProcess, 0
@@ -163,7 +163,6 @@ Salida ASM:
     __etiquetaErrorOverflow__:
     invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
     invoke ExitProcess, 0
-    END START
     FLOAT_VALIDO:
     RET
     OVERFLOW_FLOAT:
@@ -198,6 +197,8 @@ Salida ASM:
     SAHF
     JE FLOAT_VALIDO
     JMP __etiquetaErrorOverflow__
+    END START
+
 ----------------------------------------------------------
 %% Instruccion:
 Caso de prueba:
@@ -213,7 +214,7 @@ Salida ASM:
     START:
     MOV EAX, _b@main
     ADD EAX, _c@main
-    JO ERROR_OVERFLOW_SUMA
+    JO __etiquetaErrorOverflow__
     MOV _a@main, EAX
     invoke ExitProcess, 0
     END START
@@ -284,7 +285,7 @@ Salida ASM:
     START:
     MOV EAX, _Constante0
     ADD EAX, _b@main
-    JO ERROR_OVERFLOW_SUMA
+    JO __etiquetaErrorOverflow__
     MOV _a@main, EAX
     invoke ExitProcess, 0
     END START
@@ -310,7 +311,7 @@ Salida ASM:
     FCOMP
     FSTSW AX
     SAHF
-    JE ERROR_DIVISION_CERO
+    JE __etiquetaErrorDivCero__
     FDIV
     FSTP _@aux0
     MOV EAX, _@aux0
@@ -435,9 +436,9 @@ Salida ASM:
     MOV _x2@main, EAX
     MOV EAX, _x1@main
     ADD EAX, _x2@main
-    JO ERROR_OVERFLOW_SUMA
+    JO __etiquetaErrorOverflow__
     ADD EAX, _Constante2
-    JO ERROR_OVERFLOW_SUMA
+    JO __etiquetaErrorOverflow__
     MOV _x3@main, EAX
     invoke ExitProcess, 0
     __etiquetaErrorOverflow__:
@@ -477,7 +478,7 @@ Salida ASM:
     START:
     MOV EAX, _b@main
     ADD EAX, _Constante2
-    JO ERROR_OVERFLOW_SUMA
+    JO __etiquetaErrorOverflow__
     MOV _a@main, EAX
     invoke MessageBox, NULL, addr _Cadena0, addr  _Cadena0, MB_OK
     MOV EAX , _a@main
@@ -663,7 +664,7 @@ Salida ASM:
     __etiquetaErrorOverflow__:
     invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
     invoke ExitProcess, 0
-   END 
+    END START
 
 ----------------------------------------------------------
 %% Instruccion:
@@ -755,7 +756,7 @@ Salida ASM:
     MOV EAX, _a@main
     IMUL EAX, _b@main
     ADD EAX, _Constante0
-    JO ERROR_OVERFLOW_SUMA
+    JO __etiquetaErrorOverflow__
     MOV _c@main, EAX
     invoke MessageBox, NULL, addr _Cadena1, addr  _Cadena1, MB_OK
     MOV EAX, _a@main
@@ -768,7 +769,7 @@ Salida ASM:
     FCOMP
     FSTSW AX
     SAHF
-    JE ERROR_DIVISION_CERO
+    JE __etiquetaErrorDivCero__
     FDIV
     FSTP _@aux1
     MOV EAX, _b@main
@@ -815,11 +816,12 @@ Salida ASM:
     MOV _a@main, EAX
     CALL procedimiento@main
     invoke ExitProcess, 0
-    END START
     procedimiento@main:
     MOV EAX, _b@main@procedimiento
     MOV _a@main@procedimiento, EAX
     RET
+    END START
+
 ----------------------------------------------------------
 %% Instruccion:
 Caso de prueba:
@@ -854,7 +856,6 @@ Salida ASM:
     MOV _a@main, EAX
     CALL procedimiento@main
     invoke ExitProcess, 0
-    END START
     procedimiento@main@procedimiento@invocacion:
     MOV EAX, _a@main@procedimiento
     MOV _b@main@procedimiento, EAX
@@ -869,6 +870,7 @@ Salida ASM:
     MOV _a@main@procedimiento, EAX
     CALL invocacion@main@procedimiento
     RET
+    END START
 ----------------------------------------------------------
 %% Instruccion:
 Caso de prueba:
@@ -924,7 +926,6 @@ Salida ASM:
     MOV _x@main@procedimiento, EAX
     CALL procedimiento@main
     invoke ExitProcess, 0
-    END START
     procedimiento@main@procedimiento@invocacion:
     MOV EAX, _a@main@procedimiento
     MOV _b@main@procedimiento, EAX
@@ -949,6 +950,7 @@ Salida ASM:
     MOV _c@main@procedimiento, EAX
     CALL invocacion@main@procedimiento
     RET
+    END START
 ----------------------------------------------------------
 %% Instruccion:
 Caso de prueba:
@@ -1004,7 +1006,6 @@ Salida ASM:
     MOV _x@main@procedimiento, EAX
     CALL procedimiento@main
     invoke ExitProcess, 0
-    END START
     procedimiento@main@procedimiento@invocacion:
     MOV EAX, _a@main@procedimiento
     MOV _b@main@procedimiento, EAX
@@ -1029,4 +1030,5 @@ Salida ASM:
     MOV _c@main@procedimiento, EAX
     CALL invocacion@main@procedimiento
     RET
+    END START
 ----------------------------------------------------------

@@ -43,6 +43,7 @@ public class Compilador {
   public static final String ERROR_DIVISION_CERO = "ERROR_DIVISION_CERO";
   public static final String ERROR_OVERFLOW_SUMA = "ERROR_OVERFLOW_SUMA";
   public static final String ETIQUETA_OVERFLOW = "__etiquetaErrorOverflow__";
+  public static final String ETIQUETA_DIVISION_CERO = "__etiquetaErrorDivCero__";
   public static final String FLOAT_CERO = "FLOAT_CERO";
   public static final String INV = "INV";
   public static final String MAXIMO_POSITIVO = "3.40282347e38";
@@ -71,6 +72,7 @@ public class Compilador {
     asm.addAll(assemblerData);
     asm.addAll(assembler);
     asm.addAll(procsAsm);
+    asm.add("END START");
     return asm;
   }
 
@@ -82,7 +84,6 @@ public class Compilador {
 
   private void generateHeader() {
     assemblerHeader.add(".386");
-    assemblerHeader.add(".STACK 200h");
     assemblerHeader.add(".model flat, stdcall");
     assemblerHeader.add("option casemap :none");
     assemblerHeader.add("include \\masm32\\include\\windows.inc");
@@ -94,8 +95,8 @@ public class Compilador {
 
   private void generateData() {
     assemblerData.add(".data");
-    assemblerData.add(ERROR_DIVISION_CERO + " db " + "\"Error: no es posible divir por cero.\"");
-    assemblerData.add(ERROR_OVERFLOW_SUMA + " db " + "\"Error: overflow en suma.\"");
+    assemblerData.add(ERROR_DIVISION_CERO + " db \"Error: no es posible divir por cero.\", 0");
+    assemblerData.add(ERROR_OVERFLOW_SUMA + " db \"Error: overflow en suma.\", 0");
     // variables overflow 
     assemblerData.add(FLOAT_CERO + " DQ 0.0");
     assemblerData.add("MINIMO_POSITIVO DQ " + MINIMO_POSITIVO);
@@ -199,8 +200,11 @@ public class Compilador {
   }
 
   public boolean checkTipos(SimboloPolaca op1, SimboloPolaca op2, boolean asig) {
+    /* 
+      Si no es asignacion return true solo en caso de que sean distintos,
+      sino puedo tirar error en el caso que el primero sea LONGINT
+     */
     boolean op1IsFloat = isFloat(op1);
-    System.out.println("OP1: " + op1.getSimbolo() + " FLOAT? " + op1IsFloat + " OP2 : " + op2.getSimbolo() + " FLOAT? " + isFloat(op2));
     if (op1IsFloat == isFloat(op2)) return false;
     // Conversiones implicita: sobre parametro real.
     if (!asig) return true;
@@ -290,7 +294,36 @@ public class Compilador {
     asm.add(condBF + " L" + tag.getSimbolo());
   }
 
-  public void generateComparacion(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2, String operador) {
+  public void generateComparacionFloat(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2, String operador) {
+    asm.add("FINIT"); // Resetea control y estado en cada comparacion.
+    asm.add("FLD " + op1.getSimbolo()); // Cargo a ST(0) el valor de op1.
+    asm.add("FCOMP " + op2.getSimbolo()); // Comparo con el op2-
+    asm.add("FSTSW AX");// palabra de estado a mem.
+    asm.add("SAHF"); // copia indicadores.
+    //asm.add(salto + " " + etiqueta); //Salto si condicion
+    switch (operador) {
+      case ">":
+        condBF = "JNA"; // <=
+        break;
+      case "<=":
+        condBF = "JNBE"; // >
+        break;
+      case ">=":
+        condBF = "JNAE"; // <
+        break;
+      case "<":
+        condBF = "JNB"; // >=
+        break;
+      case "==":
+        condBF = "JNE"; // !=
+        break;
+      case "!=":
+        condBF = "JE"; // ==
+        break;
+    }
+  }
+  
+  public void generateComparacionLongint(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2, String operador) {
     switch (operador) {
       case ">":
         condBF = "JNG"; // <=
@@ -315,6 +348,21 @@ public class Compilador {
     asm.add("MOV " + reg + " , " + op1.getSimboloASM());
     asm.add("CMP " + reg + " , " + op2.getSimboloASM());
     freeReg(op1);
+  }
+
+  public void generateComparacion(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2, String operador) {
+    if (checkTipos(op1, op2, false)) {
+      if (!isFloat(op1))
+        conversionImplicita(asm, op1);
+      else
+        conversionImplicita(asm, op2);
+    }
+    // O los dos son float o los dos son longint
+    if (!isFloat(op1)) {
+      generateComparacionLongint(asm, op1, op2);
+    } else {
+      generateComparacionFloat(asm, op1, op2);
+    }
   }
 
   public void generateAsignacion(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2, boolean ref) {
@@ -385,7 +433,7 @@ public class Compilador {
       asm.add("FCOMP"); // Comparo ST(0) con ST(1) y saco ST(0)
       asm.add("FSTSW AX"); // palabra de estado a mem.
       asm.add("SAHF"); // Almacena indicadores.
-      asm.add("JE ERROR_DIVISION_CERO");
+      asm.add("JE " + ETIQUETA_DIVISION_CERO);
       asm.add("FDIV");// division
       String varAux = crearVarAux();
       op1.setSimbolo(varAux);
@@ -420,7 +468,7 @@ public class Compilador {
       }
       asm.add("CDQ");
       asm.add("CMP "+  reg2 + " , 0");
-      asm.add("JE ERROR_DIVISION_CERO");
+      asm.add("JE " + ETIQUETA_DIVISION_CERO);
       asm.add("IDIV " + reg2);
     }
   }
@@ -457,7 +505,7 @@ public class Compilador {
           freeReg(op2);
         }
       }
-      asm.add("JO "+ ERROR_OVERFLOW_SUMA);
+      asm.add("JO " + ETIQUETA_OVERFLOW);
     }
   }
 
@@ -585,7 +633,6 @@ public class Compilador {
     for (int i = 0; i < polaca.size(); i++) {
       SimboloPolaca simbolo = polaca.get(i);
       SimboloPolaca op1, op2, op;
-      System.out.println("Simbolo leido: " + simbolo.getSimbolo());
       switch (simbolo.getSimbolo()) {
         case PROC:
           ArrayList<SimboloPolaca> invocacion = new ArrayList<>();
@@ -676,14 +723,13 @@ public class Compilador {
     generarInstruccionesAsm(assembler, main, procsDeclarados);
     assembler.add("invoke ExitProcess, 0"); 
     generateCodeError();
-    assembler.add("END START");
   }
   
   public void generateCodeError() {
     assembler.add(ETIQUETA_OVERFLOW + ":");
     assembler.add("invoke MessageBox, NULL, addr " + ERROR_OVERFLOW_SUMA + ", addr  " + ERROR_OVERFLOW_SUMA + ", MB_OK");
     assembler.add("invoke ExitProcess, 0"); 
-    assembler.add("__etiquetaErrorDivCero__:");
+    assembler.add(ETIQUETA_DIVISION_CERO + ":");
     assembler.add("invoke MessageBox, NULL, addr " + ERROR_DIVISION_CERO +  ", addr " + ERROR_DIVISION_CERO +  ", MB_OK");
     assembler.add("invoke ExitProcess, 0"); 
 

@@ -420,14 +420,12 @@ public class AnalizadorLexico {
 	
 	public boolean check_rango_longint(String lexema) {
 		// Chequeo rango longint positivo < 2147483647. Analisis Sintactico.
-		if(tabla_simbolos.get(lexema).get("Tipo") == "LONGINT") {
-			BigDecimal lexBig = new BigDecimal(lexema.toString());
-			Double db = Math.pow(2, 31)-1;
-			int i0 = lexBig.compareTo(BigDecimal.valueOf(db));
-			if (i0 <= 0) {
-				return true;
-			}
-		}
+		if (tabla_simbolos.get(lexema).get("Tipo") == "LONGINT") {
+            BigDecimal lexBig = new BigDecimal(lexema);
+            double db = Math.pow(2, 31)-1;
+            int i0 = lexBig.compareTo(BigDecimal.valueOf(db));
+            return i0 <= 0;
+        }
 		return true;
 	}
 	
