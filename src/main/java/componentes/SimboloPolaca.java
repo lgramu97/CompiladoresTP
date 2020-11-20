@@ -60,4 +60,13 @@ public class SimboloPolaca {
     public boolean isCte() {
         return this.cte != null;
     }
+
+    @Override
+    public String toString() {
+        return "SimboloPolaca{" +
+                "simbolo='" + simbolo + '\'' +
+                ", reg=" + reg +
+                ", cte='" + cte + '\'' +
+                '}';
+    }
 }

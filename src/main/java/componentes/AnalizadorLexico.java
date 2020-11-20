@@ -169,7 +169,7 @@ public class AnalizadorLexico {
             }
             buffer.close();
         } catch (Exception e) {
-            //TODO: handle exception
+            System.out.println("error" + e);
         }
     }
 

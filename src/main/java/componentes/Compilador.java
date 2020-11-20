@@ -46,9 +46,9 @@ public class Compilador {
   public static final String ETIQUETA_DIVISION_CERO = "__etiquetaErrorDivCero__";
   public static final String FLOAT_CERO = "FLOAT_CERO";
   public static final String INV = "INV";
-  public static final String MAXIMO_POSITIVO = "3.40282347f38";
+  public static final String MAXIMO_POSITIVO = "3.40282347e38";
   public static final String MAXIMO_NEGATIVO = "-" + MAXIMO_POSITIVO;
-  public static final String MINIMO_POSITIVO = "1.17549435f-38";
+  public static final String MINIMO_POSITIVO = "1.17549435e-38";
   public static final String MINIMO_NEGATIVO = "-" + MINIMO_POSITIVO;
   public static final String AUXILIAR = "AUXILIAR";
   public static final String PASAJE = "Pasaje";
@@ -103,7 +103,7 @@ public class Compilador {
     assemblerData.add("MINIMO_NEGATIVO DQ " + MINIMO_NEGATIVO);
     assemblerData.add("MAXIMO_POSITIVO DQ " + MAXIMO_POSITIVO);
     assemblerData.add("MAXIMO_NEGATIVO DQ " + MAXIMO_NEGATIVO);
-    assemblerData.add(AUX + " DQ ?");
+    assemblerData.add(AUX + " DD ?");
     cargarEstructuras(true);
   }
   
@@ -118,9 +118,6 @@ public class Compilador {
 
   private void addDeclaracionOverflowADD() {
     /* Generacion de llamadas para chequear overflow en float (suma)*/
-    procsAsm.add("FLOAT_VALIDO:");
-    procsAsm.add("RET");
-
     procsAsm.add("OVERFLOW_FLOAT:");
     checkOverflowADD("MAXIMO_POSITIVO", "JA", ETIQUETA_OVERFLOW); //Comparo max positivo / salto si es mayor.
     checkOverflowADD("MINIMO_POSITIVO", "JA", "FLOAT_VALIDO");//Comparo min positivo / salto si es mayor.
@@ -130,7 +127,9 @@ public class Compilador {
     // Retorno al CALL porque estoy entre un valor valido negativo.
     checkOverflowADD(FLOAT_CERO, "JE", "FLOAT_VALIDO");// Comparo cero / salto si es igual.
     // Retorno al CALL porque es cero.
-    procsAsm.add("JMP " + ETIQUETA_OVERFLOW);// FLOAT INVALIDO.    
+    procsAsm.add("JMP " + ETIQUETA_OVERFLOW);// FLOAT INVALIDO.
+    procsAsm.add("FLOAT_VALIDO:");
+    procsAsm.add("RET");  
   }
 
   private void addData(HashMap<String, String> cadenaVar, String key, boolean add) {
@@ -143,7 +142,6 @@ public class Compilador {
     } else {
       addConstante(key, atributos, add);
     }
-    //TODO: Ver el caso de constante en codigo. No contiene USO, si se agrega -> addVariable.
   }
 
   // Lexema: 3
@@ -636,13 +634,14 @@ public class Compilador {
     for (int i = 0; i < polaca.size(); i++) {
       SimboloPolaca simbolo = polaca.get(i);
       SimboloPolaca op1, op2, op;
+      System.out.println(pilaEjecucion);
       switch (simbolo.getSimbolo()) {
         case PROC:
           ArrayList<SimboloPolaca> invocacion = new ArrayList<>();
           while (!polaca.get(++i).getSimbolo().equals(INV)) {
             invocacion.add(polaca.get(i));
           }
-          invocacion.add(polaca.get(i++)); // agrego INV
+          invocacion.add(polaca.get(i)); // agrego INV
           generateCodeInvocacion(asm, invocacion, procsDeclarados);
           break;
         case "-":
