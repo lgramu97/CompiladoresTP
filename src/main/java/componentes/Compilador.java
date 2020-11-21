@@ -382,7 +382,11 @@ public class Compilador {
       freeReg(op2);
     } else {
       // Asignacion FLOAT.
-        asm.add("FLD " + op2.getSimboloASM()); // cargo op2
+      String var = op2.getSimboloASM();
+      if (ref){
+        var = "[" + op2.getSimboloASM() + "]";
+      }
+        asm.add("FLD " + var); // cargo op2
         asm.add("FSTP " + op1.getSimboloASM()); // asigno op2 a op1
     }
   }
