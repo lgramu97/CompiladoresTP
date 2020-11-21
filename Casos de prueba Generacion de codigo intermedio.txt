@@ -1,3 +1,14 @@
+%% En el siguiente TXT se muestra la polaca obtenida desde un principio hasta su estado final.
+%% Se muestra además las salidas de la tabla de simbolos  con y sin errores.
+%% Se separa el documento de casos de prueba originales y finales mediante ----
+
+--------------------------- CASOS DE PRUEBA ORIGINALES CON Y SIN ERRORES ----------------------------
+|                                                                                                   |
+|  Casos de prueba de la etapa numero 3 sin chequeo de tipos. En los primeros casos no hay chequeo  |
+|  de declaracion o redeclaracion de variables, se chequeaba el correcto funcionamietno de la polaca|
+|                                                                                                   |
+-----------------------------------------------------------------------------------------------------
+
 IF ( a - b > c + 1.0 ) {
 	a  = b;
 } END_IF ;
@@ -17,6 +28,7 @@ IF ( a - b > c + 1.0 ) {
 12 [14] 
 13 BI  
 14 ...
+---------------------------------------------------------------------------------------------------------------
 
 IF ( a - b > c + 1.0 ) {
 	a  = b + c;
@@ -46,6 +58,7 @@ IF ( a - b > c + 1.0 ) {
 19 a
 20 =
 21 ...
+---------------------------------------------------------------------------------------------------------------
 
 IF ( a == 0.0 ) {
 	a  = b;
@@ -75,7 +88,7 @@ IF ( a == 0.0 ) {
 18	[20]
 19	BI
 20  ..
-
+---------------------------------------------------------------------------------------------------------------
 
 IF ( a - b > c + 1.0 ) {
 	OUT("hola como andas");
@@ -94,7 +107,7 @@ IF ( a - b > c + 1.0 ) {
 10 [12]
 11 BI
 12 ...
-
+---------------------------------------------------------------------------------------------------------------
 
 IF ( a - b > c + 1.0 ) {
 	OUT("hola como andas-
@@ -114,106 +127,7 @@ VALOR POLACA [9]: "hola como andas
 		asdads"
 VALOR POLACA [10]: 12
 VALOR POLACA [11]: BI
-
-
- PROC procedimiento() NI = 3_l {
-	 LONGINT a;
- };
-
-PROC procedimientoo(REF LONGINT a, LONGINT b, REF FLOAT c) NI = 3_l {
-	 LONGINT a;
- };
-
-Contenido de la tabla de simbolos: 
-Lexema: a
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
-Lexema: b
-	Atributo: Tipo   Val
-
-
-Contenido de la tabla de simbolos:
-Lexema: x1@main
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-Lexema: x@main@procedimiento
-	Atributo: Uso   Valor: PARAMETRO
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
-	Atributo: Pasaje   Valor: COPIA-VALOR
-Lexema: ()w@main@procedimiento
-	Atributo: Uso   Valor: PARAMETRO
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
-	Atributo: Pasaje   Valor: REFERENCIA
-	Atributo: DIR a   Valor: {Uso=VARIABLE, Tipo=LONGINT, Cantidad=1}
-Lexema: b@main
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
-Lexema: a@main
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
-Lexema: x2@main
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-Lexema: z@main@procedimiento
-	Atributo: Uso   Valor: PARAMETRO
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-	Atributo: DIR x1   Valor: {Uso=VARIABLE, Tipo=FLOAT, Cantidad=1}
-	Atributo: Pasaje   Valor: REFERENCIA
-Lexema: 3
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
-Lexema: x1@main@procedimiento
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-Lexema: x3@main
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-Lexema: procedimiento@main
-	Atributo: Uso   Valor: PROC
-	Atributo: Invocaciones   Valor: 3
-	Atributo: Tipo   Valor: PROC
-	Atributo: Parametros   Valor: [w, x, z]
-	Atributo: Cantidad   Valor: 1
-	Atributo: Llamadas   Valor: 3
-Lexema: x3@main@procedimiento
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-Lexema: x2@main@procedimiento
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-Lexema: c@main
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
-
-
-Desea guardar la salida en un documento de texto? Y/N
-or: LONGINT
-	Atributo: Cantidad   Valor: 1
-Lexema: 3
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 2
-Lexema: c
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-Lexema: procedimientoo
-	Atributo: Tipo   Valor: PROC
-	Atributo: Cantidad   Valor: 1
-Lexema: procedimiento
-	Atributo: Tipo   Valor: PROC
-	Atributo: Cantidad   Valor: 1
-
+---------------------------------------------------------------------------------------------------------------
 
 PROC procedimiento() NI = 3_l {
 	 LONGINT x1;
@@ -248,7 +162,8 @@ Lexema: procedimiento
 Lexema: x5
 	Atributo: Tipo   Valor: LONGINT
 	Atributo: Cantidad   Valor: 1
-
+---------------------------------------------------------------------------------------------------------------
+%% EJEMPLO CON VARIABLES NO DECLARADAS:
 
 LONGINT a, b ,c ;
 a = b + c;
@@ -267,7 +182,6 @@ PROC procedimiento() NI = 3_l {
 PROC procedimientoo(REF LONGINT x2, LONGINT x3, REF FLOAT x4) NI = 3_l {
 	 LONGINT x5;
  };
-
 
 Errores Lexicos: 
 
@@ -329,7 +243,8 @@ Lexema: c@main
 	Atributo: Uso   Valor: VARIABLE
 	Atributo: Tipo   Valor: LONGINT
 	Atributo: Cantidad   Valor: 1
-
+---------------------------------------------------------------------------------------------------------------
+%% EJEMPLOS VARIABLES NO DECLARADAS:
 
 LONGINT a, b ,c ;
 a = b + c;
@@ -424,7 +339,8 @@ Lexema: c@main
 	Atributo: Uso   Valor: VARIABLE
 	Atributo: Tipo   Valor: LONGINT
 	Atributo: Cantidad   Valor: 1
-
+---------------------------------------------------------------------------------------------------------------
+%% EJEMPLO VARIABLES RE-DECLARADAS:
 
 LONGINT k;
 LONGINT k;
@@ -432,6 +348,18 @@ LONGINT k;
 Errores Semanticos: 
 	Numero de linea: 2 Variable 'k' re-declarada
 
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+
+    ---------------------------          CASOS DE PRUEBA FINALES             ----------------------------
+    |                                                                                                   |
+    | Casos de prueba con chequeo de re-declaracion, invocacion, existencia, etc.                       |
+    |                                                                                                   |
+    |                                                                                                   |
+    -----------------------------------------------------------------------------------------------------
+%% EJEMPLO VARIABLE RE-DECLARADA:
 
 PROC a(LONGINT c, LONGINT c) NI = 3_l {
     LONGINT d;
@@ -441,9 +369,12 @@ PROC a(LONGINT c, LONGINT c) NI = 3_l {
 Errores Semanticos: 
 	Numero de linea: 1 Variable 'c' re-declarada
 	Numero de linea: 3 Variable 'c' re-declarada
+---------------------------------------------------------------------------------------------------------------
+%% EJEMPLO CON RE-DECLARACION PARAMETRO, INVOCACION CORRECTA, INVOCACION INCORRECTA, PARAMETRO FALTANTE,
+%% MAXIMO NUMERO DE INVOCACIONES ALCANZADO. "Casos que violen las restricciones determinadas en la declaracion
+%% de los procedimientos (tema 8)."
 
-
-	LONGINT a,b,c;
+LONGINT a,b,c;
 FLOAT x1, x2 , x3;
 PROC procedimiento (REF LONGINT w, LONGINT x, REF FLOAT z) NI = 3_l {
 	 FLOAT x1,x2,x3;
@@ -463,8 +394,10 @@ procedimiento(w:a,x:a,z:x1); %%Correcta invocacion.
 
 procedimiento(w:a,x:a,z:x1); %%Correcta invocacion.
 
-procedimiento(w:a,x:b,z:c); %%Correcta invocacion
+procedimiento(w:a,x:b,z:c); %%Correcta invocacion pero llego al limite
 
+
+No se pudo generar codigo maquina. El codigo contiene errores
 
 Errores Lexicos:
 
@@ -475,4 +408,186 @@ Errores Semanticos:
 	Numero de linea: 11 Error en la invocacion del procedimiento.
 	Numero de linea: 13 Error en la invocacion del procedimiento.
 	Numero de linea: 21 Maximo numero de invocaciones alcanzada.
-	Numero de linea: 21 Error en la invocacion del procedimiento.
+---------------------------------------------------------------------------------------------------------------
+%%EJEMPLO TIPOS INCOMPATIBLES (No da error en el parser si en compilacion porque se chequean en GENERACION CODIGO ASM)
+
+LONGINT a,b,c;
+FLOAT x1, x2 , x3;
+PROC procedimiento (REF LONGINT w, LONGINT x, REF FLOAT z) NI = 3_l {
+	 FLOAT x1,x2,x3;
+	 x2 = x3;
+};
+
+procedimiento(w:x1,x:x2,z:a);
+
+Errores Lexicos:
+
+Errores Sintacticos:
+
+Errores Semanticos:
+	Conversion implicita no valida.
+	Conversion implicita no valida.
+
+
+No se pudo generar codigo maquina. El codigo contiene errores.
+---------------------------------------------------------------------------------------------------------------
+%%EJEMPLO REDECLARACION DE PROCEDIMIENTOS. LAS VARIABLES TAMBIEN YA QUE LAS INTENTA AGREGAR CON
+%%EL MISMO NAMEMANGLING.
+
+No se pudo generar codigo maquina. El codigo contiene errores.
+LONGINT a,b,c;
+FLOAT x1, x2 , x3;
+PROC procedimiento (REF LONGINT w, LONGINT x, REF FLOAT z) NI = 3_l {
+	 FLOAT x1,x2,x3;
+	 x2 = x3;
+};
+
+PROC procedimiento () NI = 3_l {
+	 FLOAT x1,x2,x3;
+	 x2 = x3;
+};
+
+Errores Lexicos:
+
+Errores Sintacticos:
+
+Errores Semanticos:
+	Numero de linea: 8 Variable 'procedimiento' re-declarada
+	Numero de linea: 9 Variable 'x3' re-declarada
+	Numero de linea: 9 Variable 'x2' re-declarada
+	Numero de linea: 9 Variable 'x1' re-declarada
+---------------------------------------------------------------------------------------------------------------
+%% EJEMPLO NAMEMANGLING CON VARIABLES DEL MISMO NOMBRE EN DISTINTO AMBITO.
+
+LONGINT a,b,c;
+FLOAT x1, x2 , x3;
+PROC procedimiento (REF LONGINT w, LONGINT x, REF FLOAT z) NI = 3_l {
+	 FLOAT x1,x2,x3;
+	 x2 = x3;
+};
+
+PROC procedimiento2 () NI = 3_l {
+	 FLOAT x1,x2,x3;
+	 x2 = x3;
+};
+
+procedimiento2();
+
+Errores Lexicos:
+
+Errores Sintacticos:
+
+Errores Semanticos:
+
+
+Contenido de la tabla de simbolos:
+Lexema: x1@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: x@main@procedimiento
+	Atributo: Uso   Valor: PARAMETRO
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+	Atributo: Pasaje   Valor: COPIA-VALOR
+Lexema: w@main@procedimiento
+	Atributo: Uso   Valor: PARAMETRO
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+	Atributo: Pasaje   Valor: REFERENCIA
+Lexema: b@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: x3@main@procedimiento2
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: a@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: procedimiento2@main
+	Atributo: Uso   Valor: PROC
+	Atributo: Invocaciones   Valor: 3
+	Atributo: Tipo   Valor: PROC
+	Atributo: Cantidad   Valor: 1
+	Atributo: Llamadas   Valor: 1
+Lexema: x2@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: z@main@procedimiento
+	Atributo: Uso   Valor: PARAMETRO
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+	Atributo: Pasaje   Valor: REFERENCIA
+Lexema: x1@main@procedimiento2
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: 3
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 2
+Lexema: x1@main@procedimiento
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: x2@main@procedimiento2
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: x3@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: procedimiento@main
+	Atributo: Uso   Valor: PROC
+	Atributo: Invocaciones   Valor: 3
+	Atributo: Tipo   Valor: PROC
+	Atributo: Parametros   Valor: [w, x, z]
+	Atributo: Cantidad   Valor: 1
+	Atributo: Llamadas   Valor: 0
+Lexema: x3@main@procedimiento
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: x2@main@procedimiento
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: c@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+---------------------------------------------------------------------------------------------------------------n
+%%EJEMPLO VARIABLES y PROCEDIMIENTOS NO ESTAN AL ALCANCE.
+LONGINT a,b,c;
+FLOAT x1, x2 , x3;
+PROC procedimiento (REF LONGINT w, LONGINT x, REF FLOAT z) NI = 3_l {
+	 FLOAT x1,x2,x3;
+	 x2 = x3;
+	PROC procedimiento2 () NI = 3_l {
+		 FLOAT proc_float,x2,x3;
+	 	x2 = x3;
+	};
+	PROC procedimiento3 () NI = 2_l {
+	 	FLOAT float;
+		float = proc_float;
+	};
+	procedimiento3();
+};
+procedimiento(w:a,x:b,z:x1);
+procedimiento2();
+
+No se pudo generar codigo maquina. El codigo contiene errores.
+
+Errores Lexicos:
+
+Errores Sintacticos:
+
+Errores Semanticos:
+	Numero de linea: 12 Variable 'proc_float' no declarada
+	Numero de linea: 17 Variable 'procedimiento2' no declarada
+	Numero de linea: 17 Error en la invocacion del procedimiento.
+

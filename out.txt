@@ -7,128 +7,239 @@ Errores Semanticos:
 
 
 Contenido de la tabla de simbolos: 
-Lexema: a@main@procedimiento
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
-Lexema: x@main@procedimiento
-	Atributo: Uso   Valor: PARAMETRO
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-	Atributo: Pasaje   Valor: COPIA-VALOR
-Lexema: b@main
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
-Lexema: b@main@procedimiento
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
 Lexema: a@main
 	Atributo: Uso   Valor: VARIABLE
 	Atributo: Tipo   Valor: LONGINT
 	Atributo: Cantidad   Valor: 1
-Lexema: z@main@procedimiento
+Lexema: al1@main@suma@anidado
+	Atributo: Uso   Valor: PARAMETRO
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+	Atributo: Pasaje   Valor: COPIA-VALOR
+Lexema: x2@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: l1@main@suma
 	Atributo: Uso   Valor: PARAMETRO
 	Atributo: Tipo   Valor: LONGINT
 	Atributo: Cantidad   Valor: 1
 	Atributo: Pasaje   Valor: REFERENCIA
 	Atributo: DIR b   Valor: {Uso=VARIABLE, Tipo=LONGINT, Cantidad=1}
-Lexema: w@main
+Lexema: "es igual"
+	Atributo: Tipo   Valor: CADENA
+	Atributo: Cantidad   Valor: 1
+Lexema: anidado@main@suma
+	Atributo: Uso   Valor: PROC
+	Atributo: Invocaciones   Valor: 1
+	Atributo: Tipo   Valor: PROC
+	Atributo: Parametros   Valor: [al1]
+	Atributo: Cantidad   Valor: 1
+	Atributo: Llamadas   Valor: 1
+Lexema: "es distinto"
+	Atributo: Tipo   Valor: CADENA
+	Atributo: Cantidad   Valor: 1
+Lexema: "es mayor"
+	Atributo: Tipo   Valor: CADENA
+	Atributo: Cantidad   Valor: 1
+Lexema: "se pasa bien"
+	Atributo: Tipo   Valor: CADENA
+	Atributo: Cantidad   Valor: 1
+Lexema: x3@main@suma
 	Atributo: Uso   Valor: VARIABLE
 	Atributo: Tipo   Valor: FLOAT
 	Atributo: Cantidad   Valor: 1
+Lexema: "Finaliza el programa"
+	Atributo: Tipo   Valor: CADENA
+	Atributo: Cantidad   Valor: 1
+Lexema: c@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: @aux0
+	Atributo: Uso   Valor: AUXILIAR
+	Atributo: Tipo   Valor: FLOAT
+Lexema: x1@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: 14
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: b@main
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: -2
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: -4
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: "es menor"
+	Atributo: Tipo   Valor: CADENA
+	Atributo: Cantidad   Valor: 1
+Lexema: suma@main
+	Atributo: Uso   Valor: PROC
+	Atributo: Invocaciones   Valor: 2
+	Atributo: Tipo   Valor: PROC
+	Atributo: Parametros   Valor: [l1, l2]
+	Atributo: Cantidad   Valor: 1
+	Atributo: Llamadas   Valor: 1
+Lexema: l2@main@suma
+	Atributo: Uso   Valor: PARAMETRO
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+	Atributo: Pasaje   Valor: REFERENCIA
+	Atributo: DIR a   Valor: {Uso=VARIABLE, Tipo=LONGINT, Cantidad=1}
+Lexema: 0
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
+Lexema: comparacion@main@suma@anidado
+	Atributo: Uso   Valor: VARIABLE
+	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 1
 Lexema: 1
 	Atributo: Tipo   Valor: LONGINT
+	Atributo: Cantidad   Valor: 2
+Lexema: 0.0
+	Atributo: Tipo   Valor: FLOAT
 	Atributo: Cantidad   Valor: 1
 Lexema: 2
 	Atributo: Tipo   Valor: LONGINT
 	Atributo: Cantidad   Valor: 1
 Lexema: 3
 	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 2
-Lexema: 4
-	Atributo: Tipo   Valor: LONGINT
-	Atributo: Cantidad   Valor: 1
+	Atributo: Cantidad   Valor: 4
 Lexema: 2.0
 	Atributo: Tipo   Valor: FLOAT
 	Atributo: Cantidad   Valor: 1
-Lexema: procedimiento@main@procedimiento@invocacion
+Lexema: 4.0
+	Atributo: Tipo   Valor: FLOAT
+	Atributo: Cantidad   Valor: 1
+Lexema: "multiplico valor por -2"
+	Atributo: Tipo   Valor: CADENA
+	Atributo: Cantidad   Valor: 1
+Lexema: "Termino de comparar"
+	Atributo: Tipo   Valor: CADENA
+	Atributo: Cantidad   Valor: 1
+Lexema: imprimir_fin@main
 	Atributo: Uso   Valor: PROC
 	Atributo: Invocaciones   Valor: 1
 	Atributo: Tipo   Valor: PROC
 	Atributo: Cantidad   Valor: 1
 	Atributo: Llamadas   Valor: 1
-Lexema: procedimiento@main
-	Atributo: Uso   Valor: PROC
-	Atributo: Invocaciones   Valor: 3
-	Atributo: Tipo   Valor: PROC
-	Atributo: Parametros   Valor: [x, z]
-	Atributo: Cantidad   Valor: 1
-	Atributo: Llamadas   Valor: 1
-Lexema: c@main@procedimiento
-	Atributo: Uso   Valor: VARIABLE
-	Atributo: Tipo   Valor: FLOAT
-	Atributo: Cantidad   Valor: 1
-Lexema: invocacion@main@procedimiento
-	Atributo: Uso   Valor: PROC
-	Atributo: Invocaciones   Valor: 2
-	Atributo: Tipo   Valor: PROC
-	Atributo: Cantidad   Valor: 1
-	Atributo: Llamadas   Valor: 1
-Lexema: @aux1
-	Atributo: Uso   Valor: AUXILIAR
-	Atributo: Tipo   Valor: FLOAT
-Lexema: @aux0
-	Atributo: Uso   Valor: AUXILIAR
-	Atributo: Tipo   Valor: FLOAT
+
 
 Cantidad de estructuras de la lista de simbolos: 4
 
 VALOR POLACA [0]: 3
 VALOR POLACA [1]: a@main
 VALOR POLACA [2]: =
-VALOR POLACA [3]: 4
+VALOR POLACA [3]: 3
 VALOR POLACA [4]: b@main
 VALOR POLACA [5]: =
-VALOR POLACA [6]: 2.0
-VALOR POLACA [7]: w@main
+VALOR POLACA [6]: 0
+VALOR POLACA [7]: c@main
 VALOR POLACA [8]: =
-VALOR POLACA [9]: PROC
-VALOR POLACA [10]: procedimiento@main
-VALOR POLACA [11]: z
-VALOR POLACA [12]: b@main
-VALOR POLACA [13]: :
-VALOR POLACA [14]: x
-VALOR POLACA [15]: w@main
-VALOR POLACA [16]: :
-VALOR POLACA [17]: INV
+VALOR POLACA [9]: 0.0
+VALOR POLACA [10]: x1@main
+VALOR POLACA [11]: =
+VALOR POLACA [12]: 4.0
+VALOR POLACA [13]: x2@main
+VALOR POLACA [14]: =
+VALOR POLACA [15]: PROC
+VALOR POLACA [16]: suma@main
+VALOR POLACA [17]: l1
+VALOR POLACA [18]: b@main
+VALOR POLACA [19]: :
+VALOR POLACA [20]: l2
+VALOR POLACA [21]: a@main
+VALOR POLACA [22]: :
+VALOR POLACA [23]: INV
+VALOR POLACA [24]: b@main
+VALOR POLACA [25]: 3
+VALOR POLACA [26]: !=
+VALOR POLACA [27]: 33
+VALOR POLACA [28]: BF
+VALOR POLACA [29]: "es distinto"
+VALOR POLACA [30]: OUT
+VALOR POLACA [31]: 36
+VALOR POLACA [32]: BI
+VALOR POLACA [33]: L33
+VALOR POLACA [34]: "es igual"
+VALOR POLACA [35]: OUT
+VALOR POLACA [36]: L36
+VALOR POLACA [37]: PROC
+VALOR POLACA [38]: imprimir_fin@main
+VALOR POLACA [39]: INV
 
-VALOR POLACA [18]: procedimiento@main@procedimiento@invocacion
-VALOR POLACA [19]: a@main@procedimiento
-VALOR POLACA [20]: b@main@procedimiento
-VALOR POLACA [21]: =
-VALOR POLACA [22]: END_PROC
+VALOR POLACA [40]: anidado@main@suma
+VALOR POLACA [41]: -4
+VALOR POLACA [42]: comparacion@main@suma@anidado
+VALOR POLACA [43]: =
+VALOR POLACA [44]: L4
+VALOR POLACA [45]: comparacion@main@suma@anidado
+VALOR POLACA [46]: al1@main@suma@anidado
+VALOR POLACA [47]: <
+VALOR POLACA [48]: 19
+VALOR POLACA [49]: BF
+VALOR POLACA [50]: comparacion@main@suma@anidado
+VALOR POLACA [51]: -2
+VALOR POLACA [52]: *
+VALOR POLACA [53]: comparacion@main@suma@anidado
+VALOR POLACA [54]: =
+VALOR POLACA [55]: "multiplico valor por -2"
+VALOR POLACA [56]: OUT
+VALOR POLACA [57]: 4
+VALOR POLACA [58]: BI
+VALOR POLACA [59]: L19
+VALOR POLACA [60]: "Termino de comparar"
+VALOR POLACA [61]: OUT
+VALOR POLACA [62]: END_PROC
 
-VALOR POLACA [23]: invocacion@main@procedimiento
-VALOR POLACA [24]: a@main@procedimiento
-VALOR POLACA [25]: b@main@procedimiento
-VALOR POLACA [26]: =
-VALOR POLACA [27]: PROC
-VALOR POLACA [28]: procedimiento@main@procedimiento@invocacion
-VALOR POLACA [29]: INV
-VALOR POLACA [30]: END_PROC
+VALOR POLACA [63]: suma@main
+VALOR POLACA [64]: l1@main@suma
+VALOR POLACA [65]: 3
+VALOR POLACA [66]: ==
+VALOR POLACA [67]: 10
+VALOR POLACA [68]: BF
+VALOR POLACA [69]: "se pasa bien"
+VALOR POLACA [70]: OUT
+VALOR POLACA [71]: 11
+VALOR POLACA [72]: BI
+VALOR POLACA [73]: L10
+VALOR POLACA [74]: L11
+VALOR POLACA [75]: l1@main@suma
+VALOR POLACA [76]: l2@main@suma
+VALOR POLACA [77]: +
+VALOR POLACA [78]: x3@main@suma
+VALOR POLACA [79]: =
+VALOR POLACA [80]: 14
+VALOR POLACA [81]: l2@main@suma
+VALOR POLACA [82]: =
+VALOR POLACA [83]: x3@main@suma
+VALOR POLACA [84]: 2.0
+VALOR POLACA [85]: >
+VALOR POLACA [86]: 29
+VALOR POLACA [87]: BF
+VALOR POLACA [88]: "es mayor"
+VALOR POLACA [89]: OUT
+VALOR POLACA [90]: 32
+VALOR POLACA [91]: BI
+VALOR POLACA [92]: L29
+VALOR POLACA [93]: "es menor"
+VALOR POLACA [94]: OUT
+VALOR POLACA [95]: L32
+VALOR POLACA [96]: PROC
+VALOR POLACA [97]: anidado@main@suma
+VALOR POLACA [98]: al1
+VALOR POLACA [99]: l2@main@suma
+VALOR POLACA [100]: :
+VALOR POLACA [101]: INV
+VALOR POLACA [102]: END_PROC
 
-VALOR POLACA [31]: procedimiento@main
-VALOR POLACA [32]: b@main@procedimiento
-VALOR POLACA [33]: a@main@procedimiento
-VALOR POLACA [34]: =
-VALOR POLACA [35]: x@main@procedimiento
-VALOR POLACA [36]: z@main@procedimiento
-VALOR POLACA [37]: *
-VALOR POLACA [38]: c@main@procedimiento
-VALOR POLACA [39]: =
-VALOR POLACA [40]: PROC
-VALOR POLACA [41]: invocacion@main@procedimiento
-VALOR POLACA [42]: INV
-VALOR POLACA [43]: END_PROC
+VALOR POLACA [103]: imprimir_fin@main
+VALOR POLACA [104]: "Finaliza el programa"
+VALOR POLACA [105]: OUT
+VALOR POLACA [106]: END_PROC

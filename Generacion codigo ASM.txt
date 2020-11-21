@@ -33,7 +33,7 @@ Salida ASM:
     FSTP _a@main
     invoke ExitProcess, 0
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Divsion FLOAT:
 Caso de prueba:
     FLOAT a,b,c; 
     a = b/c;
@@ -66,7 +66,7 @@ Salida ASM:
     invoke ExitProcess, 0
     END START
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Division LONGINT:
 Caso de prueba:
     LONGINT a,b,c;
     a = b/c;
@@ -93,7 +93,7 @@ Salida ASM:
     invoke ExitProcess, 0
     END START
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Multiplicacion LONGINT:
 Caso de prueba:
     LONGINT a,b,c;
     a = b*c;
@@ -111,7 +111,7 @@ Salida ASM:
     invoke ExitProcess, 0
     END START
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Multiplicacion FLOAT:
 Caso de prueba:
     FLOAT a,b,c;
     a = b*c;
@@ -134,7 +134,7 @@ Salida ASM:
     END START
 
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Suma FLOAT:
 Caso de prueba:
     FLOAT a,b,c;
     a = b + c;
@@ -206,7 +206,7 @@ Salida ASM:
 
 
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Suma LONGINT:
 Caso de prueba:
     LONGINT a,b,c;
     a = b + c;
@@ -225,7 +225,7 @@ Salida ASM:
     invoke ExitProcess, 0
     END START
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Resta LONGINT:
 Caso de prueba:
     LONGINT a,b,c;
     a = b - c;
@@ -243,7 +243,7 @@ Salida ASM:
     invoke ExitProcess, 0
     END START
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Resta FLOTA:
 Caso de prueba:
    FLOAT a,b,c;
    a = b-c;
@@ -264,7 +264,7 @@ Salida ASM:
     invoke ExitProcess, 0
     END START
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Print:
 Caso de prueba:
     OUT("cadena a imprimir");
 
@@ -277,7 +277,7 @@ _Cadena0 db "cadena a imprimir", 0
     invoke ExitProcess, 0
     END START
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Suma Constante y Variable LONGINT :
 Caso de prueba:
     LONGINT a , b ;
     a = 3_l + b;
@@ -296,10 +296,10 @@ Salida ASM:
     invoke ExitProcess, 0
     END START
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Division constante y Variable FLOAT:
 Caso de prueba:
-    FLOAT a , b ; %%TODO:
-    a = 3.45f-2 / b; %%TODO:
+    FLOAT a , b ;
+    a = 3.45f-2 / b;
 
 Salida ASM:
   .data
@@ -320,17 +320,20 @@ Salida ASM:
     JE __etiquetaErrorDivCero__
     FDIV
     FSTP _@aux0
-    MOV EAX, _@aux0
-    MOV _a@main, EAX
+    FLD _@aux0
+    FSTP _a@main
+    invoke ExitProcess, 0
+    __etiquetaErrorOverflow__:
+    invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
     invoke ExitProcess, 0
     __etiquetaErrorDivCero__:
     invoke MessageBox, NULL, addr ERROR_DIVISION_CERO, addr ERROR_DIVISION_CERO, MB_OK
     invoke ExitProcess, 0
     END START
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Estructura IF.:
 Caso de prueba:
-   FLOAT a , b, c ; %%TODO:
+   FLOAT a , b, c ;
     IF ( a - b > c + 1.0 ) {
         a  = b;
     } END_IF ;
@@ -352,110 +355,37 @@ Salida ASM: %% ERROR_OVERFLOW_SUMA es igual a los anteriores (solo lo quitamos p
     _@aux1 dd ?
     _@aux0 dd ?
     .code
-    START:
-    FLD _a@main
-    SUB _b@main
-    FSTP _@aux0
-    FLD _c@main
-    FADD _Constante0
-    FST @aux
-    CALL OVERFLOW_FLOAT
-    FSTP _@aux1
-    MOV EAX , _@aux0
-    CMP EAX , _@aux1
-    JNG L14
-    MOV EAX, _b@main
-    MOV _a@main, EAX
-    JMP L15
-    L14:
-    L15:
-    invoke MessageBox, NULL, addr _Cadena0, addr  _Cadena0, MB_OK
-    invoke ExitProcess, 0
-    __etiquetaErrorOverflow__:
-    invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
-    invoke ExitProcess, 0
-    END START
+       START:
+       FLD _a@main
+       FSUB _b@main
+       FSTP _@aux0
+       FLD _c@main
+       FADD _Constante0
+       FST @aux
+       CALL OVERFLOW_FLOAT
+       FSTP _@aux1
+       FINIT
+       FLD _@aux0
+       FCOMP _@aux1
+       FSTSW AX
+       SAHF
+       JNA L14
+       FLD _b@main
+       FSTP _a@main
+       JMP L15
+       L14:
+       L15:
+       invoke MessageBox, NULL, addr _Cadena0, addr  _Cadena0, MB_OK
+       invoke ExitProcess, 0
+       __etiquetaErrorOverflow__:
+       invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
+       invoke ExitProcess, 0
+       __etiquetaErrorDivCero__:
+       invoke MessageBox, NULL, addr ERROR_DIVISION_CERO, addr ERROR_DIVISION_CERO, MB_OK
+       invoke ExitProcess, 0
+       END START
 ----------------------------------------------------------
-%% Instruccion:
-Caso de prueba:
-    FLOAT a , b, c ; %%TODO:
-    IF ( a - b != c + 1.0 ) {
-        a  = b + c;
-    } ELSE { 
-        a = b - c;
-    } END_IF ;
-
-Salida ASM:
-   .data
-    ERROR_DIVISION_CERO db "Error: no es posible divir por cero."
-    ERROR_OVERFLOW_SUMA db "Error: overflow en suma."
-    FLOAT_CERO DQ 0.0
-    MINIMO_POSITIVO DQ 1.17549435f-38
-    MINIMO_NEGATIVO DQ -1.17549435f-38
-    MAXIMO_POSITIVO DQ 3.40282347f38
-    MAXIMO_NEGATIVO DQ -3.40282347f38
-    @aux DD ?
-    _x1@main dd ?
-    _b@main dd ?
-    _a@main dd ?
-    _x2@main dd ?
-    _Constante0 dd 2
-    _Constante1 dd 1.0
-    _Constante2 dd 4
-    _x3@main dd ?
-    _@aux3 dd ?
-    _@aux2 dd ?
-    _c@main dd ?
-    _@aux1 dd ?
-    _@aux0 dd ?
-    .code
-    START:
-    FLD _a@main
-    SUB _b@main
-    FSTP _@aux0
-    FLD _c@main
-    FADD _Constante1
-    FST @aux
-    CALL OVERFLOW_FLOAT
-    FSTP _@aux1
-    MOV EAX , _@aux0
-    CMP EAX , _@aux1
-    JE L16
-    FLD _b@main
-    FADD _c@main
-    FST @aux
-    CALL OVERFLOW_FLOAT
-    FSTP _@aux2
-    MOV EAX, _@aux2
-    MOV _a@main, EAX
-    JMP L22
-    L16:
-    FLD _b@main
-    SUB _c@main
-    FSTP _@aux3
-    MOV EAX, _@aux3
-    MOV _a@main, EAX
-    L22:
-    MOV EAX, _Constante2
-    MOV _x1@main, EAX
-    MOV EAX, _Constante0
-    MOV _x2@main, EAX
-    MOV EAX, _x1@main
-    ADD EAX, _x2@main
-    JO __etiquetaErrorOverflow__
-    ADD EAX, _Constante2
-    JO __etiquetaErrorOverflow__
-    MOV _x3@main, EAX
-    invoke ExitProcess, 0
-    __etiquetaErrorOverflow__:
-    invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
-    invoke ExitProcess, 0
-    __etiquetaErrorDivCero__:
-    invoke MessageBox, NULL, addr ERROR_DIVISION_CERO, addr ERROR_DIVISION_CERO, MB_OK
-    invoke ExitProcess, 0
-    END START
-----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Estructura IF anidado:
 Caso de prueba:
     LONGINT a, b , c;
     a = b + 3_l;
@@ -510,9 +440,9 @@ Salida ASM:
     invoke ExitProcess, 0
     END START
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Estructura IF con Salida:
 Caso de prueba:
-   FLOAT a, b , c; %%TODO:
+   FLOAT a, b , c;
     IF ( a - b > c + 1.0 ) {
         OUT("hola como andas");
     } END_IF ;
@@ -535,28 +465,28 @@ Salida ASM:
    .code
     START:
     FLD _a@main
-    SUB _b@main
+    FSUB _b@main
     FSTP _@aux0
     FLD _c@main
     FADD _Constante0
     FST @aux
     CALL OVERFLOW_FLOAT
     FSTP _@aux1
-    MOV EAX , _@aux0
-    CMP EAX , _@aux1
-    JNG L13
+    FINIT
+    FLD _@aux0
+    FCOMP _@aux1
+    FSTSW AX
+    SAHF
+    JNA L13
     invoke MessageBox, NULL, addr _Cadena0, addr  _Cadena0, MB_OK
     JMP L14
     L13:
     L14:
     invoke ExitProcess, 0
-    __etiquetaErrorOverflow__:
-    invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
-    invoke ExitProcess, 0
     END START
 ----------------------------------------------------------
 %% Instruccion:
-Caso de prueba:
+Caso de prueba Estructura WHILE:
     LONGINT a, b, x;
     WHILE (a > b) LOOP {
         x = 3_l;
@@ -581,7 +511,7 @@ Salida ASM:
     invoke ExitProcess, 0
     END START
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Estructura While con If anidado:
 Caso de prueba:
    LONGINT a, b;
     WHILE (a>b) LOOP {
@@ -613,9 +543,9 @@ Salida ASM:
     invoke ExitProcess, 0
     END START
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Asignacion Conversion implicita 1 operando:
 Caso de prueba:
-    FLOAT x1; %%TODO:
+    FLOAT x1;
     x1 = 2_l; 
 
 Salida ASM:
@@ -629,15 +559,15 @@ Salida ASM:
     MOV _@aux0, EAX
     FILD _@aux0
     FSTP _@aux0
-    MOV EAX, _@aux0
-    MOV _x1@main, EAX
+    FLD _@aux0
+    FSTP _x1@main
     invoke ExitProcess, 0
     END START
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Conversion implicita op2:
 Caso de prueba:
     LONGINT c;
-    FLOAT x1, x2 ;  %%TODO:
+    FLOAT x1, x2 ;
     x1 = x2 + c; 
 
 Salida ASM:
@@ -664,19 +594,16 @@ Salida ASM:
     FST @aux
     CALL OVERFLOW_FLOAT
     FSTP _@aux1
-    MOV EAX, _@aux1
-    MOV _x1@main, EAX
-    invoke ExitProcess, 0
-    __etiquetaErrorOverflow__:
-    invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
+    FLD _@aux1
+    FSTP _x1@main
     invoke ExitProcess, 0
     END START
 
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Conversion implicita op1:
 Caso de prueba:
     LONGINT c;
-    FLOAT x1, x2 ;  %%TODO:
+    FLOAT x1, x2 ;
     x1 = c + x2;
 
 Salida ASM:
@@ -694,26 +621,115 @@ Salida ASM:
     _@aux1 dd ?
     _@aux0 dd ?
     .code
-    START:
-    MOV EAX, _c@main
-    MOV _@aux0, EAX
-    FILD _@aux0
-    FSTP _@aux0
-    FLD _@aux0
-    FADD _x2@main
-    FST @aux
-    CALL OVERFLOW_FLOAT
-    FSTP _@aux1
-    MOV EAX, _@aux1
-    MOV _x1@main, EAX
-    invoke ExitProcess, 0
+   MOV EAX, _c@main
+   MOV _@aux0, EAX
+   FILD _@aux0
+   FSTP _@aux0
+   FLD _@aux0
+   FADD _x2@main
+   FST @aux
+   CALL OVERFLOW_FLOAT
+   FSTP _@aux1
+   FLD _@aux1
+   FSTP _x1@main
+   invoke ExitProcess, 0
     __etiquetaErrorOverflow__:
     invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
     invoke ExitProcess, 0
     END START
+----------------------------------------------------------
+%% Instruccion Estructuras Procedimientos:
+Caso de prueba:
+    LONGINT a,b;
+    a = b;
+    PROC procedimiento() NI = 3_l {
+        LONGINT a,b;
+        a = b;
+    };
+    procedimiento();
+
+Salida ASM:
+    .data
+    _a@main@procedimiento dd ?
+    _Constante0 dd 3
+    _b@main dd ?
+    _b@main@procedimiento dd ?
+    _a@main dd ?
+    .code
+    START:
+    MOV EAX, _b@main
+    MOV _a@main, EAX
+    CALL procedimiento@main
+    invoke ExitProcess, 0
+    procedimiento@main:
+    MOV EAX, _b@main@procedimiento
+    MOV _a@main@procedimiento, EAX
+    RET
+    END START
 
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Estructuras Procedimientos:
+Caso de prueba:
+    LONGINT a,b;
+    a = b;
+    PROC procedimiento() NI = 3_l {
+        LONGINT a,b;
+        a = b;
+        PROC invocacion() NI = 2_l {
+            b = a;
+            PROC procedimiento() NI = 1_l {
+                b = a;
+            };
+            procedimiento();
+        };
+        invocacion();
+    };
+    procedimiento();
+
+Salida ASM:
+    .data
+    _a@main@procedimiento dd ?
+    _Constante0 dd 1
+    _Constante1 dd 2
+    _Constante2 dd 3
+    _b@main dd ?
+    _b@main@procedimiento dd ?
+    _a@main dd ?
+    .code
+    START:
+    MOV EAX, _b@main
+    MOV _a@main, EAX
+    CALL procedimiento@main
+    invoke ExitProcess, 0
+    procedimiento@main@procedimiento@invocacion:
+    MOV EAX, _a@main@procedimiento
+    MOV _b@main@procedimiento, EAX
+    RET
+    invocacion@main@procedimiento:
+    MOV EAX, _a@main@procedimiento
+    MOV _b@main@procedimiento, EAX
+    CALL procedimiento@main@procedimiento@invocacion
+    RET
+    procedimiento@main:
+    MOV EAX, _b@main@procedimiento
+    MOV _a@main@procedimiento, EAX
+    CALL invocacion@main@procedimiento
+    RET
+    END START
+
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+
+    ---------------------------          CASOS DE PRUEBA COMPLETOS          ----------------------------
+    |                                                                                                   |
+    |                                                                                                   |
+    |                                                                                                   |
+    |                                                                                                   |
+    -----------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+%% Instruccion Caso COMPLETO:
 Caso de prueba:
     LONGINT a, b , c;
     FLOAT x1, x2 ;  
@@ -842,86 +858,7 @@ Salida ASM:
     END START
 
 ----------------------------------------------------------
-%% Instruccion:
-Caso de prueba:
-    LONGINT a,b;
-    a = b; 
-    PROC procedimiento() NI = 3_l {
-        LONGINT a,b;
-        a = b;
-    };
-    procedimiento();
-
-Salida ASM:
-    .data
-    _a@main@procedimiento dd ?
-    _Constante0 dd 3
-    _b@main dd ?
-    _b@main@procedimiento dd ?
-    _a@main dd ?
-    .code
-    START:
-    MOV EAX, _b@main
-    MOV _a@main, EAX
-    CALL procedimiento@main
-    invoke ExitProcess, 0
-    procedimiento@main:
-    MOV EAX, _b@main@procedimiento
-    MOV _a@main@procedimiento, EAX
-    RET
-    END START
-
-----------------------------------------------------------
-%% Instruccion:
-Caso de prueba:
-    LONGINT a,b;
-    a = b; 
-    PROC procedimiento() NI = 3_l {
-        LONGINT a,b;
-        a = b;
-        PROC invocacion() NI = 2_l {
-            b = a;	
-            PROC procedimiento() NI = 1_l {
-                b = a;
-            };
-            procedimiento();
-        };
-        invocacion();
-    };
-    procedimiento();
-
-Salida ASM:
-    .data
-    _a@main@procedimiento dd ?
-    _Constante0 dd 1
-    _Constante1 dd 2
-    _Constante2 dd 3
-    _b@main dd ?
-    _b@main@procedimiento dd ?
-    _a@main dd ?
-    .code
-    START:
-    MOV EAX, _b@main
-    MOV _a@main, EAX
-    CALL procedimiento@main
-    invoke ExitProcess, 0
-    procedimiento@main@procedimiento@invocacion:
-    MOV EAX, _a@main@procedimiento
-    MOV _b@main@procedimiento, EAX
-    RET
-    invocacion@main@procedimiento:
-    MOV EAX, _a@main@procedimiento
-    MOV _b@main@procedimiento, EAX
-    CALL procedimiento@main@procedimiento@invocacion
-    RET
-    procedimiento@main:
-    MOV EAX, _b@main@procedimiento
-    MOV _a@main@procedimiento, EAX
-    CALL invocacion@main@procedimiento
-    RET
-    END START
-----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Pasaje por COPIA-VALOR:
 Caso de prueba:
     LONGINT a,b;
     a = 3_l; 
@@ -1058,7 +995,7 @@ Salida ASM:
     END START
 
 ----------------------------------------------------------
-%% Instruccion:
+%% Instruccion Pasaje por REFERENCIA:
 Caso de prueba:
     LONGINT a,b;
     a = 3_l; 
@@ -1194,10 +1131,10 @@ Salida ASM:
     RET
     END START
 
-----------------------------------------------------------
-%% Instruccion: Ejemplo division por cero, chequeo comparacion / asignacion / conversiones implicitas.
+------------------------------------------------------------------------------------------------------------
+%% Instruccion: Ejemplo DIVISION POR CERO, chequeo comparacion / asignacion / conversiones implicitas.
 Caso de prueba:
-        LONGINT x1 , x2 , x3;
+    LONGINT x1 , x2 , x3;
     x1 = 0_l;
     x2 = 1_l;
     x3 = 0_l;
@@ -1386,4 +1323,521 @@ Salida ASM:
 
 
 ----------------------------------------------------------
+%% Instruccion: EJEMPLO COMPLETO IF ELSE.
+Caso de prueba:
+    FLOAT a , b, c ;
+    a = 5.0;
+    b = 4.0;
+    c = 6.0;
+    IF ( a - b != c + 1.0 ) {
+        a  = b + c;
+        OUT("distintos");
+    } ELSE {
+        OUT("iguales");
+        a = b - c;
+    } END_IF ;
 
+Salida ASM:
+   .386
+   .model flat, stdcall
+   option casemap :none
+   include \masm32\include\windows.inc
+   include \masm32\include\kernel32.inc
+   include \masm32\include\user32.inc
+   includelib \masm32\lib\kernel32.lib
+   includelib \masm32\lib\user32.lib
+   .data
+   ERROR_DIVISION_CERO db "Error: no es posible divir por cero.", 0
+   ERROR_OVERFLOW_SUMA db "Error: overflow en suma.", 0
+   FLOAT_CERO DQ 0.0
+   MINIMO_POSITIVO DQ 1.17549435e-38
+   MINIMO_NEGATIVO DQ -1.17549435e-38
+   MAXIMO_POSITIVO DQ 3.40282347e38
+   MAXIMO_NEGATIVO DQ -3.40282347e38
+   @aux DD ?
+   _b@main dd ?
+   _a@main dd ?
+   _Cadena0 db "iguales", 0
+   _Constante0 dd 1.0
+   _Constante1 dd 4.0
+   _Constante2 dd 5.0
+   _Constante3 dd 6.0
+   _Cadena1 db "distintos", 0
+   _@aux3 dd ?
+   _@aux2 dd ?
+   _c@main dd ?
+   _@aux1 dd ?
+   _@aux0 dd ?
+   .code
+   START:
+   FLD _Constante2
+   FSTP _a@main
+   FLD _Constante1
+   FSTP _b@main
+   FLD _Constante3
+   FSTP _c@main
+   FLD _a@main
+   FSUB _b@main
+   FSTP _@aux0
+   FLD _c@main
+   FADD _Constante0
+   FST @aux
+   CALL OVERFLOW_FLOAT
+   FSTP _@aux1
+   FINIT
+   FLD _@aux0
+   FCOMP _@aux1
+   FSTSW AX
+   SAHF
+   JE L27
+   FLD _b@main
+   FADD _c@main
+   FST @aux
+   CALL OVERFLOW_FLOAT
+   FSTP _@aux2
+   FLD _@aux2
+   FSTP _a@main
+   invoke MessageBox, NULL, addr _Cadena1, addr  _Cadena1, MB_OK
+   JMP L35
+   L27:
+   invoke MessageBox, NULL, addr _Cadena0, addr  _Cadena0, MB_OK
+   FLD _b@main
+   FSUB _c@main
+   FSTP _@aux3
+   FLD _@aux3
+   FSTP _a@main
+   L35:
+   invoke ExitProcess, 0
+   __etiquetaErrorOverflow__:
+   invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
+   invoke ExitProcess, 0
+   __etiquetaErrorDivCero__:
+   invoke MessageBox, NULL, addr ERROR_DIVISION_CERO, addr ERROR_DIVISION_CERO, MB_OK
+   invoke ExitProcess, 0
+   OVERFLOW_FLOAT:
+   FINIT
+   FLD @aux
+   FCOM MAXIMO_POSITIVO
+   FSTSW AX
+   SAHF
+   JA __etiquetaErrorOverflow__
+   FINIT
+   FLD @aux
+   FCOM MINIMO_POSITIVO
+   FSTSW AX
+   SAHF
+   JA FLOAT_VALIDO
+   FINIT
+   FLD @aux
+   FCOM MAXIMO_NEGATIVO
+   FSTSW AX
+   SAHF
+   JB __etiquetaErrorOverflow__
+   FINIT
+   FLD @aux
+   FCOM MINIMO_NEGATIVO
+   FSTSW AX
+   SAHF
+   JB FLOAT_VALIDO
+   FINIT
+   FLD @aux
+   FCOM FLOAT_CERO
+   FSTSW AX
+   SAHF
+   JE FLOAT_VALIDO
+   JMP __etiquetaErrorOverflow__
+   FLOAT_VALIDO:
+   RET
+   END START
+
+----------------------------------------------------------
+%% Instruccion: EJEMPLO COMPLETO PROBANDO REF, CONVERSIONES, PROCEDIMIENTOS.
+Caso de prueba:
+    LONGINT a, b, c;
+    a = 3_l;
+    b = 3_l;
+    c = 0_l;
+
+    FLOAT x1, x2;
+    x1 = 0.0;
+    x2 = 4.0;
+
+    PROC suma(REF LONGINT l1, REF LONGINT l2) NI = 2_l {
+        FLOAT x3;
+        IF (l1 == 3_l){
+            OUT("se pasa bien");
+        } END_IF;
+        x3 = l1 + l2;
+        l2 = 14_l;
+        IF (x3 > 2.0) {
+            OUT("es mayor");
+        } ELSE{
+            OUT("es menor");
+        }END_IF;
+    };
+
+    suma(l1:b,l2:a);
+
+    IF ( b != 3_l) {
+        OUT("es distinto");
+    } ELSE {
+        OUT("es igual");
+    }END_IF;
+
+
+Salida ASM:
+
+.386
+.model flat, stdcall
+option casemap :none
+include \masm32\include\windows.inc
+include \masm32\include\kernel32.inc
+include \masm32\include\user32.inc
+includelib \masm32\lib\kernel32.lib
+includelib \masm32\lib\user32.lib
+.data
+ERROR_DIVISION_CERO db "Error: no es posible divir por cero.", 0
+ERROR_OVERFLOW_SUMA db "Error: overflow en suma.", 0
+FLOAT_CERO DQ 0.0
+MINIMO_POSITIVO DQ 1.17549435e-38
+MINIMO_NEGATIVO DQ -1.17549435e-38
+MAXIMO_POSITIVO DQ 3.40282347e38
+MAXIMO_NEGATIVO DQ -3.40282347e38
+@aux DD ?
+_x1@main dd ?
+_Constante0 dd 14
+_b@main dd ?
+_a@main dd ?
+_x2@main dd ?
+_l1@main@suma dd ?
+_Cadena0 db "es menor", 0
+_l2@main@suma dd ?
+_Cadena1 db "es igual", 0
+_Constante1 dd 0
+_Constante2 dd 0.0
+_Constante3 dd 2
+_Constante4 dd 3
+_Constante5 dd 2.0
+_Cadena2 db "es distinto", 0
+_Cadena3 db "es mayor", 0
+_Constante6 dd 4.0
+_Cadena4 db "se pasa bien", 0
+_x3@main@suma dd ?
+_c@main dd ?
+_@aux0 dd ?
+.code
+START:
+MOV EAX, _Constante4
+MOV _a@main, EAX
+MOV EAX, _Constante4
+MOV _b@main, EAX
+MOV EAX, _Constante1
+MOV _c@main, EAX
+FLD _Constante2
+FSTP _x1@main
+FLD _Constante6
+FSTP _x2@main
+MOV EAX, [_b@main]
+MOV _l1@main@suma, EAX
+MOV EAX, [_a@main]
+MOV _l2@main@suma, EAX
+CALL suma@main
+MOV EAX , _b@main
+CMP EAX , _Constante4
+JE L33
+invoke MessageBox, NULL, addr _Cadena2, addr  _Cadena2, MB_OK
+JMP L36
+L33:
+invoke MessageBox, NULL, addr _Cadena1, addr  _Cadena1, MB_OK
+L36:
+invoke ExitProcess, 0
+__etiquetaErrorOverflow__:
+invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
+invoke ExitProcess, 0
+__etiquetaErrorDivCero__:
+invoke MessageBox, NULL, addr ERROR_DIVISION_CERO, addr ERROR_DIVISION_CERO, MB_OK
+invoke ExitProcess, 0
+OVERFLOW_FLOAT:
+FINIT
+FLD @aux
+FCOM MAXIMO_POSITIVO
+FSTSW AX
+SAHF
+JA __etiquetaErrorOverflow__
+FINIT
+FLD @aux
+FCOM MINIMO_POSITIVO
+FSTSW AX
+SAHF
+JA FLOAT_VALIDO
+FINIT
+FLD @aux
+FCOM MAXIMO_NEGATIVO
+FSTSW AX
+SAHF
+JB __etiquetaErrorOverflow__
+FINIT
+FLD @aux
+FCOM MINIMO_NEGATIVO
+FSTSW AX
+SAHF
+JB FLOAT_VALIDO
+FINIT
+FLD @aux
+FCOM FLOAT_CERO
+FSTSW AX
+SAHF
+JE FLOAT_VALIDO
+JMP __etiquetaErrorOverflow__
+FLOAT_VALIDO:
+RET
+suma@main:
+MOV EAX , _l1@main@suma
+CMP EAX , _Constante4
+JNE L10
+invoke MessageBox, NULL, addr _Cadena4, addr  _Cadena4, MB_OK
+JMP L11
+L10:
+L11:
+MOV EAX, _l1@main@suma
+ADD EAX, _l2@main@suma
+JO __etiquetaErrorOverflow__
+MOV _@aux0, EAX
+FILD _@aux0
+FSTP _@aux0
+FLD _@aux0
+FSTP _x3@main@suma
+MOV EAX, _Constante0
+MOV _l2@main@suma, EAX
+FINIT
+FLD _x3@main@suma
+FCOMP _Constante5
+FSTSW AX
+SAHF
+JNA L29
+invoke MessageBox, NULL, addr _Cadena3, addr  _Cadena3, MB_OK
+JMP L32
+L29:
+invoke MessageBox, NULL, addr _Cadena0, addr  _Cadena0, MB_OK
+L32:
+RET
+END START
+-----------------------------------------------------------------------------------------------------
+%% Instruccion: EJEMPLO COMPLETO PROBANDO REF, CONVERSIONES, PROCEDIMIENTOS, WHILE, INVOCACIONES ANIDADAS.
+Caso de prueba:
+     LONGINT a, b, c;
+     a = 3_l;
+     b = 3_l;
+     c = 0_l;
+
+     FLOAT x1, x2;
+     x1 = 0.0;
+     x2 = 4.0;
+
+     PROC suma(REF LONGINT l1, REF LONGINT l2) NI = 2_l {
+        FLOAT x3;
+        IF (l1 == 3_l){
+            OUT("se pasa bien");
+        } END_IF;
+        x3 = l1 + l2; %%6.0
+        l2 = 14_l;
+        IF (x3 > 2.0) {
+            OUT("es mayor");
+        } ELSE{
+            OUT("es menor");
+        }END_IF;
+
+        PROC anidado(LONGINT al1) NI = 1_l{
+            LONGINT comparacion;
+            comparacion = -4_l;
+            WHILE ( comparacion < al1) LOOP{ %% entro 3 veces
+                comparacion = comparacion * -2_l;
+                OUT("multiplico valor por -2");
+            };
+            OUT("Termino de comparar");
+        };
+        anidado(al1:l2);
+     };
+
+     PROC imprimir_fin() NI = 1_l {
+        OUT("Finaliza el programa");
+     };
+
+     suma(l1:b,l2:a);
+
+     IF ( b != 3_l) {
+        OUT("es distinto");
+     } ELSE {
+        OUT("es igual");
+     }END_IF;
+
+     imprimir_fin();
+
+
+Salida ASM:
+
+    .386
+    .model flat, stdcall
+    option casemap :none
+    include \masm32\include\windows.inc
+    include \masm32\include\kernel32.inc
+    include \masm32\include\user32.inc
+    includelib \masm32\lib\kernel32.lib
+    includelib \masm32\lib\user32.lib
+    .data
+    ERROR_DIVISION_CERO db "Error: no es posible divir por cero.", 0
+    ERROR_OVERFLOW_SUMA db "Error: overflow en suma.", 0
+    FLOAT_CERO DQ 0.0
+    MINIMO_POSITIVO DQ 1.17549435e-38
+    MINIMO_NEGATIVO DQ -1.17549435e-38
+    MAXIMO_POSITIVO DQ 3.40282347e38
+    MAXIMO_NEGATIVO DQ -3.40282347e38
+    @aux DD ?
+    _a@main dd ?
+    _al1@main@suma@anidado dd ?
+    _x2@main dd ?
+    _l1@main@suma dd ?
+    _Cadena0 db "es igual", 0
+    _Cadena1 db "es distinto", 0
+    _Cadena2 db "es mayor", 0
+    _Cadena3 db "se pasa bien", 0
+    _x3@main@suma dd ?
+    _Cadena4 db "Finaliza el programa", 0
+    _c@main dd ?
+    _@aux0 dd ?
+    _x1@main dd ?
+    _Constante0 dd 14
+    _b@main dd ?
+    _Constante1 dd -2
+    _Constante2 dd -4
+    _Cadena5 db "es menor", 0
+    _l2@main@suma dd ?
+    _Constante3 dd 0
+    _comparacion@main@suma@anidado dd ?
+    _Constante4 dd 1
+    _Constante5 dd 0.0
+    _Constante6 dd 2
+    _Constante7 dd 3
+    _Constante8 dd 2.0
+    _Constante9 dd 4.0
+    _Cadena6 db "multiplico valor por -2", 0
+    _Cadena7 db "Termino de comparar", 0
+    .code
+    START:
+    MOV EAX, _Constante7
+    MOV _a@main, EAX
+    MOV EAX, _Constante7
+    MOV _b@main, EAX
+    MOV EAX, _Constante3
+    MOV _c@main, EAX
+    FLD _Constante5
+    FSTP _x1@main
+    FLD _Constante9
+    FSTP _x2@main
+    MOV EAX, [_b@main]
+    MOV _l1@main@suma, EAX
+    MOV EAX, [_a@main]
+    MOV _l2@main@suma, EAX
+    CALL suma@main
+    MOV EAX , _b@main
+    CMP EAX , _Constante7
+    JE L33
+    invoke MessageBox, NULL, addr _Cadena1, addr  _Cadena1, MB_OK
+    JMP L36
+    L33:
+    invoke MessageBox, NULL, addr _Cadena0, addr  _Cadena0, MB_OK
+    L36:
+    CALL imprimir_fin@main
+    invoke ExitProcess, 0
+    __etiquetaErrorOverflow__:
+    invoke MessageBox, NULL, addr ERROR_OVERFLOW_SUMA, addr  ERROR_OVERFLOW_SUMA, MB_OK
+    invoke ExitProcess, 0
+    __etiquetaErrorDivCero__:
+    invoke MessageBox, NULL, addr ERROR_DIVISION_CERO, addr ERROR_DIVISION_CERO, MB_OK
+    invoke ExitProcess, 0
+    OVERFLOW_FLOAT:
+    FINIT
+    FLD @aux
+    FCOM MAXIMO_POSITIVO
+    FSTSW AX
+    SAHF
+    JA __etiquetaErrorOverflow__
+    FINIT
+    FLD @aux
+    FCOM MINIMO_POSITIVO
+    FSTSW AX
+    SAHF
+    JA FLOAT_VALIDO
+    FINIT
+    FLD @aux
+    FCOM MAXIMO_NEGATIVO
+    FSTSW AX
+    SAHF
+    JB __etiquetaErrorOverflow__
+    FINIT
+    FLD @aux
+    FCOM MINIMO_NEGATIVO
+    FSTSW AX
+    SAHF
+    JB FLOAT_VALIDO
+    FINIT
+    FLD @aux
+    FCOM FLOAT_CERO
+    FSTSW AX
+    SAHF
+    JE FLOAT_VALIDO
+    JMP __etiquetaErrorOverflow__
+    FLOAT_VALIDO:
+    RET
+    anidado@main@suma:
+    MOV EAX, _Constante2
+    MOV _comparacion@main@suma@anidado, EAX
+    L4:
+    MOV EAX , _comparacion@main@suma@anidado
+    CMP EAX , _al1@main@suma@anidado
+    JNL L19
+    MOV EAX, _comparacion@main@suma@anidado
+    IMUL EAX, _Constante1
+    MOV _comparacion@main@suma@anidado, EAX
+    invoke MessageBox, NULL, addr _Cadena6, addr  _Cadena6, MB_OK
+    JMP L4
+    L19:
+    invoke MessageBox, NULL, addr _Cadena7, addr  _Cadena7, MB_OK
+    RET
+    suma@main:
+    MOV EAX , _l1@main@suma
+    CMP EAX , _Constante7
+    JNE L10
+    invoke MessageBox, NULL, addr _Cadena3, addr  _Cadena3, MB_OK
+    JMP L11
+    L10:
+    L11:
+    MOV EAX, _l1@main@suma
+    ADD EAX, _l2@main@suma
+    JO __etiquetaErrorOverflow__
+    MOV _@aux0, EAX
+    FILD _@aux0
+    FSTP _@aux0
+    FLD _@aux0
+    FSTP _x3@main@suma
+    MOV EAX, _Constante0
+    MOV _l2@main@suma, EAX
+    FINIT
+    FLD _x3@main@suma
+    FCOMP _Constante8
+    FSTSW AX
+    SAHF
+    JNA L29
+    invoke MessageBox, NULL, addr _Cadena2, addr  _Cadena2, MB_OK
+    JMP L32
+    L29:
+    invoke MessageBox, NULL, addr _Cadena5, addr  _Cadena5, MB_OK
+    L32:
+    MOV EAX, _l2@main@suma
+    MOV _al1@main@suma@anidado, EAX
+    CALL anidado@main@suma
+    RET
+    imprimir_fin@main:
+    invoke MessageBox, NULL, addr _Cadena4, addr  _Cadena4, MB_OK
+    RET
+    END START
