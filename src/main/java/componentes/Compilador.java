@@ -638,7 +638,6 @@ public class Compilador {
     for (int i = 0; i < polaca.size(); i++) {
       SimboloPolaca simbolo = polaca.get(i);
       SimboloPolaca op1, op2, op;
-      System.out.println(pilaEjecucion);
       switch (simbolo.getSimbolo()) {
         case PROC:
           ArrayList<SimboloPolaca> invocacion = new ArrayList<>();
