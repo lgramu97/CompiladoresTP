@@ -295,7 +295,7 @@ public class Compilador {
   public void generateComparacionFloat(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2, String operador) {
     asm.add("FINIT"); // Resetea control y estado en cada comparacion.
     asm.add("FLD " + op1.getSimboloASM()); // Cargo a ST(0) el valor de op1.
-    asm.add("FCOMP " + op2.getSimboloASM()); // Comparo con el op2- FIXME: si no funciona sacar la P. 
+    asm.add("FCOMP " + op2.getSimboloASM()); // Comparo con el op2-
     asm.add("FSTSW AX");// palabra de estado a mem.
     asm.add("SAHF"); // copia indicadores.
     //asm.add(salto + " " + etiqueta); //Salto si condicion
@@ -394,7 +394,7 @@ public class Compilador {
   public void generateCodeSUB(ArrayList<String> asm, SimboloPolaca op1, SimboloPolaca op2) {
     //SUB {__reg__, __mem__}, {__reg__, __mem__, __inmed__} ; Operación: dest <- dest - src.
     if (isFloat(op1) && isFloat(op2)) {
-      asm.add("FLD " + op1.getSimboloASM()); // Cargo op1 ST(2)
+      asm.add("FLD " + op1.getSimboloASM()); // Cargo op1 ST(1)
       asm.add("FSUB " + op2.getSimboloASM());
       String varAux = crearVarAux();
       op1.setSimbolo(varAux);

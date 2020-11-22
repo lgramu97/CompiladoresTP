@@ -337,7 +337,7 @@ invocacion_procedimiento : inicio_inv_proc lista_parametros_invocacion ')' ';'
 inicio_inv_proc: ID '('
                 {
                     idProcActual = null;
-                    checkIDNoDeclarado($1.sval);//VER CASO EN EL QUE LA INVOCACION SE HACE DENTRO DEL PROCEDIMIENTO.
+                    checkIDNoDeclarado($1.sval);//VER CASO EN EL QUE LA INVOCACION SE HACE DENTRO DEL PROCEDIMIENTO. No nos toco recursion -> no controlar.
                     idProcActual = $1.sval;
                     addSimbolo("PROC");
                     addSimbolo(findLexema($1.sval));
